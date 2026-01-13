@@ -21,7 +21,7 @@ import org.littletonrobotics.junction.Logger;
 public class PhoenixOdometryThread extends Thread {
   private final List<BaseStatusSignal> signals = new ArrayList<>();
   private final List<Queue<Double>> queues = new ArrayList<>();
-  private final Queue<Double> timestampQueue = new ArrayBlockingQueue<>(20);
+  private final List<Queue<Double>> timestampQueues = new ArrayList<>();
   private boolean isCANFD = false;
   private boolean started = false;
 
@@ -54,13 +54,14 @@ public class PhoenixOdometryThread extends Thread {
     return queue;
   }
 
-  /**
-   * Returns the shared timestamp queue. All modules use the same timestamps
-   * since signals are sampled together.
-   */
-  public Queue<Double> getTimestampQueue() {
+  public Queue<Double> makeTimestampQueue() {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
-
+    try {
+      DriveSubsystem.odometryLock.lock();
+      timestampQueues.add(queue);
+    } finally {
+      DriveSubsystem.odometryLock.unlock();
+    }
     return queue;
   }
 
@@ -78,6 +79,7 @@ public class PhoenixOdometryThread extends Thread {
 
     while (true) {
       try {
+
         // Wait for updates from all signals
         if (isCANFD) {
           BaseStatusSignal.waitForAll(2.0 / DriveConstants.ODOMETRY_FREQUENCY, signalsArray);
@@ -92,21 +94,24 @@ public class PhoenixOdometryThread extends Thread {
           }
         }
 
-        // Calculate timestamp with latency compensation
-        double timestamp = Logger.getTimestamp() / 1e6;
-        double totalLatency = 0.0;
-        for (BaseStatusSignal signal : signalsArray) {
-          totalLatency += signal.getTimestamp().getLatency();
-        }
-        if (signalsArray.length > 0) {
-          timestamp -= totalLatency / signalsArray.length;
-        }
-
         // Uses driveSubsystem's odometry lock instead of a separate one
         DriveSubsystem.odometryLock.lock();
         try {
-          // Add timestamp to shared queue
-          timestampQueue.offer(timestamp);
+
+          // Calculate timestamp with latency compensation
+          double timestamp = Logger.getTimestamp() / 1e6;
+          double totalLatency = 0.0;
+          for (BaseStatusSignal signal : signalsArray) {
+            totalLatency += signal.getTimestamp().getLatency();
+          }
+
+          if (signalsArray.length > 0) {
+            timestamp -= totalLatency / signalsArray.length;
+          }
+
+          for (Queue<Double> queue : timestampQueues) {
+            queue.offer(timestamp);
+          }
 
           // Add signal values to their respective queues
           for (int i = 0; i < signalsArray.length; i++) {

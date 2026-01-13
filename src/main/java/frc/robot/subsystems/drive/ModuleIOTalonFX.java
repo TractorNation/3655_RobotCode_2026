@@ -142,8 +142,6 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     cancoder.getConfigurator().apply(turnEncoderConfig);
 
-    timestampQueue = PhoenixOdometryThread.getInstance().getTimestampQueue();
-
     drivePosition = driveTalon.getPosition();
     drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
     driveVelocity = driveTalon.getVelocity();
@@ -155,6 +153,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnVelocity = turnTalon.getVelocity();
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getSupplyCurrent();
+
+    timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         DriveConstants.ODOMETRY_FREQUENCY, drivePosition, turnPosition);

@@ -38,9 +38,9 @@ public class Module {
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
       double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.WHEEL_RADIUS;
-      Rotation2d angle = inputs.odometryTurnPositions[i]
-      // .plus(turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d())
-      ;
+      Rotation2d angle = inputs.odometryTurnPositions[i];
+
+      // .plus(turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
   }
