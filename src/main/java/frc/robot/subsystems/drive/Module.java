@@ -39,8 +39,6 @@ public class Module {
     for (int i = 0; i < sampleCount; i++) {
       double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.WHEEL_RADIUS;
       Rotation2d angle = inputs.odometryTurnPositions[i];
-
-      // .plus(turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
   }
@@ -80,6 +78,12 @@ public class Module {
 
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
+    // if (turnRelativeOffset == null) {
+    // return new Rotation2d();
+    // } else {
+    // return inputs.turnPosition;
+    // }
+
     return inputs.turnPosition;
   }
 

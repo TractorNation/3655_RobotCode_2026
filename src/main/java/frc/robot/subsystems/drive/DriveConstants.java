@@ -10,113 +10,113 @@ import frc.robot.util.PhysicsUtil;
 /** Static values for the drive subsystem */
 public class DriveConstants {
 
-  public static final int FL_DRIVE_ID = 1;
-  public static final int FL_TURN_ID = 2;
-  public static final int FL_ENCODER_ID = 3;
-  public static final Rotation2d PROTOBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.228760);
-  public static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.268066);
+    public static final int FL_DRIVE_ID = 1;
+    public static final int FL_TURN_ID = 2;
+    public static final int FL_ENCODER_ID = 3;
+    public static final Rotation2d PROTOBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.361084);
+    public static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.268066);
 
-  public static final int FR_DRIVE_ID = 4;
-  public static final int FR_TURN_ID = 5;
-  public static final int FR_ENCODER_ID = 6;
-  public static final Rotation2d PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.371826);
-  public static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.105469);
+    public static final int FR_DRIVE_ID = 4;
+    public static final int FR_TURN_ID = 5;
+    public static final int FR_ENCODER_ID = 6;
+    public static final Rotation2d PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.121826);
+    public static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.105469);
 
-  public static final int BL_DRIVE_ID = 7;
-  public static final int BL_TURN_ID = 8;
-  public static final int BL_ENCODER_ID = 9;
-  public static final Rotation2d PROTOBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.064697);
-  public static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.446533);
+    public static final int BL_DRIVE_ID = 7;
+    public static final int BL_TURN_ID = 8;
+    public static final int BL_ENCODER_ID = 9;
+    public static final Rotation2d PROTOBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.432617);
+    public static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.446533);
 
-  public static final int BR_DRIVE_ID = 10;
-  public static final int BR_TURN_ID = 11;
-  public static final int BR_ENCODER_ID = 12;
-  public static final Rotation2d PROTOBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.483398);
-  public static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.184326);
+    public static final int BR_DRIVE_ID = 10;
+    public static final int BR_TURN_ID = 11;
+    public static final int BR_ENCODER_ID = 12;
+    public static final Rotation2d PROTOBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.016113);
+    public static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.184326);
 
-  public static final int PIGEON_ID = 20;
+    public static final int PIGEON_ID = 20;
 
-  public static final double ODOMETRY_FREQUENCY = 250.0;
+    public static final double ODOMETRY_FREQUENCY = 250.0;
 
-  // 16.9 rot/s of wheel -> 5.409929 m/s -> 17.7 ft/s
-  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
-  public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / Constants.DRIVE_BASE_RADIUS);
+    // 16.9 rot/s of wheel -> 5.409929 m/s -> 17.7 ft/s
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
+    public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / Constants.DRIVE_BASE_RADIUS);
 
-  public static final double PROTOBOT_DRIVE_GEAR_RATIO = 6.03;
+    public static final double PROTOBOT_DRIVE_GEAR_RATIO = 6.03;
 
-  public static final double COMPBOT_DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double COMPBOT_DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
 
-  public static final double TURN_GEAR_RATIO = 26.09;
+    public static final double TURN_GEAR_RATIO = 26.09;
 
-  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(14);
-  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(16);
+    public static final double BATTERY_MASS_KG = Units.lbsToKilograms(14);
+    public static final double BUMPER_MASS_KG = Units.lbsToKilograms(16);
 
-  public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(108.1);
-  public static final double COMPBOT_MASS_KG = COMPBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
-  public static final double COMPBOT_MOI = PhysicsUtil.estimateRobotMOI(
-      COMPBOT_MASS_KG,
-      Constants.BUMPER_WIDTH_X,
-      Constants.BUMPER_WIDTH_Y);
+    public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(108.1);
+    public static final double COMPBOT_MASS_KG = COMPBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
+    public static final double COMPBOT_MOI = PhysicsUtil.estimateRobotMOI(
+            COMPBOT_MASS_KG,
+            Constants.BUMPER_WIDTH_X,
+            Constants.BUMPER_WIDTH_Y);
 
-  public static final double PROTOBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(60);
-  public static final double PROTOBOT_MASS_KG = PROTOBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
-  public static final double PROTOBOT_MOI = PhysicsUtil.estimateRobotMOI(
-      PROTOBOT_MASS_KG,
-      Constants.BUMPER_WIDTH_X,
-      Constants.BUMPER_WIDTH_Y);
+    public static final double PROTOBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(60);
+    public static final double PROTOBOT_MASS_KG = PROTOBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
+    public static final double PROTOBOT_MOI = PhysicsUtil.estimateRobotMOI(
+            PROTOBOT_MASS_KG,
+            Constants.BUMPER_WIDTH_X,
+            Constants.BUMPER_WIDTH_Y);
 
-  public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
-  public static final double WHEEL_COF = 1.5;
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
+    public static final double WHEEL_COF = 1.5;
 
-  public static final double KP_TURN = 100;
-  public static final double KP_DRIVE = 0.3;
-  public static final double KV_DRIVE = 0.70; // 12V/max speed roughly, 12/(16.9 rot/s) = .71
-  public static final double KS_DRIVE = 0.0;
+    public static final double KP_TURN = 5;
+    public static final double KP_DRIVE = 0.3;
+    public static final double KV_DRIVE = 0.71; // 12V/max speed roughly, 12/(16.9 rot/s) = .71
+    public static final double KS_DRIVE = 0;
 
-  public static final int DRIVE_CURRENT_LIMIT = 155;
-  public static final int TURN_CURRENT_LIMIT = 15;
+    public static final int DRIVE_CURRENT_LIMIT = 155;
+    public static final int TURN_CURRENT_LIMIT = 15;
 
-  // Used to calculate feed forward for turn speed in 2nd order dynamics calc.
-  public static final double TURN_kA = 0;
-  public static final double TURN_kS = 0.05;
-  public static final double TURN_kV = 0.1;
+    // Used to calculate feed forward for turn speed in 2nd order dynamics calc.
+    public static final double TURN_kA = 0;
+    public static final double TURN_kS = 0.05;
+    public static final double TURN_kV = 0.1;
 
-  public static final Translation2d[] moduleTranslations = new Translation2d[] {
-      // FL FR BL BR
-      new Translation2d(Constants.TRACK_WIDTH_X / 2.0, Constants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(Constants.TRACK_WIDTH_X / 2.0, -Constants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-Constants.TRACK_WIDTH_X / 2.0, Constants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-Constants.TRACK_WIDTH_X / 2.0, -Constants.TRACK_WIDTH_Y / 2.0)
-  };
+    public static final Translation2d[] moduleTranslations = new Translation2d[] {
+            // FL FR BL BR
+            new Translation2d(Constants.TRACK_WIDTH_X / 2.0, Constants.TRACK_WIDTH_Y / 2.0),
+            new Translation2d(Constants.TRACK_WIDTH_X / 2.0, -Constants.TRACK_WIDTH_Y / 2.0),
+            new Translation2d(-Constants.TRACK_WIDTH_X / 2.0, Constants.TRACK_WIDTH_Y / 2.0),
+            new Translation2d(-Constants.TRACK_WIDTH_X / 2.0, -Constants.TRACK_WIDTH_Y / 2.0)
+    };
 
-  public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
+    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
 
-  public static double DRIVE_GEAR_RATIO = (Constants.currentRobot == Constants.RobotType.COMPBOT)
-      ? COMPBOT_DRIVE_GEAR_RATIO
-      : PROTOBOT_DRIVE_GEAR_RATIO;
+    public static double DRIVE_GEAR_RATIO = (Constants.currentRobot == Constants.RobotType.COMPBOT)
+            ? COMPBOT_DRIVE_GEAR_RATIO
+            : PROTOBOT_DRIVE_GEAR_RATIO;
 
-  public static Rotation2d FRONT_LEFT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_FRONT_LEFT_ENCODER_OFFSET
-      : PROTOBOT_FRONT_LEFT_ENCODER_OFFSET;
+    public static Rotation2d FRONT_LEFT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_FRONT_LEFT_ENCODER_OFFSET
+            : PROTOBOT_FRONT_LEFT_ENCODER_OFFSET;
 
-  public static Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_FRONT_RIGHT_ENCODER_OFFSET
-      : PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET;
+    public static Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_FRONT_RIGHT_ENCODER_OFFSET
+            : PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET;
 
-  public static Rotation2d BACK_LEFT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_BACK_LEFT_ENCODER_OFFSET
-      : PROTOBOT_BACK_LEFT_ENCODER_OFFSET;
+    public static Rotation2d BACK_LEFT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_BACK_LEFT_ENCODER_OFFSET
+            : PROTOBOT_BACK_LEFT_ENCODER_OFFSET;
 
-  public static Rotation2d BACK_RIGHT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_BACK_RIGHT_ENCODER_OFFSET
-      : PROTOBOT_BACK_RIGHT_ENCODER_OFFSET;
+    public static Rotation2d BACK_RIGHT_ENCODER_OFFSET = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_BACK_RIGHT_ENCODER_OFFSET
+            : PROTOBOT_BACK_RIGHT_ENCODER_OFFSET;
 
-  public static double ROBOT_MASS_KG = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_MASS_KG
-      : PROTOBOT_MASS_KG;
+    public static double ROBOT_MASS_KG = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_MASS_KG
+            : PROTOBOT_MASS_KG;
 
-  public static double ROBOT_MOI = Constants.currentRobot == Constants.RobotType.COMPBOT
-      ? COMPBOT_MOI
-      : PROTOBOT_MOI;
+    public static double ROBOT_MOI = Constants.currentRobot == Constants.RobotType.COMPBOT
+            ? COMPBOT_MOI
+            : PROTOBOT_MOI;
 
 }

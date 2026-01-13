@@ -40,7 +40,6 @@ public class GyroIOPigeon2 implements GyroIO {
     pidgey.getConfigurator().setYaw(0.0);
     yaw.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(100.0);
-    
     yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pidgey, pidgey.getYaw());
 
     if (!pidgey.isConnected()) {

@@ -386,6 +386,11 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
+  /**
+   * Returns the moduoe
+   * @return
+   */
+
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "Drive/SwerveChassisSpeeds/Measured")
   private ChassisSpeeds getChassisSpeeds() {
