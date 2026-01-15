@@ -60,7 +60,7 @@ public final class Constants {
 
   // Size of the robot
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(33.5);
-  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(33.75);
+  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(33.5);
   public static final double TRACK_WIDTH_X = Units.inchesToMeters(20.75);
   public static final double TRACK_WIDTH_Y = Units.inchesToMeters(20.75);
   public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
@@ -106,7 +106,7 @@ public final class Constants {
    * {@link RobotContainer#configureButtonBindings()}.
    * Change this to match your current driver or development environment.
    */
-  public static final Driver currentDriver = Driver.PROGRAMMING;
+  public static final Driver currentDriver = Driver.MAIN;
 
   /**
    * Driver control scheme options.
