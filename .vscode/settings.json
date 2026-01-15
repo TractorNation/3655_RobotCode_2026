@@ -63,6 +63,8 @@
     "CANFD",
     "CANIVORE",
     "COMPBOT",
+    "Fiducials",
+    "MEGATAG",
     "Pathfinding",
     "pidgey",
     "PROTOBOT",

@@ -44,7 +44,9 @@ public class VisionIOLimelight implements VisionIO {
 
     LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
         0, 0, 0, 0, 0);
-    NetworkTableInstance.getDefault().flush();
+
+    // This may be causing commandScheduler loop overrun issues
+    // NetworkTableInstance.getDefault().flush();
 
     var rawFiducials = LimelightHelpers.getRawFiducials(name);
     var estimatedPoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);

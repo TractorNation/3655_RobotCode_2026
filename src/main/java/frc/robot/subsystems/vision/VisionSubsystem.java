@@ -10,11 +10,13 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rectangle2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
@@ -91,6 +93,15 @@ public class VisionSubsystem extends SubsystemBase {
   private final Alert[] disconnectedAlerts;
   private AprilTagFieldLayout tagLayout;
 
+  private static final Rectangle2d FIELD_BOUNDS = new Rectangle2d(Translation2d.kZero,
+      new Translation2d(317.69, 651.22));
+
+  // Logging data
+  List<Pose3d> tagPoses = new LinkedList<>();
+  List<Pose2d> robotPoses = new LinkedList<>();
+  List<Pose2d> robotPosesAccepted = new LinkedList<>();
+  List<Pose2d> robotPosesRejected = new LinkedList<>();
+
   /**
    * Constructs a VisionSubsystem with the specified camera IO implementations.
    * 
@@ -157,21 +168,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isInsideField(PoseObservation observation) {
-    double slope = Units.inchesToMeters(0.7587);
-    double x = observation.pose().getX();
-    double y = observation.pose().getY();
-
-    boolean isInsideBlueLeft = (y < slope * x + Units.inchesToMeters(267.2));
-    boolean isInsideBlueRight = (y > -slope * x + Units.inchesToMeters(49.95));
-    boolean isInsideRedLeft = (y > slope * x - Units.inchesToMeters(474.187));
-    boolean isInsideRedRight = (y < -slope * x + Units.inchesToMeters(791.337));
-    boolean isInsideRectangle = (x > 0 && x < tagLayout.getFieldLength() && y > 0 && y < tagLayout.getFieldWidth());
-
-    if (isInsideBlueRight && isInsideBlueLeft && isInsideRedLeft && isInsideRedRight && isInsideRectangle) {
-      return true;
-    } else {
-      return false;
-    }
+    return FIELD_BOUNDS.contains(observation.pose().getTranslation());
   }
 
   /**
@@ -212,15 +209,14 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.processInputs("Inputs/Vision/Camera " + inputs[i].name, inputs[i]);
     }
 
+    tagPoses.clear();
+    robotPoses.clear();
+    robotPosesAccepted.clear();
+    robotPosesRejected.clear();
+
     for (int i = 0; i < io.length; i++) {
       // Check if camera is disconnected and alert if so
       disconnectedAlerts[i].set(!inputs[i].connected);
-
-      // Logging data
-      List<Pose3d> tagPoses = new LinkedList<>();
-      List<Pose2d> robotPoses = new LinkedList<>();
-      List<Pose2d> robotPosesAccepted = new LinkedList<>();
-      List<Pose2d> robotPosesRejected = new LinkedList<>();
 
       // Get positions of every tag that is seen
       for (int tagId : inputs[i].tagIds) {
