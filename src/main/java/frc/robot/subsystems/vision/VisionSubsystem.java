@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -94,7 +95,7 @@ public class VisionSubsystem extends SubsystemBase {
   private AprilTagFieldLayout tagLayout;
 
   private static final Rectangle2d FIELD_BOUNDS = new Rectangle2d(Translation2d.kZero,
-      new Translation2d(317.69, 651.22));
+      new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
 
   // Logging data
   List<Pose3d> tagPoses = new LinkedList<>();
