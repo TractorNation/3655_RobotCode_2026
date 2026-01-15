@@ -31,11 +31,79 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.RobotState;
 import frc.robot.RobotState.OdometryMeasurement;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.PathPlannerUtil;
 
+/**
+ * Subsystem for managing the swerve drive base.
+ * 
+ * <p>
+ * This subsystem controls a 4-module swerve drive using the IO layer pattern.
+ * It receives IO implementations (real hardware, simulation, or replay) and
+ * uses them
+ * to control the drive base without knowing the specific hardware details.
+ * 
+ * <p>
+ * <b>Key Features:</b>
+ * <ul>
+ * <li>4 swerve modules (FL, FR, BL, BR) with independent control</li>
+ * <li>Gyro integration for heading</li>
+ * <li>PathPlanner AutoBuilder integration for autonomous</li>
+ * <li>SysId routines for drive characterization</li>
+ * <li>High-frequency odometry updates (250Hz via PhoenixOdometryThread)</li>
+ * <li>Odometry data sent to RobotState for pose estimation</li>
+ * </ul>
+ * 
+ * <p>
+ * <b>IO Layer Pattern:</b> This subsystem uses {@link GyroIO} and
+ * {@link ModuleIO}
+ * interfaces. The actual implementations are provided by {@link RobotContainer}
+ * based
+ * on the robot mode (REAL, SIM, REPLAY). This makes the subsystem
+ * hardware-agnostic.
+ * 
+ * <p>
+ * <b>Odometry:</b> The subsystem updates {@link RobotState} with odometry
+ * measurements
+ * every periodic cycle. These measurements include:
+ * <ul>
+ * <li>High-frequency encoder samples (250Hz) from PhoenixOdometryThread</li>
+ * <li>Gyro rotation data</li>
+ * <li>Module position deltas</li>
+ * </ul>
+ * 
+ * <p>
+ * <b>PathPlanner Integration:</b> AutoBuilder is configured in the constructor
+ * to enable
+ * autonomous path following. Paths created in PathPlanner automatically appear
+ * in the
+ * autonomous chooser.
+ * 
+ * <p>
+ * <b>Thread Safety:</b> Uses {@link #odometryLock} to prevent race conditions
+ * when
+ * the odometry thread updates module positions while the main thread reads
+ * them.
+ * 
+ * <p>
+ * <b>Usage:</b>
+ * 
+ * <pre>{@code
+ * // Set robot velocity (field-relative)
+ * drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+ *     new ChassisSpeeds(vx, vy, omega),
+ *     robotRotation));
+ * 
+ * // Stop robot
+ * drive.stop();
+ * 
+ * // Stop with X-pattern (defense mode)
+ * drive.stopWithX();
+ * }</pre>
+ */
 public class DriveSubsystem extends SubsystemBase {
 
   static final Lock odometryLock = new ReentrantLock();
@@ -44,6 +112,31 @@ public class DriveSubsystem extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
 
+  /**
+   * Constructs a DriveSubsystem with the specified IO implementations.
+   * 
+   * <p>
+   * This constructor:
+   * <ol>
+   * <li>Initializes 4 swerve modules with their IO implementations</li>
+   * <li>Starts the PhoenixOdometryThread for high-frequency odometry</li>
+   * <li>Configures PathPlanner AutoBuilder for autonomous</li>
+   * <li>Sets up SysId routines for characterization</li>
+   * </ol>
+   * 
+   * <p>
+   * <b>IO Implementations:</b> The IO implementations are provided by
+   * {@link RobotContainer}
+   * based on robot mode. This demonstrates the IO layer pattern - the subsystem
+   * doesn't
+   * know or care which implementation it receives.
+   * 
+   * @param gyroIO     Gyro IO implementation (real hardware, sim, or replay)
+   * @param flModuleIO Front-left module IO implementation
+   * @param frModuleIO Front-right module IO implementation
+   * @param blModuleIO Back-left module IO implementation
+   * @param brModuleIO Back-right module IO implementation
+   */
   public DriveSubsystem(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -130,6 +223,27 @@ public class DriveSubsystem extends SubsystemBase {
             this));
   }
 
+  /**
+   * Called every robot periodic cycle (every 20ms).
+   * 
+   * <p>
+   * This method:
+   * <ol>
+   * <li>Updates inputs from all IO implementations (gyro and modules)</li>
+   * <li>Processes inputs for AdvantageKit logging</li>
+   * <li>Runs module periodic methods (control loops)</li>
+   * <li>Stops modules when robot is disabled</li>
+   * <li>Updates RobotState with odometry measurements</li>
+   * </ol>
+   * 
+   * <p>
+   * <b>Thread Safety:</b> Uses {@link #odometryLock} to prevent race conditions
+   * when reading odometry data that may be updated by the odometry thread.
+   * 
+   * <p>
+   * <b>Odometry Updates:</b> Processes multiple odometry samples per cycle (from
+   * high-frequency thread) and sends them to RobotState for pose estimation.
+   */
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
