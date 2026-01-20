@@ -79,25 +79,5 @@ class ConstantsTest {
     assertTrue(mass <= maxMass,
         String.format("Robot mass %.2f kg seems unreasonably high", mass));
   }
-
-  @Test
-  @DisplayName("Vision maximum distances should be positive")
-  void testVisionMaxDistances() {
-    assertTrue(
-        frc.robot.subsystems.vision.VisionConstants.SINGLE_TAG_MAXIMUM > 0,
-        "Single tag maximum distance should be positive");
-    assertTrue(
-        frc.robot.subsystems.vision.VisionConstants.MULTI_TAG_MAXIMUM > 0,
-        "Multi-tag maximum distance should be positive");
-  }
-
-  @Test
-  @DisplayName("Multi-tag maximum should be >= single-tag maximum")
-  void testVisionDistanceHierarchy() {
-    assertTrue(
-        frc.robot.subsystems.vision.VisionConstants.MULTI_TAG_MAXIMUM >=
-            frc.robot.subsystems.vision.VisionConstants.SINGLE_TAG_MAXIMUM,
-        "Multi-tag maximum should be >= single-tag maximum");
-  }
 }
 

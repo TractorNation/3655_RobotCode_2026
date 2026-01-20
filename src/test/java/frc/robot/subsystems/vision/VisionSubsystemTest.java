@@ -10,10 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.RobotState;
-import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
 
 /**
  * Unit tests for VisionSubsystem.
@@ -40,7 +41,7 @@ class VisionSubsystemTest {
     RobotState.resetVisionMeasurementCounter();
     
     // Create mock camera IO
-    mockCamera = new MockVisionIO("test-camera");
+    mockCamera = new MockVisionIO();
     mockCamera.setConnected(true);
 
     // Create VisionSubsystem with mock
@@ -57,14 +58,14 @@ class VisionSubsystemTest {
   @DisplayName("isInsideField should accept valid poses within field boundaries")
   void testIsInsideFieldValid() {
     // Test a pose in the center of the field
-    Pose2d centerPose = new Pose2d(8.0, 4.0, new Rotation2d());
+    Pose3d centerPose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         centerPose,
         0.1, // Low ambiguity
         3, // Multiple tags
         2.0, // 2 meters away
-        ObservationType.PHOTON);
+        PoseObservationType.PHOTONVISION);
 
     assertTrue(vision.isInsideField(observation),
         "Pose in center of field should be inside");
@@ -74,14 +75,14 @@ class VisionSubsystemTest {
   @DisplayName("isInsideField should reject poses outside field boundaries")
   void testIsInsideFieldInvalid() {
     // Test a pose way outside the field
-    Pose2d outsidePose = new Pose2d(100.0, 100.0, new Rotation2d());
+    Pose3d outsidePose = new Pose3d(new Pose2d(100.0, 100.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         outsidePose,
         0.1,
         3,
         2.0,
-        ObservationType.PHOTON);
+        PoseObservationType.PHOTONVISION);
 
     assertFalse(vision.isInsideField(observation),
         "Pose outside field should be rejected");
@@ -111,11 +112,10 @@ class VisionSubsystemTest {
     vision.periodic();
 
     // Get observation
-    VisionConstants.TargetObservation obs = vision.getLatestTargetObservation(0);
+    tx = vision.getTargetX(0);
     
-    assertNotNull(obs, "Target observation should not be null");
-    assertEquals(10.0, obs.tx().getDegrees(), 0.1, "tx should be 10 degrees");
-    assertEquals(5.0, obs.ty().getDegrees(), 0.1, "ty should be 5 degrees");
+    assertNotNull(tx, "Target observation should not be null");
+    assertEquals(10.0, tx.getDegrees(), 0.1, "tx should be 10 degrees");
   }
 
   @Test
@@ -124,14 +124,14 @@ class VisionSubsystemTest {
     // Reset counter to ensure clean state
     RobotState.resetVisionMeasurementCounter();
     
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
+    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         pose,
         0.1, // Good ambiguity
         0, // ZERO TAGS - should be rejected
         2.0,
-        ObservationType.PHOTON);
+        PoseObservationType.PHOTONVISION);
 
     mockCamera.setPoseObservations(new PoseObservation[] { observation });
     mockCamera.setTagIds(new int[] {});
@@ -150,14 +150,14 @@ class VisionSubsystemTest {
     // Reset counter to ensure clean state
     RobotState.resetVisionMeasurementCounter();
     
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
+    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         pose,
-        VisionConstants.MAX_AMBIGUITY + 0.1, // Above threshold
+        VisionConstants.maxAmbiguity + 0.1, // Above threshold
         3, // Multiple tags
         2.0,
-        ObservationType.PHOTON);
+        PoseObservationType.PHOTONVISION);
 
     mockCamera.setPoseObservations(new PoseObservation[] { observation });
     mockCamera.setTagIds(new int[] { 1, 2, 3 });
@@ -171,69 +171,19 @@ class VisionSubsystemTest {
   }
 
   @Test
-  @DisplayName("Single tag observations beyond max distance should be rejected")
-  void testSingleTagDistanceRejection() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
-    
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        0.1, // Good ambiguity
-        1, // Single tag
-        VisionConstants.SINGLE_TAG_MAXIMUM + 0.1, // Too far
-        ObservationType.PHOTON);
-
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1 });
-
-    vision.periodic();
-
-    // Single tag beyond max distance should be rejected
-    assertEquals(0, RobotState.getVisionMeasurementCount(),
-        "Single tag observation beyond max distance should be rejected");
-  }
-
-  @Test
-  @DisplayName("Multi-tag observations beyond max distance should be rejected")
-  void testMultiTagDistanceRejection() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
-    
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        0.1, // Good ambiguity
-        3, // Multiple tags
-        VisionConstants.MULTI_TAG_MAXIMUM + 0.1, // Too far
-        ObservationType.PHOTON);
-
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1, 2, 3 });
-
-    vision.periodic();
-
-    // Multi-tag beyond max distance should be rejected
-    assertEquals(0, RobotState.getVisionMeasurementCount(),
-        "Multi-tag observation beyond max distance should be rejected");
-  }
-
-  @Test
   @DisplayName("Valid pose observations should be accepted")
   void testValidObservationAcceptance() {
     // Reset counter to ensure clean state
     RobotState.resetVisionMeasurementCounter();
     
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
+    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         pose,
         0.1, // Low ambiguity
         3, // Multiple tags
         2.0, // Within limits
-        ObservationType.PHOTON);
+        PoseObservationType.PHOTONVISION);
 
     mockCamera.setPoseObservations(new PoseObservation[] { observation });
     mockCamera.setTagIds(new int[] { 1, 2, 3 });
@@ -251,14 +201,14 @@ class VisionSubsystemTest {
     // Reset counter to ensure clean state
     RobotState.resetVisionMeasurementCounter();
     
-    Pose2d pose = new Pose2d(8.0, 4.0, new Rotation2d());
+    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
     PoseObservation observation = new PoseObservation(
         0.0,
         pose,
         0.1,
         3,
         2.0,
-        ObservationType.MEGATAG_2); // MegaTag2 type
+        PoseObservationType.MEGATAG_2); // MegaTag2 type
 
     mockCamera.setPoseObservations(new PoseObservation[] { observation });
     mockCamera.setTagIds(new int[] { 1, 2, 3 });

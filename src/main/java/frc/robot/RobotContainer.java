@@ -6,6 +6,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -132,7 +133,7 @@ public class RobotContainer {
             new ModuleIOTalonFX(3));
 
         vision = new VisionSubsystem(
-            new VisionIOLimelight("limelight"));
+            new VisionIOLimelight("limelight-front"));
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -147,7 +148,8 @@ public class RobotContainer {
             new ModuleIOSim());
 
         vision = new VisionSubsystem(
-            new VisionIOSim("left", VisionConstants.ROBOT_TO_CAMERA));
+            new VisionIOSim("left", VisionConstants.robotToCamera0),
+            new VisionIOSim("right", VisionConstants.robotToCamera1));
         break;
 
       // Replayed robot, disable IO implementations
@@ -284,7 +286,7 @@ public class RobotContainer {
      * This is where you would define button bindings and controls for our operator
      * board,
      * by default it has nothing since operator controls the robot's mechanisms and
-     * noe the drive base
+     * need the drive base
      */
   }
 
