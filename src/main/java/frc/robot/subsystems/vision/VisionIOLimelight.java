@@ -1,95 +1,133 @@
+// Copyright (c) 2021-2026 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
+import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.RobotState;
-import frc.robot.subsystems.vision.VisionConstants.ObservationType;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
-import frc.robot.util.LimelightHelpers;
-
-/** Uses a Limelight camera to do vision calculations. */
+/** IO implementation for real Limelight hardware. */
 public class VisionIOLimelight implements VisionIO {
+  private final DoubleArrayPublisher orientationPublisher;
 
-  public final String name;
-  private final NetworkTable table;
   private final DoubleSubscriber latencySubscriber;
+  private final DoubleSubscriber txSubscriber;
+  private final DoubleSubscriber tySubscriber;
+  private final DoubleArraySubscriber megatag1Subscriber;
+  private final DoubleArraySubscriber megatag2Subscriber;
 
+  /**
+   * Creates a new VisionIOLimelight.
+   *
+   * @param name The configured name of the Limelight.
+   * @param rotationSupplier Supplier for the current estimated rotation, used for MegaTag 2.
+   */
   public VisionIOLimelight(String name) {
-    this.name = name;
-    table = NetworkTableInstance.getDefault().getTable(name);
+    var table = NetworkTableInstance.getDefault().getTable(name);
 
-    // tl represents the limelights latency contribution
+    orientationPublisher = table.getDoubleArrayTopic("robot_orientation_set").publish();
     latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
 
-    LimelightHelpers.SetIMUMode(name, 0);
+    txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
+    tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
+
+    megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    megatag2Subscriber =
+        table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
+    // Update connection status based on whether an update has been seen in the last
+    // 250ms
+    inputs.connected =
+        ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
-    inputs.name = name;
+    // Update target observation
+    inputs.latestTargetObservation =
+        new TargetObservation(
+            Rotation2d.fromDegrees(txSubscriber.get()), Rotation2d.fromDegrees(tySubscriber.get()));
 
-    inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
+    // Update orientation for MegaTag 2
+    orientationPublisher.accept(
+        new double[] {RobotState.getInstance().getPose().getRotation().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0});
+    NetworkTableInstance.getDefault()
+        .flush(); // Increases network traffic but recommended by Limelight
 
-    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
-        0, 0, 0, 0, 0);
-
-    // This may be causing commandScheduler loop overrun issues
-    // NetworkTableInstance.getDefault().flush();
-
-    var rawFiducials = LimelightHelpers.getRawFiducials(name);
-    var estimatedPoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-    var estimatedPoseMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-
+    // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
-    List<Double> tagAmbiguities = new ArrayList<>();
-    double totalTagDistance = 0.0;
-    double totalPoseAmbiguity = 0.0;
-
     List<PoseObservation> poseObservations = new LinkedList<>();
-    for (var tag : rawFiducials) {
-      tagIds.add(tag.id);
-      tagAmbiguities.add(tag.ambiguity);
+    for (var rawSample : megatag1Subscriber.readQueue()) {
+      if (rawSample.value.length == 0) continue;
+      for (int i = 11; i < rawSample.value.length; i += 7) {
+        tagIds.add((int) rawSample.value[i]);
+      }
+      poseObservations.add(
+          new PoseObservation(
+              // Timestamp, based on server timestamp of publish and latency
+              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
 
-      totalTagDistance += tag.distToRobot;
-      totalPoseAmbiguity += tag.ambiguity;
+              // 3D pose estimate
+              parsePose(rawSample.value),
+
+              // Ambiguity, using only the first tag because ambiguity isn't applicable for
+              // multitag
+              rawSample.value.length >= 18 ? rawSample.value[17] : 0.0,
+
+              // Tag count
+              (int) rawSample.value[7],
+
+              // Average tag distance
+              rawSample.value[9],
+
+              // Observation type
+              PoseObservationType.MEGATAG_1));
     }
+    for (var rawSample : megatag2Subscriber.readQueue()) {
+      if (rawSample.value.length == 0) continue;
+      for (int i = 11; i < rawSample.value.length; i += 7) {
+        tagIds.add((int) rawSample.value[i]);
+      }
+      poseObservations.add(
+          new PoseObservation(
+              // Timestamp, based on server timestamp of publish and latency
+              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
 
-    if (estimatedPoseMT1 != null) {
-      poseObservations.add(new PoseObservation(
-          estimatedPoseMT1.timestampSeconds,
-          estimatedPoseMT1.pose,
-          totalPoseAmbiguity / tagAmbiguities.size(),
-          tagIds.size(),
-          estimatedPoseMT1.avgTagDist,
-          ObservationType.MEGATAG_1));
+              // 3D pose estimate
+              parsePose(rawSample.value),
+
+              // Ambiguity, zeroed because the pose is already disambiguated
+              0.0,
+
+              // Tag count
+              (int) rawSample.value[7],
+
+              // Average tag distance
+              rawSample.value[9],
+
+              // Observation type
+              PoseObservationType.MEGATAG_2));
     }
-
-    if (estimatedPoseMT2 != null && DriverStation.isEnabled()) {
-
-      poseObservations.add(new PoseObservation(
-          estimatedPoseMT2.timestampSeconds,
-          estimatedPoseMT2.pose,
-          0.0,
-          tagIds.size(),
-          totalTagDistance / tagIds.size(),
-          ObservationType.MEGATAG_2));
-    }
-
-    inputs.latestObservation = new TargetObservation(
-        Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
-        Rotation2d.fromDegrees(LimelightHelpers.getTY(name)));
 
     // Save pose observations to inputs object
     inputs.poseObservations = new PoseObservation[poseObservations.size()];
@@ -103,5 +141,17 @@ public class VisionIOLimelight implements VisionIO {
     for (int id : tagIds) {
       inputs.tagIds[i++] = id;
     }
+  }
+
+  /** Parses the 3D pose from a Limelight botpose array. */
+  private static Pose3d parsePose(double[] rawLLArray) {
+    return new Pose3d(
+        rawLLArray[0],
+        rawLLArray[1],
+        rawLLArray[2],
+        new Rotation3d(
+            Units.degreesToRadians(rawLLArray[3]),
+            Units.degreesToRadians(rawLLArray[4]),
+            Units.degreesToRadians(rawLLArray[5])));
   }
 }
