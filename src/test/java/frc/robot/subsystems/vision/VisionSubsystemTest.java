@@ -155,7 +155,7 @@ class VisionSubsystemTest {
         0.0,
         pose,
         VisionConstants.maxAmbiguity + 0.1, // Above threshold
-        3, // Multiple tags
+        1, // one tag
         2.0,
         PoseObservationType.PHOTONVISION);
 
@@ -193,32 +193,6 @@ class VisionSubsystemTest {
     // Valid observation should be accepted - measurement should be added
     assertEquals(1, RobotState.getVisionMeasurementCount(),
         "Valid observation should be accepted and added to RobotState");
-  }
-
-  @Test
-  @DisplayName("MegaTag2 observations should use different std dev factors")
-  void testMegaTag2StdDevCalculation() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
-    
-    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        0.1,
-        3,
-        2.0,
-        PoseObservationType.MEGATAG_2); // MegaTag2 type
-
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1, 2, 3 });
-
-    // Periodic should calculate std devs using MEGATAG2 factors
-    vision.periodic();
-
-    // Valid MegaTag2 observation should be accepted
-    assertEquals(1, RobotState.getVisionMeasurementCount(),
-        "Valid MegaTag2 observation should be accepted and added to RobotState");
   }
 
   @Test

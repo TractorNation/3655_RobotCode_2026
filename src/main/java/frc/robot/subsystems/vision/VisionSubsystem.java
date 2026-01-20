@@ -30,7 +30,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
-  
+
   private static final Rectangle2d FIELD_BOUNDS = new Rectangle2d(Translation2d.kZero,
       new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
 
@@ -101,7 +101,7 @@ public class VisionSubsystem extends SubsystemBase {
                 && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
             || Math.abs(observation.pose().getZ()) > maxZError || // Must have realistic Z coordinate
 
-            isInsideField(observation);
+            !isInsideField(observation);
 
         // Add pose to log
         robotPoses.add(observation.pose());
