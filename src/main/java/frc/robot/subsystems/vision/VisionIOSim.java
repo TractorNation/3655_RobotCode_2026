@@ -12,6 +12,7 @@ import static frc.robot.subsystems.vision.VisionConstants.aprilTagLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
@@ -37,7 +38,7 @@ public class VisionIOSim implements VisionIO {
   /**
    * Creates a new VisionIOPhotonVisionSim.
    *
-   * @param name         The name of the camera.
+   * @param name          The name of the camera.
    * @param robotToCamera The transform from the robot to the camera.
    */
   public VisionIOSim(
@@ -47,7 +48,7 @@ public class VisionIOSim implements VisionIO {
 
     // Initialize vision sim
     if (visionSim == null) {
-      visionSim = new VisionSystemSim("main");
+      visionSim = new VisionSystemSim("system" + name);
       visionSim.addAprilTags(aprilTagLayout);
     }
 
@@ -60,9 +61,12 @@ public class VisionIOSim implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     inputs.connected = camera.isConnected();
 
+    visionSim.update(RobotState.getInstance().getOdometryPose());
+
     // Read new camera observations
     Set<Short> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+
     for (var result : camera.getAllUnreadResults()) {
       // Update latest target observation
       if (result.hasTargets()) {
