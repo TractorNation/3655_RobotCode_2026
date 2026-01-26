@@ -59,11 +59,13 @@
   ],
   "java.dependency.enableDependencyCheckup": false,
   "cSpell.words": [
+    "Brushless",
     "cancoder",
     "CANFD",
     "CANIVORE",
     "COMPBOT",
     "Fiducials",
+    "LOBSHOT",
     "MEGATAG",
     "multitag",
     "Pathfinding",
