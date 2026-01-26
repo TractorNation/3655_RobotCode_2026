@@ -11,12 +11,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeMode;
 import frc.robot.subsystems.vision.VisionConstants;
 
 import frc.robot.subsystems.vision.VisionIO;
@@ -82,6 +88,8 @@ public class RobotContainer {
   // However, it must be initialized to run properly
   private final VisionSubsystem vision;
 
+  private final IntakeSubsystem intake;
+
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
 
@@ -134,6 +142,8 @@ public class RobotContainer {
 
         vision = new VisionSubsystem(
             new VisionIOLimelight("limelight-front"));
+
+        intake = new IntakeSubsystem(new IntakeIOReal());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -150,6 +160,8 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOSim("left", VisionConstants.robotToCamera0),
             new VisionIOSim("right", VisionConstants.robotToCamera1));
+
+        intake = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -170,6 +182,9 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
+
+        intake = new IntakeSubsystem(new IntakeIO() {
+        });
         break;
     }
 
@@ -247,6 +262,17 @@ public class RobotContainer {
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+
+        mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT)).onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT)).onFalse(IntakeCommands.stopIntake(intake));
+
         break;
 
       // Programming uses Xbox controllers
