@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.turret;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -27,9 +28,9 @@ public class TurretIOTalonFX {
 
     public TurretIOTalonFX() {
 
-        upperRingTalon = new TalonFX(TurretConstants.UPPER_RING_MOTOR_PORT, "rio");
-        lowerRingTalon = new TalonFX(TurretConstants.LOWER_RING_MOTOR_PORT, "rio");
-        turretCancoder = new CANcoder(TurretConstants.TURRET_CANCODER_PORT, "rio");
+        upperRingTalon = new TalonFX(TurretConstants.UPPER_RING_MOTOR_PORT, CANBus.roboRIO());
+        lowerRingTalon = new TalonFX(TurretConstants.LOWER_RING_MOTOR_PORT, CANBus.roboRIO());
+        turretCancoder = new CANcoder(TurretConstants.TURRET_CANCODER_PORT, CANBus.roboRIO());
 
         upperRingVelocity = upperRingTalon.getVelocity();
         lowerRingVelocity = lowerRingTalon.getVelocity();
