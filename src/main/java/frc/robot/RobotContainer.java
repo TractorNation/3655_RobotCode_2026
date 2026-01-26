@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -192,7 +194,7 @@ public class RobotContainer {
             new VisionIO() {
             });
         turret = new TurretSubsystem(new TurretIO() {
-});
+        });
         intake = new IntakeSubsystem(new IntakeIO() {
         });
         break;
@@ -262,9 +264,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -mainTranslation.StickYAxis() * 1.0,
-                () -> -mainTranslation.StickXAxis() * 1.0,
-                () -> -mainRotation.StickXAxis() * 0.7,
+                () -> mainTranslation.StickYAxis() * -1.0,
+                () -> mainTranslation.StickXAxis() * -1.0,
+                () -> mainRotation.StickXAxis() * -0.7,
                 1,
                 mainTranslation.fireStage1()
                     .or(mainTranslation.fireStage2())));
@@ -279,10 +281,11 @@ public class RobotContainer {
             .onFalse(IntakeCommands.stopIntake(intake));
         mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
             .onFalse(IntakeCommands.stopIntake(intake));
-        
-        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT)).onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT)).onFalse(IntakeCommands.stopIntake(intake));
 
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT))
+            .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers
@@ -297,6 +300,15 @@ public class RobotContainer {
                 programmingController.leftBumper()));
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
+
+        programmingController.povRight()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(270), 30)));
+        programmingController.povUp()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(360), 30)));
+        programmingController.povLeft()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(90), 30)));
+        programmingController.povDown()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(180), 30)));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox
@@ -313,11 +325,6 @@ public class RobotContainer {
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
-
-        programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(-90), 1000 / 60)));
-        programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(0), 0)));
         break;
     }
 

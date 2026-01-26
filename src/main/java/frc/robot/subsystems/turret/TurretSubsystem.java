@@ -37,10 +37,11 @@ public class TurretSubsystem extends SubsystemBase {
     setpoint = profile.calculate(0.02, currentState, goalState);
 
     double positionError = goalState.position - inputs.turretPosition.getRotations();
-    double positionCorrectionKp = 2.5; 
+    double positionCorrectionKp = 30 * (target.shooterVelocityRotPerSec() / 10);
     double positionCorrection = positionError * positionCorrectionKp;
 
-    double desiredTurretVelocity = (setpoint.velocity + positionCorrection) * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
+    double desiredTurretVelocity = (setpoint.velocity + positionCorrection)
+        * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
     double desiredShooterVelocity = target.shooterVelocityRotPerSec() * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
 
     double topMotorTargetVelocity = desiredTurretVelocity + (desiredShooterVelocity / 2);

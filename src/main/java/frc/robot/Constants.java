@@ -104,9 +104,9 @@ public final class Constants {
    * <p>
    * This determines which control mappings are used in
    * {@link RobotContainer#configureButtonBindings()}.
-   * Change this to match your current driver or development environment.
+   * Change this to match your current driver or developdment environment.
    */
-  public static final Driver currentDriver = Driver.MAIN;
+  public static final Driver currentDriver = Driver.PROGRAMMING;
 
   /**
    * Driver control scheme options.
