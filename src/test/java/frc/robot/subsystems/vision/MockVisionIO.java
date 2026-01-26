@@ -11,19 +11,15 @@ import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
  */
 public class MockVisionIO implements VisionIO {
   private VisionIOInputs inputs = new VisionIOInputs();
-  private String cameraName;
 
-  public MockVisionIO(String cameraName) {
-    this.cameraName = cameraName;
-    inputs.name = cameraName;
+  public MockVisionIO() {
     inputs.connected = true;
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    inputs.name = cameraName;
     inputs.connected = this.inputs.connected;
-    inputs.latestObservation = this.inputs.latestObservation;
+    inputs.latestTargetObservation = this.inputs.latestTargetObservation;
     inputs.poseObservations = this.inputs.poseObservations.clone();
     inputs.tagIds = this.inputs.tagIds.clone();
   }
@@ -34,7 +30,7 @@ public class MockVisionIO implements VisionIO {
   }
 
   public void setLatestObservation(TargetObservation observation) {
-    inputs.latestObservation = observation;
+    inputs.latestTargetObservation = observation;
   }
 
   public void setPoseObservations(PoseObservation[] observations) {

@@ -88,12 +88,6 @@ public class RobotState {
       SwerveModulePosition[] wheelPositions) {
   }
 
-  public record VisionMeasurement(
-      double timestamp,
-      Pose2d pose,
-      Matrix<N3, N1> stdDevs) {
-  }
-
   private SwerveDriveKinematics kinematics;
 
   private SwerveDriveOdometry odometry;
@@ -204,22 +198,23 @@ public class RobotState {
    *                    estimate, and
    *                    standard deviations (uncertainty)
    */
-  public synchronized void addVisionMeasurement(VisionMeasurement measurement) {
+  public synchronized void addVisionMeasurement(Pose2d pose, double timestamp,
+      Matrix<N3, N1> stdDevs) {
     poseEstimator.addVisionMeasurement(
-        measurement.pose,
-        measurement.timestamp,
-        measurement.stdDevs);
-    
+        pose,
+        timestamp,
+        stdDevs);
+
     // Test-only: Track vision measurements for testing
     if (visionMeasurementCount != null) {
       visionMeasurementCount[0]++;
     }
   }
-  
+
   // Test-only: Counter for vision measurements (null in production)
   // Package-private so tests can access it
   private static int[] visionMeasurementCount = null;
-  
+
   /**
    * Test-only: Resets the vision measurement counter.
    * Only available in test builds - production code should never call this.
@@ -231,7 +226,7 @@ public class RobotState {
     }
     visionMeasurementCount[0] = 0;
   }
-  
+
   /**
    * Test-only: Gets the number of vision measurements added since last reset.
    * Only available in test builds - production code should never call this.
