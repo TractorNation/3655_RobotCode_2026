@@ -10,11 +10,8 @@ public interface TurretIO {
     public class TurretIOInputs {
 
         public double lowerRingVelocity = 0.0;
-        public double[] lowerRingCurrentAmps = new double[] {};
-        public double lowerRingTemp = 0.0;
 
         public double upperRingVelocity = 0.0;
-        public double[] upperRingCurrentAmps = new double[] {};
         public double upperRingTemp = 0.0;
 
         public Rotation2d turretPosition = new Rotation2d();
@@ -24,4 +21,5 @@ public interface TurretIO {
     }
 
     public default void updateInputs(TurretIOInputs inputs) {}
+    public default void setTurretState(double flywheelSpeed, double targetPosition) {}
 }
