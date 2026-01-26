@@ -54,7 +54,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   private final StatusSignal<Angle> drivePosition;
   private final Queue<Double> drivePositionQueue;
-  private final StatusSignal<AngularVelocity> driveVelocity;
+    private final StatusSignal<AngularVelocity> driveVelocity;
   private final StatusSignal<Voltage> driveAppliedVolts;
   private final StatusSignal<Current> driveCurrent;
 

@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.TurretCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
@@ -18,6 +20,11 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.turret.TurretConstants.TurretState;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretIOTalonFX;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -81,12 +88,12 @@ public class RobotContainer {
   private final RobotState robotState = RobotState.getInstance();
 
   // Subsystems
-  private final DriveSubsystem drive;
-
   @SuppressWarnings("unused")
   // Vision does not have any direct commands, so it is "unused" in this file
   // However, it must be initialized to run properly
   private final VisionSubsystem vision;
+  private final DriveSubsystem drive;
+  private final TurretSubsystem turret;
 
   private final IntakeSubsystem intake;
 
@@ -143,6 +150,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOLimelight("limelight-front"));
 
+        turret = new TurretSubsystem(new TurretIOTalonFX());
         intake = new IntakeSubsystem(new IntakeIOReal());
         break;
 
@@ -161,6 +169,7 @@ public class RobotContainer {
             new VisionIOSim("left", VisionConstants.robotToCamera0),
             new VisionIOSim("right", VisionConstants.robotToCamera1));
 
+        turret = new TurretSubsystem(new TurretIOSim());
         intake = new IntakeSubsystem(new IntakeIOSim());
         break;
 
@@ -182,7 +191,8 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
-
+        turret = new TurretSubsystem(new TurretIO() {
+});
         intake = new IntakeSubsystem(new IntakeIO() {
         });
         break;
@@ -303,6 +313,11 @@ public class RobotContainer {
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
+
+        programmingController.povRight()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(-90), 1000 / 60)));
+        programmingController.povUp()
+            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(0), 0)));
         break;
     }
 
