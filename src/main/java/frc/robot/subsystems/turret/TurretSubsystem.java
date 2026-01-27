@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.turret.TurretConstants.TurretState;
 
@@ -57,10 +58,20 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/TargetVelocity", target.shooterVelocityRotPerSec());
   }
 
-  public void setTarget(TurretState target) {
-    this.target = target;
+  public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
+    double currentPosition = inputs.turretPosition.getDegrees();
+    double difference = targetPositionDegrees - currentPosition; 
+
+    while (difference > 180)
+      difference -= 360;
+    while (difference < -180)
+      difference += 360;
+
+    double targetRotation = currentPosition + difference;
+
+    target = new TurretState(Rotation2d.fromDegrees(targetRotation), shooterVelocityRotPerSec);
     goalState = new TrapezoidProfile.State(
-        target.position().getRotations(),
+        Units.degreesToRotations(targetRotation),
         0);
   }
 }

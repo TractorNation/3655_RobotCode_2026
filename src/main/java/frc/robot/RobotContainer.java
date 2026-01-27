@@ -1,12 +1,9 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +19,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.turret.TurretConstants.TurretState;
 import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretIOTalonFX;
@@ -302,13 +298,13 @@ public class RobotContainer {
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(270), 30)));
+            .onTrue(TurretCommands.updateState(turret, 90, 30));
         programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(360), 30)));
+            .onTrue(TurretCommands.updateState(turret, 360, 30));
         programmingController.povLeft()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(90), 30)));
+            .onTrue(TurretCommands.updateState(turret, 270, 30));
         programmingController.povDown()
-            .onTrue(TurretCommands.updateState(turret, new TurretState(Rotation2d.fromDegrees(180), 30)));
+            .onTrue(TurretCommands.updateState(turret, 180, 30));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox

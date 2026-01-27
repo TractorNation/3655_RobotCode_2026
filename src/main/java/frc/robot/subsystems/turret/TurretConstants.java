@@ -19,7 +19,7 @@ public class TurretConstants {
   public static final Rotation2d CANCODER_OFFSET = Rotation2d.fromRotations(0.0);
 
   public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 4;
-  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 500;
+  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 100;
 
   public static final double TURRET_KP = 1;
   public static final double TURRET_KI = 0.0;
