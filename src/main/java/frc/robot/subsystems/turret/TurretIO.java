@@ -24,8 +24,14 @@ public interface TurretIO {
 
   public default void setTopRingMotorVelocity(double velocity) {
   }
+
   public default void setBottomRingMotorVelocity(double velocity) {
   }
+
   public default void stopShooter() {
+  }
+
+  public default double getTurretPosition() {
+    return 0.0;
   }
 }

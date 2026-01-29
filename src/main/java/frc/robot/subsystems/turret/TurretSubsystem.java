@@ -2,6 +2,7 @@ package frc.robot.subsystems.turret;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -18,14 +19,17 @@ public class TurretSubsystem extends SubsystemBase {
   private TrapezoidProfile.State goalState;
   private TrapezoidProfile.State setpoint;
 
+  private PIDController positionOffsetController;
+
   public TurretSubsystem(TurretIO io) {
     this.io = io;
-    this.inputs = new TurretIOInputsAutoLogged();
+    this.inputs = new TurretIOInputsAutoLogged(); 
+
+    positionOffsetController = new PIDController(12, 0, 0.05);
 
     this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
         TurretConstants.TURRET_MAX_VELOCITY_ROT_PER_SEC, TurretConstants.TURRET_MAX_ACCELERATION_ROT_PER_SEC2));
-    this.target = new TurretState(new Rotation2d(), 0.0);
-    this.goalState = new TrapezoidProfile.State(0.0, 0.0);
+    setTarget(0, 0);
   }
 
   @Override
@@ -37,11 +41,18 @@ public class TurretSubsystem extends SubsystemBase {
 
     setpoint = profile.calculate(0.02, currentState, goalState);
 
-    double positionError = goalState.position - inputs.turretPosition.getRotations();
-    double positionCorrectionKp = 30 * (target.shooterVelocityRotPerSec() / 10);
-    double positionCorrection = positionError * positionCorrectionKp;
+    double positionCorrection = positionOffsetController.calculate(
+        inputs.turretPosition.getRotations(),
+        goalState.position);
 
-    double desiredTurretVelocity = (setpoint.velocity + positionCorrection)
+    // double positionError = goalState.position -
+    // inputs.turretPosition.getRotations();
+    // double positionCorrectionKp = 20;
+    // double positionCorrection = positionError * positionCorrectionKp;
+
+    double combinedTurretVelocity = setpoint.velocity + positionCorrection;
+
+    double desiredTurretVelocity = combinedTurretVelocity
         * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
     double desiredShooterVelocity = target.shooterVelocityRotPerSec() * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
 
@@ -59,8 +70,8 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
-    double currentPosition = inputs.turretPosition.getDegrees();
-    double difference = targetPositionDegrees - currentPosition; 
+    double currentPosition = io.getTurretPosition();
+    double difference = targetPositionDegrees - currentPosition;
 
     while (difference > 180)
       difference -= 360;

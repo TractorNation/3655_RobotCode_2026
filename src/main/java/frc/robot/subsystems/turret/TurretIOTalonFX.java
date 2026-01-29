@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Temperature;
@@ -42,7 +43,6 @@ public class TurretIOTalonFX implements TurretIO {
     var encoderConfig = new CANcoderConfiguration();
     encoderConfig.MagnetSensor.MagnetOffset = TurretConstants.CANCODER_OFFSET.getRotations();
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-
     encoder.getConfigurator().apply(encoderConfig);
 
     topRingMotor.getConfigurator().apply(config);
@@ -114,5 +114,12 @@ public class TurretIOTalonFX implements TurretIO {
   public void stopShooter() {
     topRingMotor.setControl(new VelocityVoltage(0.0));
     bottomRingMotor.setControl(new VelocityVoltage(0.0));
+  }
+
+  @Override
+  public double getTurretPosition() {
+    return Units.rotationsToDegrees(
+        canCoderPosition.getValueAsDouble()
+            / TurretConstants.TURRET_TO_CANCODER_RATIO);
   }
 }
