@@ -20,6 +20,7 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.util.LimelightHelpers;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -54,6 +55,8 @@ public class VisionIOLimelight implements VisionIO {
     megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     megatag2Subscriber =
         table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
+
+    LimelightHelpers.SetIMUMode(name, 0);
   }
 
   @Override
@@ -70,7 +73,8 @@ public class VisionIOLimelight implements VisionIO {
 
     // Update orientation for MegaTag 2
     orientationPublisher.accept(
-        new double[] {RobotState.getInstance().getPose().getRotation().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0});
+        new double[] {RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0});
+
     NetworkTableInstance.getDefault()
         .flush(); // Increases network traffic but recommended by Limelight
 

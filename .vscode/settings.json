@@ -72,6 +72,7 @@
     "pidgey",
     "PROTOBOT",
     "setpoint",
-    "setpoints"
+    "setpoints",
+    "wpiblue"
   ]
 }
