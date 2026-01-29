@@ -16,7 +16,7 @@ public class IntakeCommands {
           intake.runMotors(intakeSpeed, intakeSpeed, intakeSpeed); // + + + 
           break;
         case OUTPUT:
-          intake.runMotors(intakeSpeed, -intakeSpeed, intakeSpeed); // + - -
+          intake.runMotors(intakeSpeed, -intakeSpeed, -intakeSpeed); // + - -
           break;
         case LOBSHOT: 
           intake.runMotors(1, -0.5, -0.8); // + - -

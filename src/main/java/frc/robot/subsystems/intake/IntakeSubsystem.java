@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
-    io.runMotors(frontMotorSpeed, topMotorSpeed, backMotorSpeed);
+    io.runMotors(frontMotorSpeed, topMotorSpeed, 0);
   }
 
   public void stopMotors() {
