@@ -34,10 +34,10 @@ public class TurretIOTalonFX implements TurretIO {
 
     var config = new TalonFXConfiguration();
 
-    config.Slot0.kP = TurretConstants.TURRET_KP;
-    config.Slot0.kI = TurretConstants.TURRET_KI;
-    config.Slot0.kD = TurretConstants.TURRET_KD;
-    config.Slot0.kV = TurretConstants.TURRET_KV;
+    config.Slot0.kP = TurretConstants.MOTOR_VELOCITY_KP;
+    config.Slot0.kI = TurretConstants.MOTOR_VELOCITY_KI;
+    config.Slot0.kD = TurretConstants.MOTOR_VELOCITY_KD;
+    config.Slot0.kV = TurretConstants.MOTOR_VELOCITY_KV;
     config.Feedback.SensorToMechanismRatio = TurretConstants.MOTOR_TO_RING_GEAR_RATIO;
 
     var encoderConfig = new CANcoderConfiguration();
@@ -88,9 +88,8 @@ public class TurretIOTalonFX implements TurretIO {
     inputs.bottomRingMotorVelocity = bottomRingVelocity.getValueAsDouble();
     inputs.bottomRingMotorTemperature = bottomRingTemperature.getValueAsDouble();
 
-    inputs.turretPosition = Rotation2d.fromRotations(
-        canCoderPosition.getValueAsDouble()
-            / TurretConstants.TURRET_TO_CANCODER_RATIO);
+    inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
+        / TurretConstants.TURRET_TO_CANCODER_RATIO);
 
     inputs.turretVelocity = ((inputs.topRingMotorVelocity
         + inputs.bottomRingMotorVelocity) / 2.0)

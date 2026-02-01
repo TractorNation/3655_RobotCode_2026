@@ -2,7 +2,6 @@ package frc.robot.subsystems.turret;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -19,13 +18,9 @@ public class TurretSubsystem extends SubsystemBase {
   private TrapezoidProfile.State goalState;
   private TrapezoidProfile.State setpoint;
 
-  private PIDController positionOffsetController;
-
   public TurretSubsystem(TurretIO io) {
     this.io = io;
     this.inputs = new TurretIOInputsAutoLogged(); 
-
-    positionOffsetController = new PIDController(12, 0, 0.05);
 
     this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
         TurretConstants.TURRET_MAX_VELOCITY_ROT_PER_SEC, TurretConstants.TURRET_MAX_ACCELERATION_ROT_PER_SEC2));
@@ -41,18 +36,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     setpoint = profile.calculate(0.02, currentState, goalState);
 
-    double positionCorrection = positionOffsetController.calculate(
-        inputs.turretPosition.getRotations(),
-        goalState.position);
 
-    // double positionError = goalState.position -
-    // inputs.turretPosition.getRotations();
-    // double positionCorrectionKp = 20;
-    // double positionCorrection = positionError * positionCorrectionKp;
-
-    double combinedTurretVelocity = setpoint.velocity + positionCorrection;
-
-    double desiredTurretVelocity = combinedTurretVelocity
+    double desiredTurretVelocity = setpoint.velocity
         * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
     double desiredShooterVelocity = target.shooterVelocityRotPerSec() * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
 
@@ -67,6 +52,13 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/CurrentVelocity",
         inputs.shooterVelocity * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO);
     Logger.recordOutput("Shooter/TargetVelocity", target.shooterVelocityRotPerSec());
+
+    Logger.recordOutput("Turret/TopRingMotor/Velocity", inputs.topRingMotorVelocity);
+    Logger.recordOutput("Turret/BottomRingMotor/Velocity", inputs.bottomRingMotorVelocity);
+    Logger.recordOutput("Turret/TopRingMotor/Position", inputs.topRingMotorPosition);
+    Logger.recordOutput("Turret/BottomRingMotor/Position", inputs.bottomRingMotorPosition);
+    Logger.recordOutput("Turret/TopRingMotor/Target", topMotorTargetVelocity);
+    Logger.recordOutput("Turret/BottomRingMotor/Target", bottomMotorTargetVelocity);
   }
 
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
