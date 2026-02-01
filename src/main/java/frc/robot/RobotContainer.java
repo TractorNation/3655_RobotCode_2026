@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
+import frc.robot.commands.TurretCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -22,6 +23,10 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretIOTalonFX;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants.IntakeMode;
 import frc.robot.subsystems.vision.VisionConstants;
 
@@ -78,272 +83,281 @@ import frc.robot.util.CommandNXT;
  */
 public class RobotContainer {
 
-    private final RobotState robotState = RobotState.getInstance();
+  private final RobotState robotState = RobotState.getInstance();
 
-    // Subsystems
-    @SuppressWarnings("unused")
-    // Vision does not have any direct commands, so it is "unused" in this file
-    // However, it must be initialized to run properly
-    private final VisionSubsystem vision;
-    private final DriveSubsystem drive;
-    // private final TurretSubsystem turret;
+  // Subsystems
+  @SuppressWarnings("unused")
+  // Vision does not have any direct commands, so it is "unused" in this file
+  // However, it must be initialized to run properly
+  // private final VisionSubsystem vision;
+  // private final DriveSubsystem drive;
+  // private final IntakeSubsystem intake;
 
-    private final IntakeSubsystem intake;
+  private final TurretSubsystem turret;
+  // Programming controller
+  private final CommandXboxController programmingController = new CommandXboxController(5);
 
-    // Programming controller
-    private final CommandXboxController programmingController = new CommandXboxController(5);
+  // Driver controller
+  private final CommandNXT mainTranslation = new CommandNXT(0);
+  private final CommandNXT mainRotation = new CommandNXT(1);
 
-    // Driver controller
-    private final CommandNXT mainTranslation = new CommandNXT(0);
-    private final CommandNXT mainRotation = new CommandNXT(1);
+  // Operator controller
+  @SuppressWarnings("unused")
+  private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
-    // Operator controller
-    @SuppressWarnings("unused")
-    private final CommandGenericHID tractorController = new CommandGenericHID(4);
+  // Dashboard inputs
+  // private final LoggedDashboardChooser<Command> autoChooser;
+  private double driveMultiplier = 0.4;
 
-    // Dashboard inputs
-    private final LoggedDashboardChooser<Command> autoChooser;
-    private double driveMultiplier = 0.4;
+  // region Subsystem init
+  /**
+   * Constructs the RobotContainer and initializes all subsystems.
+   * 
+   * <p>
+   * This constructor:
+   * <ol>
+   * <li>Creates subsystems with appropriate IO implementations based on robot
+   * mode</li>
+   * <li>Sets up PathPlanner AutoBuilder for autonomous routines</li>
+   * <li>Adds SysId and characterization commands to auto chooser</li>
+   * <li>Configures button bindings for the selected driver</li>
+   * </ol>
+   * 
+   * <p>
+   * <b>IO Implementation Selection:</b> The switch statement on
+   * {@link Constants#currentMode}
+   * demonstrates the IO layer pattern. Each mode uses different IO
+   * implementations, but the
+   * subsystems remain unchanged. This is why the IO layer pattern is so powerful
+   * - subsystems
+   * are hardware-agnostic.
+   */
+  public RobotContainer() {
+    switch (Constants.currentMode) {
+      // Real robot, instantiate hardware IO implementations
+      // These implementations read from and write to actual hardware
+      case REAL:
+        // drive = new DriveSubsystem(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFX(0),
+        // new ModuleIOTalonFX(1),
+        // new ModuleIOTalonFX(2),
+        // new ModuleIOTalonFX(3));
 
-    // region Subsystem init
-    /**
-     * Constructs the RobotContainer and initializes all subsystems.
-     * 
-     * <p>
-     * This constructor:
-     * <ol>
-     * <li>Creates subsystems with appropriate IO implementations based on robot
-     * mode</li>
-     * <li>Sets up PathPlanner AutoBuilder for autonomous routines</li>
-     * <li>Adds SysId and characterization commands to auto chooser</li>
-     * <li>Configures button bindings for the selected driver</li>
-     * </ol>
-     * 
-     * <p>
-     * <b>IO Implementation Selection:</b> The switch statement on
-     * {@link Constants#currentMode}
-     * demonstrates the IO layer pattern. Each mode uses different IO
-     * implementations, but the
-     * subsystems remain unchanged. This is why the IO layer pattern is so powerful
-     * - subsystems
-     * are hardware-agnostic.
-     */
-    public RobotContainer() {
-        switch (Constants.currentMode) {
-            // Real robot, instantiate hardware IO implementations
-            // These implementations read from and write to actual hardware
-            case REAL:
-                drive = new DriveSubsystem(
-                        new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(0),
-                        new ModuleIOTalonFX(1),
-                        new ModuleIOTalonFX(2),
-                        new ModuleIOTalonFX(3));
+        // vision = new VisionSubsystem(
+        // new VisionIOLimelight("limelight-front"));
+        // intake = new IntakeSubsystem(new IntakeIOReal());
 
-                vision = new VisionSubsystem(
-                        new VisionIOLimelight("limelight-front"));
+        turret = new TurretSubsystem(new TurretIOTalonFX());
+        break;
 
-                // turret = new TurretSubsystem(new TurretIOTalonFX());
-                intake = new IntakeSubsystem(new IntakeIOReal());
-                break;
+      // Sim robot, instantiate physics sim IO implementations
+      // These implementations use physics simulation models instead of real hardware
+      case SIM:
+        // drive = new DriveSubsystem(
+        //     new GyroIO() {
+        //     },
+        //     new ModuleIOSim(),
+        //     new ModuleIOSim(),
+        //     new ModuleIOSim(),
+        //     new ModuleIOSim());
 
-            // Sim robot, instantiate physics sim IO implementations
-            // These implementations use physics simulation models instead of real hardware
-            case SIM:
-                drive = new DriveSubsystem(
-                        new GyroIO() {
-                        },
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim());
+        // vision = new VisionSubsystem(
+        //     new VisionIOSim("left", VisionConstants.robotToCamera0),
+        //     new VisionIOSim("right", VisionConstants.robotToCamera1));
+        // intake = new IntakeSubsystem(new IntakeIOSim());
 
-                vision = new VisionSubsystem(
-                        new VisionIOSim("left", VisionConstants.robotToCamera0),
-                        new VisionIOSim("right", VisionConstants.robotToCamera1));
+        turret = new TurretSubsystem(new TurretIOSim());
+        break;
 
-                // turret = new TurretSubsystem(new TurretIOSim());
-                intake = new IntakeSubsystem(new IntakeIOSim());
-                break;
-
-            // Replayed robot, disable IO implementations
-            // Empty implementations are used - AdvantageKit injects data from log files
-            // This allows replaying match data without any hardware present
-            default:
-                drive = new DriveSubsystem(
-                        new GyroIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        });
-                vision = new VisionSubsystem(
-                        new VisionIO() {
-                        });
-                // turret = new TurretSubsystem(new TurretIO() {
-                // });
-                intake = new IntakeSubsystem(new IntakeIO() {
-                });
-                break;
-        }
-
-        // region Autonomous Commands
-
-        // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-        // Set up SysId routines
-        autoChooser.addOption(
-                "Drive Wheel Radius Characterization",
-                DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption(
-                "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-        // Configure the button bindings
-        configureButtonBindings();
+      // Replayed robot, disable IO implementations
+      // Empty implementations are used - AdvantageKit injects data from log files
+      // This allows replaying match data without any hardware present
+      default:
+        // drive = new DriveSubsystem(
+        //     new GyroIO() {
+        //     },
+        //     new ModuleIO() {
+        //     },
+        //     new ModuleIO() {
+        //     },
+        //     new ModuleIO() {
+        //     },
+        //     new ModuleIO() {
+        //     });
+        // vision = new VisionSubsystem(
+        //     new VisionIO() {
+        //     });
+      
+        // intake = new IntakeSubsystem(new IntakeIO() {
+        // });  
+        turret = new TurretSubsystem(new TurretIO() {
+        });
+        break;
     }
 
-    /**
-     * Configures button bindings and control schemes based on the selected driver.
-     * 
-     * <p>
-     * This method sets up:
-     * <ul>
-     * <li>Default commands for subsystems (e.g., joystick drive)</li>
-     * <li>Button-triggered commands (e.g., zero heading, stop with X)</li>
-     * <li>Operator controls for mechanisms</li>
-     * </ul>
-     * 
-     * <p>
-     * The control scheme is selected via {@link Constants#currentDriver}. Each
-     * driver
-     * may use different controllers or have different button mappings based on
-     * their
-     * preferences or the development environment.
-     * 
-     * <p>
-     * <b>Default Commands:</b> Use {@link SubsystemBase#setDefaultCommand(Command)}
-     * to
-     * set commands that run continuously when no other command requires the
-     * subsystem.
-     * 
-     * <p>
-     * <b>Button Bindings:</b> Use trigger methods (e.g., {@code button().onTrue()})
-     * to
-     * bind commands to button events. These are managed automatically by the
-     * CommandScheduler.
-     */
-    private void configureButtonBindings() {
+    // region Autonomous Commands
 
-        // region Driver controls
-        switch (Constants.currentDriver) {
-            case MAIN:
-                drive.setDefaultCommand(
-                        DriveCommands.joystickDrive(
-                                drive,
-                                () -> mainTranslation.StickYAxis() * -1.0,
-                                () -> mainTranslation.StickXAxis() * -1.0,
-                                () -> mainRotation.StickXAxis() * -0.7,
-                                1,
-                                mainTranslation.fireStage1()
-                                        .or(mainTranslation.fireStage2())));
+    // Set up auto routines
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-                mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+    // // Set up SysId routines
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization",
+    //     DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-                mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+    // Configure the button bindings
+    configureButtonBindings();
+  }
 
-                mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
-                IntakeMode.INTAKE))
-                .onFalse(IntakeCommands.stopIntake(intake));
-                mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-                IntakeMode.OUTPUT))
-                .onFalse(IntakeCommands.stopIntake(intake));
-                mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-                IntakeMode.SNOWBLOWER))
-                .onFalse(IntakeCommands.stopIntake(intake));
+  /**
+   * Configures button bindings and control schemes based on the selected driver.
+   * 
+   * <p>
+   * This method sets up:
+   * <ul>
+   * <li>Default commands for subsystems (e.g., joystick drive)</li>
+   * <li>Button-triggered commands (e.g., zero heading, stop with X)</li>
+   * <li>Operator controls for mechanisms</li>
+   * </ul>
+   * 
+   * <p>
+   * The control scheme is selected via {@link Constants#currentDriver}. Each
+   * driver
+   * may use different controllers or have different button mappings based on
+   * their
+   * preferences or the development environment.
+   * 
+   * <p>
+   * <b>Default Commands:</b> Use {@link SubsystemBase#setDefaultCommand(Command)}
+   * to
+   * set commands that run continuously when no other command requires the
+   * subsystem.
+   * 
+   * <p>
+   * <b>Button Bindings:</b> Use trigger methods (e.g., {@code button().onTrue()})
+   * to
+   * bind commands to button events. These are managed automatically by the
+   * CommandScheduler.
+   */
+  private void configureButtonBindings() {
 
-                mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
-                        .onFalse(IntakeCommands.stopIntake(intake));
-                mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT))
-                        .onFalse(IntakeCommands.stopIntake(intake));
-                break;
+    // region Driver controls
+    switch (Constants.currentDriver) {
+      case MAIN:
+        // drive.setDefaultCommand(
+        //     DriveCommands.joystickDrive(
+        //         drive,
+        //         () -> mainTranslation.StickYAxis() * -1.0,
+        //         () -> mainTranslation.StickXAxis() * -1.0,
+        //         () -> mainRotation.StickXAxis() * -0.7,
+        //         1,
+        //         mainTranslation.fireStage1()
+        //             .or(mainTranslation.fireStage2())));
 
-            // Programming uses Xbox controllers
-            case PROGRAMMING:
-                drive.setDefaultCommand(
-                        DriveCommands.joystickDrive(
-                                drive,
-                                () -> programmingController.getLeftY(),
-                                () -> programmingController.getLeftX(),
-                                () -> -programmingController.getRightX(),
-                                1,
-                                programmingController.leftBumper()));
+        // mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-                programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
+        // mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
-                // programmingController.povRight()
-                // .onTrue(TurretCommands.updateState(turret, 90, 30));
-                // programmingController.povUp()
-                // .onTrue(TurretCommands.updateState(turret, 360, 30));
-                // programmingController.povLeft()
-                // .onTrue(TurretCommands.updateState(turret, 270, 30));
-                // programmingController.povDown()
-                // .onTrue(TurretCommands.updateState(turret, 180, 30));
-                break;
+        // mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
+        //     IntakeMode.INTAKE))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        //     IntakeMode.OUTPUT))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        //     IntakeMode.SNOWBLOWER))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
 
-            // When running sim on a Macbook, the controls are different than an Xbox
-            // controller running a real robot
-            case MACBOOK:
-                drive.setDefaultCommand(
-                        DriveCommands.joystickDrive(
-                                drive,
-                                () -> programmingController.getRawAxis(1),
-                                () -> programmingController.getRawAxis(0),
-                                () -> -programmingController.getRawAxis(2),
-                                driveMultiplier,
-                                programmingController.leftTrigger()));
+        // mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
+        break;
 
-                programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-                programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
-                break;
-        }
+      // Programming uses Xbox controllers
+      case PROGRAMMING:
+        // drive.setDefaultCommand(
+        //     DriveCommands.joystickDrive(
+        //         drive,
+        //         () -> programmingController.getLeftY(),
+        //         () -> programmingController.getLeftX(),
+        //         () -> -programmingController.getRightX(),
+        //         1,
+        //         programmingController.leftBumper()));
 
-        // region Operator controls
+        // programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        /**
-         * This is where you would define button bindings and controls for our operator
-         * board,
-         * by default it has nothing since operator controls the robot's mechanisms and
-         * need the drive base
-         */
-        tractorController.button(1).onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
-                .onFalse(IntakeCommands.stopIntake(intake));
-        tractorController.button(2).onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
-                .onFalse(IntakeCommands.stopIntake(intake));
-        tractorController.button(3).onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
-                .onFalse(IntakeCommands.stopIntake(intake));
+        programmingController.povRight()
+            .onTrue(TurretCommands.updateState(turret, 90, 30));
+        programmingController.povUp()
+            .onTrue(TurretCommands.updateState(turret,0, 30));
+        programmingController.povLeft()
+            .onTrue(TurretCommands.updateState(turret, 180, 30));
+        programmingController.povDown()
+            .onTrue(TurretCommands.updateState(turret, 270, 30));
+        break;
+
+      // When running sim on a Macbook, the controls are different than an Xbox
+      // controller running a real robot
+      case MACBOOK:
+        // drive.setDefaultCommand(
+        //     DriveCommands.joystickDrive(
+        //         drive,
+        //         () -> programmingController.getRawAxis(1),
+        //         () -> programmingController.getRawAxis(0),
+        //         () -> -programmingController.getRawAxis(2),
+        //         driveMultiplier,
+        //         programmingController.leftTrigger()));
+
+        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        // programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
+
+        programmingController.povRight()
+            .onTrue(TurretCommands.updateState(turret, 90, 5));
+        programmingController.povUp()
+            .onTrue(TurretCommands.updateState(turret, 360, 5));
+        programmingController.povLeft()
+            .onTrue(TurretCommands.updateState(turret, 270, 5));
+        programmingController.povDown()
+            .onTrue(TurretCommands.updateState(turret, 180, 5));
+        break;
     }
 
+    // region Operator controls
+
     /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
+     * This is where you would define button bindings and controls for our operator
+     * board,
+     * by default it has nothing since operator controls the robot's mechanisms and
+     * need the drive base
      */
-    public Command getAutonomousCommand() {
-        return autoChooser.get();
-    }
+    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return Commands.none();
+  }
 }
