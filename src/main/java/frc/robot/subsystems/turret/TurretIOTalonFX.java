@@ -1,5 +1,7 @@
 package frc.robot.subsystems.turret;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 
 public class TurretIOTalonFX implements TurretIO {
@@ -26,6 +29,8 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<Temperature> topRingTemperature;
   private final StatusSignal<Temperature> bottomRingTemperature;
   private final StatusSignal<Angle> canCoderPosition;
+  private final StatusSignal<Current> topMotorCurrent;
+  private final StatusSignal<Current> bottomMotorCurrent;
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
@@ -38,6 +43,7 @@ public class TurretIOTalonFX implements TurretIO {
     config.Slot0.kI = TurretConstants.MOTOR_VELOCITY_KI;
     config.Slot0.kD = TurretConstants.MOTOR_VELOCITY_KD;
     config.Slot0.kV = TurretConstants.MOTOR_VELOCITY_KV;
+    config.Slot0.kS = TurretConstants.MOTOR_VELOCITY_KS;
     config.Feedback.SensorToMechanismRatio = TurretConstants.MOTOR_TO_RING_GEAR_RATIO;
 
     var encoderConfig = new CANcoderConfiguration();
@@ -55,6 +61,9 @@ public class TurretIOTalonFX implements TurretIO {
     topRingTemperature = topRingMotor.getDeviceTemp();
     bottomRingTemperature = bottomRingMotor.getDeviceTemp();
     canCoderPosition = encoder.getPosition();
+
+    topMotorCurrent = topRingMotor.getSupplyCurrent();
+    bottomMotorCurrent = bottomRingMotor.getSupplyCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
@@ -79,24 +88,28 @@ public class TurretIOTalonFX implements TurretIO {
         bottomRingAngle,
         bottomRingVelocity,
         bottomRingTemperature,
+        topMotorCurrent,
+        bottomMotorCurrent,
         canCoderPosition);
 
+    double topRingVelocityRPS = topRingVelocity.getValueAsDouble();
+    double bottomRingVelocityRPS = bottomRingVelocity.getValueAsDouble();
+
     inputs.topRingMotorPosition = topRingAngle.getValueAsDouble();
-    inputs.topRingMotorVelocity = topRingVelocity.getValueAsDouble();
+    inputs.topRingMotorVelocity = topRingVelocityRPS;
     inputs.topRingMotorTemperature = topRingTemperature.getValueAsDouble();
     inputs.bottomRingMotorPosition = bottomRingAngle.getValueAsDouble();
-    inputs.bottomRingMotorVelocity = bottomRingVelocity.getValueAsDouble();
+    inputs.bottomRingMotorVelocity = bottomRingVelocityRPS;
     inputs.bottomRingMotorTemperature = bottomRingTemperature.getValueAsDouble();
 
     inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
         / TurretConstants.TURRET_TO_CANCODER_RATIO);
 
-    inputs.turretVelocity = ((inputs.topRingMotorVelocity
-        + inputs.bottomRingMotorVelocity) / 2.0)
-        * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
+    inputs.shooterVelocity = (topRingVelocityRPS
+        - bottomRingVelocityRPS);
 
-    inputs.shooterVelocity = inputs.topRingMotorVelocity
-        - inputs.bottomRingMotorVelocity;
+    Logger.recordOutput("Turret/TopMotorCurrent", topMotorCurrent.getValueAsDouble());
+    Logger.recordOutput("Turret/BottomMotorCurrent", bottomMotorCurrent.getValueAsDouble());
   }
 
   @Override

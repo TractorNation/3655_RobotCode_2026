@@ -3,6 +3,7 @@ package frc.robot.subsystems.turret;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TurretConstants {
+  
   public record TurretState(Rotation2d position, double shooterVelocityRotPerSec) {
   }
 
@@ -13,17 +14,21 @@ public class TurretConstants {
   public static final double PLANET_GEAR_TO_TURRET_RATIO = 1.0;
   public static final double PLANET_GEAR_TO_SHOOTER_RATIO = 1.5;
 
-  public static final double MOTOR_TO_RING_GEAR_RATIO = 7.07142;
-  public static final double TURRET_TO_CANCODER_RATIO = 7.61538;
+  public static final double MOTOR_TO_RING_GEAR_RATIO = 6.2857;
+  public static final double TURRET_TO_CANCODER_RATIO = 6.7692;
 
   public static final Rotation2d CANCODER_OFFSET = Rotation2d.fromRotations(0.0);
 
   public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 100;
-  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 100;
+  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 50;
 
   public static final double MOTOR_VELOCITY_KP = 1;
   public static final double MOTOR_VELOCITY_KI = 0.0;
-  public static final double MOTOR_VELOCITY_KD = 0.0;
-  public static final double MOTOR_VELOCITY_KV = 0.2;
+  public static final double MOTOR_VELOCITY_KD = 0.01;
+  public static final double MOTOR_VELOCITY_KS = 0.1;
+  public static final double MOTOR_VELOCITY_KV = 0.15;
 
+  public static final double POSITION_KP = 40;
+  public static final double POSITION_KI = 0.0;
+  public static final double POSITION_KD = 0.05;
 }

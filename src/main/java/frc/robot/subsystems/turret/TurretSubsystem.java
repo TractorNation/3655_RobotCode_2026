@@ -2,6 +2,7 @@ package frc.robot.subsystems.turret;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -14,16 +15,20 @@ public class TurretSubsystem extends SubsystemBase {
 
   private TurretState target;
 
-  private TrapezoidProfile profile;
+  private ProfiledPIDController controller;
+  private TrapezoidProfile.Constraints constraints;
   private TrapezoidProfile.State goalState;
-  private TrapezoidProfile.State setpoint;
+  private double setpoint;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
-    this.inputs = new TurretIOInputsAutoLogged(); 
+    this.inputs = new TurretIOInputsAutoLogged();
 
-    this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-        TurretConstants.TURRET_MAX_VELOCITY_ROT_PER_SEC, TurretConstants.TURRET_MAX_ACCELERATION_ROT_PER_SEC2));
+    constraints = new TrapezoidProfile.Constraints(
+        TurretConstants.TURRET_MAX_VELOCITY_ROT_PER_SEC, TurretConstants.TURRET_MAX_ACCELERATION_ROT_PER_SEC2);
+
+    controller = new ProfiledPIDController(TurretConstants.POSITION_KP, TurretConstants.POSITION_KI,
+        TurretConstants.POSITION_KD, constraints);
     setTarget(0, 0);
   }
 
@@ -31,14 +36,11 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
 
-    TrapezoidProfile.State currentState = new TrapezoidProfile.State(inputs.turretPosition.getRotations(),
-        inputs.turretVelocity);
+    setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
 
-    setpoint = profile.calculate(0.02, currentState, goalState);
-
-
-    double desiredTurretVelocity = setpoint.velocity
+    double desiredTurretVelocity = setpoint
         * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
+
     double desiredShooterVelocity = target.shooterVelocityRotPerSec() * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
 
     double topMotorTargetVelocity = desiredTurretVelocity + (desiredShooterVelocity / 2);
@@ -50,15 +52,8 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
     Logger.recordOutput("Turret/targetPosition", target.position().getDegrees());
     Logger.recordOutput("Shooter/CurrentVelocity",
-        inputs.shooterVelocity * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO);
+        inputs.shooterVelocity);
     Logger.recordOutput("Shooter/TargetVelocity", target.shooterVelocityRotPerSec());
-
-    Logger.recordOutput("Turret/TopRingMotor/Velocity", inputs.topRingMotorVelocity);
-    Logger.recordOutput("Turret/BottomRingMotor/Velocity", inputs.bottomRingMotorVelocity);
-    Logger.recordOutput("Turret/TopRingMotor/Position", inputs.topRingMotorPosition);
-    Logger.recordOutput("Turret/BottomRingMotor/Position", inputs.bottomRingMotorPosition);
-    Logger.recordOutput("Turret/TopRingMotor/Target", topMotorTargetVelocity);
-    Logger.recordOutput("Turret/BottomRingMotor/Target", bottomMotorTargetVelocity);
   }
 
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
