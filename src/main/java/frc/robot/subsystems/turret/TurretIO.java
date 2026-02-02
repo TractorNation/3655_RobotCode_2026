@@ -17,6 +17,9 @@ public interface TurretIO {
     public double bottomRingMotorTemperature = 0.0;
     public double bottomRingMotorPosition = 0.0;
     public double bottomRingMotorVelocity = 0.0;
+    public double bottomRingMotorCurrent = 0.0;
+    public double topRingMotorCurrent = 0.0;
+    public double tempVelocity = 0.0;
   }
 
   public default void updateInputs(TurretIOInputs inputs) {

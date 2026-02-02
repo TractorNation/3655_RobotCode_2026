@@ -1,7 +1,5 @@
 package frc.robot.subsystems.turret;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -21,6 +19,7 @@ public class TurretIOTalonFX implements TurretIO {
   private final TalonFX topRingMotor;
   private final TalonFX bottomRingMotor;
   private final CANcoder encoder;
+  // private final CANcoder temp;
 
   private final StatusSignal<Angle> topRingAngle;
   private final StatusSignal<Angle> bottomRingAngle;
@@ -31,11 +30,14 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<Angle> canCoderPosition;
   private final StatusSignal<Current> topMotorCurrent;
   private final StatusSignal<Current> bottomMotorCurrent;
+  
+  // private final StatusSignal<AngularVelocity> tempVelocity;
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
     bottomRingMotor = new TalonFX(TurretConstants.BOTTOM_RING_MOTOR_ID);
     encoder = new CANcoder(TurretConstants.CANCODER_ID);
+    // temp = new CANcoder(TurretConstants.TEMP_ENCODER_ID);
 
     var config = new TalonFXConfiguration();
 
@@ -64,6 +66,8 @@ public class TurretIOTalonFX implements TurretIO {
 
     topMotorCurrent = topRingMotor.getSupplyCurrent();
     bottomMotorCurrent = bottomRingMotor.getSupplyCurrent();
+
+    // tempVelocity = temp.getVelocity();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
@@ -96,6 +100,8 @@ public class TurretIOTalonFX implements TurretIO {
     double bottomRingVelocityRPS = bottomRingVelocity.getValueAsDouble();
 
     inputs.topRingMotorPosition = topRingAngle.getValueAsDouble();
+    inputs.topRingMotorCurrent = topMotorCurrent.getValueAsDouble();
+    inputs.bottomRingMotorCurrent = bottomMotorCurrent.getValueAsDouble();
     inputs.topRingMotorVelocity = topRingVelocityRPS;
     inputs.topRingMotorTemperature = topRingTemperature.getValueAsDouble();
     inputs.bottomRingMotorPosition = bottomRingAngle.getValueAsDouble();
@@ -109,8 +115,7 @@ public class TurretIOTalonFX implements TurretIO {
         - bottomRingVelocityRPS) * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO)
         * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO) / 2;
 
-    Logger.recordOutput("Turret/TopMotorCurrent", topMotorCurrent.getValueAsDouble());
-    Logger.recordOutput("Turret/BottomMotorCurrent", bottomMotorCurrent.getValueAsDouble());
+    inputs.tempVelocity = 0.0;
   }
 
   @Override

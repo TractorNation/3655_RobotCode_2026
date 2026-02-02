@@ -4,12 +4,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TurretConstants {
 
-  public record TurretState(Rotation2d position, double shooterVelocityRotPerSec) {
-  }
-
   public static final int TOP_RING_MOTOR_ID = 30;
   public static final int BOTTOM_RING_MOTOR_ID = 31;
   public static final int CANCODER_ID = 32;
+  public static final int TEMP_ENCODER_ID = 35;
 
   public static final double PLANET_GEAR_TO_TURRET_RATIO = 1.0;
   public static final double PLANET_GEAR_TO_SHOOTER_RATIO = 1 / 1.5;
@@ -20,8 +18,8 @@ public class TurretConstants {
 
   public static final Rotation2d CANCODER_OFFSET = Rotation2d.fromRotations(0.0);
 
-  public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 100;
-  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 50;
+  public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 2;
+  public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;
 
   public static final double MOTOR_VELOCITY_KP = 1;
   public static final double MOTOR_VELOCITY_KI = 0.0;
@@ -29,7 +27,34 @@ public class TurretConstants {
   public static final double MOTOR_VELOCITY_KS = 0.1;
   public static final double MOTOR_VELOCITY_KV = 0.15;
 
-  public static final double POSITION_KP = 40;
+  public static final double POSITION_KP = 10;
   public static final double POSITION_KI = 0.0;
   public static final double POSITION_KD = 0.05;
+
+
+  public static class TurretState {
+    public double positionDegrees;
+    public double shooterSpeedRotPerSec;
+
+    public TurretState(double positionDegrees, double shooterSpeedRotPerSec) {
+      this.positionDegrees = positionDegrees;
+      this.shooterSpeedRotPerSec = shooterSpeedRotPerSec;
+    }
+
+    public double getPosition(){
+      return positionDegrees;
+    }
+
+    public void setPosition(double newPosition){
+      positionDegrees = newPosition;
+    }
+
+    public double getShooterSpeed(){
+      return shooterSpeedRotPerSec;
+    }
+
+    public void setShooterSpeed(double newSpeed) {
+      shooterSpeedRotPerSec = newSpeed;
+    }
+  }
 }
