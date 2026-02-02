@@ -43,8 +43,8 @@ public class TurretSubsystem extends SubsystemBase {
     double desiredTurretVelocity = setpoint
         * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
 
-    double desiredShooterVelocity = target.getShooterSpeed() * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO
-        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
+    double desiredShooterVelocity = target.getShooterSpeed() / TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO
+        / TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
 
     double topMotorTargetVelocity = desiredTurretVelocity + desiredShooterVelocity;
     double bottomMotorTargetVelocity = desiredTurretVelocity - desiredShooterVelocity;

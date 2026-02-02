@@ -113,9 +113,7 @@ public class TurretIOTalonFX implements TurretIO {
 
     inputs.shooterVelocity = (((topRingVelocityRPS
         - bottomRingVelocityRPS) * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO)
-        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO) / 2;
-
-    inputs.tempVelocity = 0.0;
+        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO);
   }
 
   @Override
