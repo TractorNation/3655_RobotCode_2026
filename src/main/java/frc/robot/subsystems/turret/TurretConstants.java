@@ -3,7 +3,7 @@ package frc.robot.subsystems.turret;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TurretConstants {
-  
+
   public record TurretState(Rotation2d position, double shooterVelocityRotPerSec) {
   }
 
@@ -12,7 +12,8 @@ public class TurretConstants {
   public static final int CANCODER_ID = 32;
 
   public static final double PLANET_GEAR_TO_TURRET_RATIO = 1.0;
-  public static final double PLANET_GEAR_TO_SHOOTER_RATIO = 1.5;
+  public static final double PLANET_GEAR_TO_SHOOTER_RATIO = 1 / 1.5;
+  public static final double RING_GEAR_TO_PLANET_GEAR_RATIO = (double) 16 / 88;
 
   public static final double MOTOR_TO_RING_GEAR_RATIO = 6.2857;
   public static final double TURRET_TO_CANCODER_RATIO = 6.7692;

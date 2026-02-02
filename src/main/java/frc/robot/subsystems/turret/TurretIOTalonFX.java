@@ -105,8 +105,9 @@ public class TurretIOTalonFX implements TurretIO {
     inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
         / TurretConstants.TURRET_TO_CANCODER_RATIO);
 
-    inputs.shooterVelocity = (topRingVelocityRPS
-        - bottomRingVelocityRPS);
+    inputs.shooterVelocity = (((topRingVelocityRPS
+        - bottomRingVelocityRPS) * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO)
+        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO) / 2;
 
     Logger.recordOutput("Turret/TopMotorCurrent", topMotorCurrent.getValueAsDouble());
     Logger.recordOutput("Turret/BottomMotorCurrent", bottomMotorCurrent.getValueAsDouble());
