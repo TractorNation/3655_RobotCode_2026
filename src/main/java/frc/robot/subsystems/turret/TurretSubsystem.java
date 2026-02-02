@@ -36,7 +36,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
 
-    goalState = new TrapezoidProfile.State(Units.degreesToRotations(wrapTarget(target.getPosition())), target.getShooterSpeed());
+    goalState = new TrapezoidProfile.State(Units.degreesToRotations(wrapTarget(target.getPosition())), 0);
 
     setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
 
@@ -55,9 +55,9 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
     Logger.recordOutput("Turret/targetPosition", target.getPosition());
     Logger.recordOutput("Shooter/CurrentVelocity",
-        inputs.tempVelocity);
+        inputs.shooterVelocity);
     Logger.recordOutput("Shooter/TargetVelocity", target.getShooterSpeed());
-    Logger.recordOutput("Turret/TopRingGearVelocity", inputs.topRingMotorVelocity);
+    Logger.recordOutput("Turret/TopRingGearVelocity", inputs.topRingMotorVelocity);  
   }
 
   public double wrapTarget(double targetPositionDegrees) {
