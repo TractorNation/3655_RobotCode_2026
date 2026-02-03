@@ -1,7 +1,5 @@
 package frc.robot.subsystems.turret;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -31,6 +29,7 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<Angle> canCoderPosition;
   private final StatusSignal<Current> topMotorCurrent;
   private final StatusSignal<Current> bottomMotorCurrent;
+  
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
@@ -96,6 +95,8 @@ public class TurretIOTalonFX implements TurretIO {
     double bottomRingVelocityRPS = bottomRingVelocity.getValueAsDouble();
 
     inputs.topRingMotorPosition = topRingAngle.getValueAsDouble();
+    inputs.topRingMotorCurrent = topMotorCurrent.getValueAsDouble();
+    inputs.bottomRingMotorCurrent = bottomMotorCurrent.getValueAsDouble();
     inputs.topRingMotorVelocity = topRingVelocityRPS;
     inputs.topRingMotorTemperature = topRingTemperature.getValueAsDouble();
     inputs.bottomRingMotorPosition = bottomRingAngle.getValueAsDouble();
@@ -107,10 +108,7 @@ public class TurretIOTalonFX implements TurretIO {
 
     inputs.shooterVelocity = (((topRingVelocityRPS
         - bottomRingVelocityRPS) * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO)
-        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO) / 2;
-
-    Logger.recordOutput("Turret/TopMotorCurrent", topMotorCurrent.getValueAsDouble());
-    Logger.recordOutput("Turret/BottomMotorCurrent", bottomMotorCurrent.getValueAsDouble());
+        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO);
   }
 
   @Override

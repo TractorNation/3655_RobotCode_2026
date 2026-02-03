@@ -106,7 +106,7 @@ public final class Constants {
    * {@link RobotContainer#configureButtonBindings()}.
    * Change this to match your current driver or developdment environment.
    */
-  public static final Driver currentDriver = Driver.MAIN;
+  public static final Driver currentDriver = Driver.PROGRAMMING;
 
   /**
    * Driver control scheme options.

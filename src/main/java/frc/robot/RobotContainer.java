@@ -301,14 +301,14 @@ public class RobotContainer {
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        // programmingController.povRight()
-        //     .onTrue(TurretCommands.updateState(turret, 90, 30));
-        // programmingController.povUp()
-        //     .onTrue(TurretCommands.updateState(turret,0, 30));
-        // programmingController.povLeft()
-        //     .onTrue(TurretCommands.updateState(turret, 180, 30));
-        // programmingController.povDown()
-        //     .onTrue(TurretCommands.updateState(turret, 270, 30));
+        programmingController.povRight()
+            .onTrue(TurretCommands.updateState(turret,171, 50));
+        programmingController.povUp()
+            .onTrue(TurretCommands.updateState(turret,171, 55));
+        programmingController.povLeft()
+            .onTrue(TurretCommands.updateState(turret,171, 60));
+        programmingController.povDown()
+            .onTrue(TurretCommands.updateState(turret,  171, 65));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox
