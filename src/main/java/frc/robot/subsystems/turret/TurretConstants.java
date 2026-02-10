@@ -1,6 +1,8 @@
 package frc.robot.subsystems.turret;
 
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class TurretConstants {
 
@@ -30,6 +32,10 @@ public class TurretConstants {
   public static final double POSITION_KP = 10;
   public static final double POSITION_KI = 0.0;
   public static final double POSITION_KD = 0.00;
+
+  //TODO: set coordinates for blue and red hub
+  public static final Translation2d BLUE_HUB_POSITION = new Translation2d(0, 0); 
+  public static final Translation2d RED_HUB_POSITION = new Translation2d(0, 0);
 
 
   public static class TurretState {

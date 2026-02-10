@@ -308,7 +308,11 @@ public class RobotContainer {
             .onTrue(TurretCommands.updateState(turret,171, 60));
         programmingController.povDown()
             .onTrue(TurretCommands.updateState(turret,  171, 65));
+        programmingController.a()
+            .whileTrue(TurretCommands.trackHub(turret, 0.0));
+
         break;
+
 
       // When running sim on a Macbook, the controls are different than an Xbox
       // controller running a real robot

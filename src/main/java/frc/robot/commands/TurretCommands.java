@@ -9,4 +9,8 @@ public class TurretCommands {
   public static Command updateState(TurretSubsystem turret, double turretPositionDegrees, double shooterVelocityRotPerSec) {
     return Commands.runOnce(() -> turret.setTarget(turretPositionDegrees, shooterVelocityRotPerSec), turret);
   }
+
+  public static Command trackHub(TurretSubsystem turret, double shooterVelocityRotPerSec) {
+    return Commands.run(()-> turret.targetHub(shooterVelocityRotPerSec), turret);
+  }
 }

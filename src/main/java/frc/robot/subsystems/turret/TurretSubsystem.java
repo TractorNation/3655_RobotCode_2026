@@ -3,10 +3,15 @@ package frc.robot.subsystems.turret;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.turret.TurretConstants.TurretState;
+import frc.robot.RobotState;
 
 public class TurretSubsystem extends SubsystemBase {
   private final TurretIO io;
@@ -75,5 +80,31 @@ public class TurretSubsystem extends SubsystemBase {
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
     target.setPosition(targetPositionDegrees);
     target.setShooterSpeed(shooterVelocityRotPerSec);
+  }
+
+  public void targetHub(double shooterSpeed){
+    Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
+    Translation2d hubPosition;
+    Translation2d robotPosition = new Translation2d(currentPose.getX(), currentPose.getY());
+    Rotation2d robotAngle = currentPose.getRotation();
+    double targetAngle;
+
+    
+    if(DriverStation.getAlliance().isPresent()){  
+      if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+        hubPosition = TurretConstants.BLUE_HUB_POSITION;
+      } else {
+        hubPosition = TurretConstants.RED_HUB_POSITION;
+      }
+    } else {
+      hubPosition = TurretConstants.BLUE_HUB_POSITION;
+    }
+
+    Translation2d robotToHub = hubPosition.minus(robotPosition);
+
+    targetAngle = (robotToHub.getAngle().minus(robotAngle).getDegrees() + 360) % 360;
+
+    setTarget(targetAngle, shooterSpeed);
+
   }
 }
