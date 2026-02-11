@@ -139,14 +139,14 @@ public class RobotContainer {
       // These implementations read from and write to actual hardware
       case REAL:
         drive = new DriveSubsystem(
-        new GyroIOPigeon2(),
-        new ModuleIOTalonFX(0),
-        new ModuleIOTalonFX(1),
-        new ModuleIOTalonFX(2),
-        new ModuleIOTalonFX(3));
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(0),
+            new ModuleIOTalonFX(1),
+            new ModuleIOTalonFX(2),
+            new ModuleIOTalonFX(3));
 
         vision = new VisionSubsystem(
-        new VisionIOLimelight("limelight-front"));
+            new VisionIOLimelight("limelight-br"), new VisionIOLimelight("limelight-bl"));
         intake = new IntakeSubsystem(new IntakeIOReal());
 
         // turret = new TurretSubsystem(new TurretIOTalonFX());
@@ -189,9 +189,9 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
-      
+
         intake = new IntakeSubsystem(new IntakeIO() {
-        });  
+        });
         // turret = new TurretSubsystem(new TurretIO() {
         // });
         break;
@@ -263,29 +263,30 @@ public class RobotContainer {
                 drive,
                 () -> mainTranslation.StickYAxis() * -1.0,
                 () -> mainTranslation.StickXAxis() * -1.0,
-                () -> mainRotation.StickXAxis() * -0.7,
+                () -> mainRotation.StickXAxis() * -1.0,
                 1,
-                mainTranslation.fireStage1()
-                    .or(mainTranslation.fireStage2())));
+                mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
 
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
-        mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
-            IntakeMode.INTAKE))
-            .onFalse(IntakeCommands.stopIntake(intake));
-        mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-            IntakeMode.OUTPUT))
-            .onFalse(IntakeCommands.stopIntake(intake));
-        mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-            IntakeMode.SNOWBLOWER))
-            .onFalse(IntakeCommands.stopIntake(intake));
+        // mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.INTAKE))
+        // .onFalse(IntakeCommands.stopIntake(intake));
+        // mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.OUTPUT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
+        // mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.SNOWBLOWER))
+        // .onFalse(IntakeCommands.stopIntake(intake));
 
-        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
-            .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT))
-            .onFalse(IntakeCommands.stopIntake(intake));
+        // mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.LOBSHOT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
+        // mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.LONGSHOT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers
@@ -301,14 +302,14 @@ public class RobotContainer {
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret,171, 50));
-        programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret,171, 55));
-        programmingController.povLeft()
-            .onTrue(TurretCommands.updateState(turret,171, 60));
-        programmingController.povDown()
-            .onTrue(TurretCommands.updateState(turret,  171, 65));
+        // programmingController.povRight()
+        // .onTrue(TurretCommands.updateState(turret,171, 50));
+        // programmingController.povUp()
+        // .onTrue(TurretCommands.updateState(turret,171, 55));
+        // programmingController.povLeft()
+        // .onTrue(TurretCommands.updateState(turret,171, 60));
+        // programmingController.povDown()
+        // .onTrue(TurretCommands.updateState(turret, 171, 65));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox
@@ -327,13 +328,13 @@ public class RobotContainer {
         programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         // programmingController.povRight()
-        //     .onTrue(TurretCommands.updateState(turret, 90, 5));
+        // .onTrue(TurretCommands.updateState(turret, 90, 5));
         // programmingController.povUp()
-        //     .onTrue(TurretCommands.updateState(turret, 360, 5));
+        // .onTrue(TurretCommands.updateState(turret, 360, 5));
         // programmingController.povLeft()
-        //     .onTrue(TurretCommands.updateState(turret, 270, 5));
+        // .onTrue(TurretCommands.updateState(turret, 270, 5));
         // programmingController.povDown()
-        //     .onTrue(TurretCommands.updateState(turret, 180, 5));
+        // .onTrue(TurretCommands.updateState(turret, 180, 5));
         break;
     }
 
