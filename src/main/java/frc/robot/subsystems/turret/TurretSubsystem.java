@@ -62,7 +62,7 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/CurrentVelocity",
         inputs.shooterVelocity);
     Logger.recordOutput("Shooter/TargetVelocity", target.getShooterSpeed());
-    Logger.recordOutput("Turret/TopRingGearVelocity", inputs.topRingMotorVelocity);  
+    Logger.recordOutput("Turret/TopRingGearVelocity", inputs.topRingMotorVelocity);
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -82,22 +82,20 @@ public class TurretSubsystem extends SubsystemBase {
     target.setShooterSpeed(shooterVelocityRotPerSec);
   }
 
-  public void targetHub(double shooterSpeed){
+  public void targetHub(double shooterSpeed) {
     Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
     Translation2d hubPosition;
     Translation2d robotPosition = new Translation2d(currentPose.getX(), currentPose.getY());
     Rotation2d robotAngle = currentPose.getRotation();
     double targetAngle;
 
-    
-    if(DriverStation.getAlliance().isPresent()){  
-      if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-        hubPosition = TurretConstants.BLUE_HUB_POSITION;
-      } else {
+    switch (DriverStation.getAlliance().get()) {
+      case Red:
         hubPosition = TurretConstants.RED_HUB_POSITION;
-      }
-    } else {
-      hubPosition = TurretConstants.BLUE_HUB_POSITION;
+        break;
+      case Blue:
+      default:
+        hubPosition = TurretConstants.BLUE_HUB_POSITION;
     }
 
     Translation2d robotToHub = hubPosition.minus(robotPosition);
@@ -106,5 +104,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     setTarget(targetAngle, shooterSpeed);
 
+    Logger.recordOutput("Turret/TargetVector",
+        new Translation2d(shooterSpeed * 10, Rotation2d.fromDegrees(targetAngle)));
   }
 }

@@ -89,8 +89,8 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   // Vision does not have any direct commands, so it is "unused" in this file
   // However, it must be initialized to run properly
-  // private final VisionSubsystem vision;
-  // private final DriveSubsystem drive;
+  private final VisionSubsystem vision;
+  private final DriveSubsystem drive;
   // private final IntakeSubsystem intake;
 
   private final TurretSubsystem turret;
@@ -137,15 +137,15 @@ public class RobotContainer {
       // Real robot, instantiate hardware IO implementations
       // These implementations read from and write to actual hardware
       case REAL:
-        // drive = new DriveSubsystem(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFX(0),
-        // new ModuleIOTalonFX(1),
-        // new ModuleIOTalonFX(2),
-        // new ModuleIOTalonFX(3));
+        drive = new DriveSubsystem(
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(0),
+            new ModuleIOTalonFX(1),
+            new ModuleIOTalonFX(2),
+            new ModuleIOTalonFX(3));
 
-        // vision = new VisionSubsystem(
-        // new VisionIOLimelight("limelight-front"));
+        vision = new VisionSubsystem(
+            new VisionIOLimelight("limelight-front"));
         // intake = new IntakeSubsystem(new IntakeIOReal());
 
         turret = new TurretSubsystem(new TurretIOTalonFX());
@@ -154,17 +154,17 @@ public class RobotContainer {
       // Sim robot, instantiate physics sim IO implementations
       // These implementations use physics simulation models instead of real hardware
       case SIM:
-        // drive = new DriveSubsystem(
-        //     new GyroIO() {
-        //     },
-        //     new ModuleIOSim(),
-        //     new ModuleIOSim(),
-        //     new ModuleIOSim(),
-        //     new ModuleIOSim());
+        drive = new DriveSubsystem(
+            new GyroIO() {
+            },
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
 
-        // vision = new VisionSubsystem(
-        //     new VisionIOSim("left", VisionConstants.robotToCamera0),
-        //     new VisionIOSim("right", VisionConstants.robotToCamera1));
+        vision = new VisionSubsystem(
+            new VisionIOSim("left", VisionConstants.robotToCamera0),
+            new VisionIOSim("right", VisionConstants.robotToCamera1));
         // intake = new IntakeSubsystem(new IntakeIOSim());
 
         turret = new TurretSubsystem(new TurretIOSim());
@@ -174,23 +174,23 @@ public class RobotContainer {
       // Empty implementations are used - AdvantageKit injects data from log files
       // This allows replaying match data without any hardware present
       default:
-        // drive = new DriveSubsystem(
-        //     new GyroIO() {
-        //     },
-        //     new ModuleIO() {
-        //     },
-        //     new ModuleIO() {
-        //     },
-        //     new ModuleIO() {
-        //     },
-        //     new ModuleIO() {
-        //     });
-        // vision = new VisionSubsystem(
-        //     new VisionIO() {
-        //     });
-      
+        drive = new DriveSubsystem(
+            new GyroIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            });
+        vision = new VisionSubsystem(
+            new VisionIO() {
+            });
+
         // intake = new IntakeSubsystem(new IntakeIO() {
-        // });  
+        // });
         turret = new TurretSubsystem(new TurretIO() {
         });
         break;
@@ -199,24 +199,28 @@ public class RobotContainer {
     // region Autonomous Commands
 
     // Set up auto routines
-    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices",
+    // AutoBuilder.buildAutoChooser());
 
     // // Set up SysId routines
     // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization",
-    //     DriveCommands.wheelRadiusCharacterization(drive));
+    // "Drive Wheel Radius Characterization",
+    // DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // "Drive Simple FF Characterization",
+    // DriveCommands.feedforwardCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Quasistatic Forward)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Quasistatic Reverse)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Dynamic Forward)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Dynamic Reverse)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -257,77 +261,79 @@ public class RobotContainer {
     // region Driver controls
     switch (Constants.currentDriver) {
       case MAIN:
-        // drive.setDefaultCommand(
-        //     DriveCommands.joystickDrive(
-        //         drive,
-        //         () -> mainTranslation.StickYAxis() * -1.0,
-        //         () -> mainTranslation.StickXAxis() * -1.0,
-        //         () -> mainRotation.StickXAxis() * -0.7,
-        //         1,
-        //         mainTranslation.fireStage1()
-        //             .or(mainTranslation.fireStage2())));
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> mainTranslation.StickYAxis() * -1.0,
+                () -> mainTranslation.StickXAxis() * -1.0,
+                () -> mainRotation.StickXAxis() * -0.7,
+                1,
+                mainTranslation.fireStage1()
+                    .or(mainTranslation.fireStage2())));
 
-        // mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+        mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        // mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+        mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
         // mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
-        //     IntakeMode.INTAKE))
-        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // IntakeMode.INTAKE))
+        // .onFalse(IntakeCommands.stopIntake(intake));
         // mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-        //     IntakeMode.OUTPUT))
-        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // IntakeMode.OUTPUT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
         // mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-        //     IntakeMode.SNOWBLOWER))
-        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // IntakeMode.SNOWBLOWER))
+        // .onFalse(IntakeCommands.stopIntake(intake));
 
-        // mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
-        //     .onFalse(IntakeCommands.stopIntake(intake));
-        // mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.LONGSHOT))
-        //     .onFalse(IntakeCommands.stopIntake(intake));
+        // mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.LOBSHOT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
+        // mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        // IntakeMode.LONGSHOT))
+        // .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers
       case PROGRAMMING:
-        // drive.setDefaultCommand(
-        //     DriveCommands.joystickDrive(
-        //         drive,
-        //         () -> programmingController.getLeftY(),
-        //         () -> programmingController.getLeftX(),
-        //         () -> -programmingController.getRightX(),
-        //         1,
-        //         programmingController.leftBumper()));
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> programmingController.getLeftY(),
+                () -> programmingController.getLeftX(),
+                () -> -programmingController.getRightX(),
+                1,
+                programmingController.leftBumper()));
 
-        // programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
+        programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret,171, 50));
+            .onTrue(TurretCommands.updateState(turret, 171, 50));
         programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret,171, 55));
+            .onTrue(TurretCommands.updateState(turret, 171, 55));
         programmingController.povLeft()
-            .onTrue(TurretCommands.updateState(turret,171, 60));
+            .onTrue(TurretCommands.updateState(turret, 171, 60));
         programmingController.povDown()
-            .onTrue(TurretCommands.updateState(turret,  171, 65));
+            .onTrue(TurretCommands.updateState(turret, 171, 65));
         programmingController.a()
             .whileTrue(TurretCommands.trackHub(turret, 0.0));
 
         break;
 
-
       // When running sim on a Macbook, the controls are different than an Xbox
       // controller running a real robot
       case MACBOOK:
-        // drive.setDefaultCommand(
-        //     DriveCommands.joystickDrive(
-        //         drive,
-        //         () -> programmingController.getRawAxis(1),
-        //         () -> programmingController.getRawAxis(0),
-        //         () -> -programmingController.getRawAxis(2),
-        //         driveMultiplier,
-        //         programmingController.leftTrigger()));
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> programmingController.getRawAxis(1),
+                () -> programmingController.getRawAxis(0),
+                () -> -programmingController.getRawAxis(2),
+                driveMultiplier,
+                programmingController.leftTrigger()));
 
-        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        // programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
+        programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
+        programmingController.button(7).onTrue(TurretCommands.trackHub(turret, 1));
 
         programmingController.povRight()
             .onTrue(TurretCommands.updateState(turret, 90, 5));
@@ -348,12 +354,15 @@ public class RobotContainer {
      * by default it has nothing since operator controls the robot's mechanisms and
      * need the drive base
      */
-    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
+    // IntakeMode.INTAKE))
+    // .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
+    // IntakeMode.OUTPUT))
+    // .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
+    // IntakeMode.SNOWBLOWER))
+    // .onFalse(IntakeCommands.stopIntake(intake));
   }
 
   /**
