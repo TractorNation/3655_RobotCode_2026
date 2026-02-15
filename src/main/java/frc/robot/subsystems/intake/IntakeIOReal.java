@@ -1,36 +1,39 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.units.measure.Current;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class IntakeIOReal implements IntakeIO {
   private final SparkFlex frontMotor = new SparkFlex(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
   private final SparkFlex topMotor = new SparkFlex(IntakeConstants.TOP_MOTOR_ID, MotorType.kBrushless);
-  private final TalonFX backMotor = new TalonFX(IntakeConstants.BACK_MOTOR_ID);
+  private final SparkFlex backMotor = new SparkFlex(IntakeConstants.BACK_MOTOR_ID, MotorType.kBrushless);
 
-  private StatusSignal<Current> backMotorCurrent = backMotor.getSupplyCurrent();
+  SparkMaxConfig frontConfig;
+  SparkMaxConfig topConfig; 
+  SparkMaxConfig backConfig;
 
   public IntakeIOReal() {
-    var backConfig = new TalonFXConfiguration();
+    frontConfig = new SparkMaxConfig();
+    topConfig = new SparkMaxConfig();
+    backConfig = new SparkMaxConfig();
 
-    backConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    frontConfig.inverted(true);
+    topConfig.inverted(true);
+    backConfig.inverted(true);
 
-    backMotor.getConfigurator().apply(backConfig);
+    frontMotor.configure(frontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    topMotor.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // backMotor.configure(backConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    backMotorCurrent.refresh();
-
     inputs.frontMotorCurrent = frontMotor.getOutputCurrent();
     inputs.topMotorCurrent = topMotor.getOutputCurrent();
-    inputs.bottomMotorCurrent = backMotorCurrent.getValueAsDouble();
+    inputs.bottomMotorCurrent = backMotor.getOutputCurrent();
   }
 
   @Override
@@ -44,7 +47,7 @@ public class IntakeIOReal implements IntakeIO {
   public void stopMotors() {
     frontMotor.stopMotor();
     topMotor.stopMotor();
-    backMotor.set(0.0);
+    backMotor.stopMotor();
   }
 
 }
