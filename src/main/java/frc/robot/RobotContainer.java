@@ -271,22 +271,22 @@ public class RobotContainer {
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
-        // mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
-        // IntakeMode.INTAKE))
-        // .onFalse(IntakeCommands.stopIntake(intake));
-        // mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-        // IntakeMode.OUTPUT))
-        // .onFalse(IntakeCommands.stopIntake(intake));
-        // mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-        // IntakeMode.SNOWBLOWER))
-        // .onFalse(IntakeCommands.stopIntake(intake));
+        mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.INTAKE))
+        .onFalse(IntakeCommands.stopIntake(intake));
+        mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.OUTPUT))
+        .onFalse(IntakeCommands.stopIntake(intake));
+        mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.SNOWBLOWER))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
-        // mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-        // IntakeMode.LOBSHOT))
-        // .onFalse(IntakeCommands.stopIntake(intake));
-        // mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-        // IntakeMode.LONGSHOT))
-        // .onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.LOBSHOT))
+        .onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.LONGSHOT))
+        .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers

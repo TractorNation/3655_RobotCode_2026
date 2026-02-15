@@ -7,6 +7,6 @@ public class IntakeConstants {
   public static final int BACK_MOTOR_ID = 22;
 
   public enum IntakeMode {
-    INTAKE, OUTPUT, SNOWBLOWER, LOBSHOT, LONGSHOT
+    INTAKE, OUTPUT, SNOWBLOWER, LOBSHOT, LONGSHOT, TEST_TOP, TEST_BOTTOM, TEST_BACK
   }
 }
