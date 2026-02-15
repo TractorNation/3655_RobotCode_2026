@@ -9,7 +9,6 @@ public class TurretConstants {
   public static final int TOP_RING_MOTOR_ID = 30;
   public static final int BOTTOM_RING_MOTOR_ID = 31;
   public static final int CANCODER_ID = 32;
-  public static final int TEMP_ENCODER_ID = 35;
 
   public static final double PLANET_GEAR_TO_TURRET_RATIO = 1.0;
   public static final double PLANET_GEAR_TO_SHOOTER_RATIO = 1.5 / 1;

@@ -93,7 +93,6 @@ public class RobotContainer {
   private final DriveSubsystem drive;
   // private final IntakeSubsystem intake;
 
-  private final TurretSubsystem turret;
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
 
@@ -106,7 +105,7 @@ public class RobotContainer {
   private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
   // Dashboard inputs
-  // private final LoggedDashboardChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Command> autoChooser;
   private double driveMultiplier = 0.4;
 
   // region Subsystem init
@@ -145,10 +144,10 @@ public class RobotContainer {
             new ModuleIOTalonFX(3));
 
         vision = new VisionSubsystem(
-            new VisionIOLimelight("limelight-front"));
-        // intake = new IntakeSubsystem(new IntakeIOReal());
+            new VisionIOLimelight("limelight-br"), new VisionIOLimelight("limelight-bl"));
+        intake = new IntakeSubsystem(new IntakeIOReal());
 
-        turret = new TurretSubsystem(new TurretIOTalonFX());
+        // turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -167,7 +166,7 @@ public class RobotContainer {
             new VisionIOSim("right", VisionConstants.robotToCamera1));
         // intake = new IntakeSubsystem(new IntakeIOSim());
 
-        turret = new TurretSubsystem(new TurretIOSim());
+        // turret = new TurretSubsystem(new TurretIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -193,34 +192,32 @@ public class RobotContainer {
         // });
         turret = new TurretSubsystem(new TurretIO() {
         });
+        // turret = new TurretSubsystem(new TurretIO() {
+        // });
         break;
     }
 
     // region Autonomous Commands
 
     // Set up auto routines
-    // autoChooser = new LoggedDashboardChooser<>("Auto Choices",
-    // AutoBuilder.buildAutoChooser());
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // // Set up SysId routines
-    // autoChooser.addOption(
-    // "Drive Wheel Radius Characterization",
-    // DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Forward)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Reverse)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Forward)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Reverse)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // Set up SysId routines
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization",
+        DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -266,10 +263,9 @@ public class RobotContainer {
                 drive,
                 () -> mainTranslation.StickYAxis() * -1.0,
                 () -> mainTranslation.StickXAxis() * -1.0,
-                () -> mainRotation.StickXAxis() * -0.7,
+                () -> mainRotation.StickXAxis() * -1.0,
                 1,
-                mainTranslation.fireStage1()
-                    .or(mainTranslation.fireStage2())));
+                mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
 
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
@@ -306,17 +302,14 @@ public class RobotContainer {
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret, 171, 50));
-        programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret, 171, 55));
-        programmingController.povLeft()
-            .onTrue(TurretCommands.updateState(turret, 171, 60));
-        programmingController.povDown()
-            .onTrue(TurretCommands.updateState(turret, 171, 65));
-        programmingController.a()
-            .whileTrue(TurretCommands.trackHub(turret, 0.0));
-
+        // programmingController.povRight()
+        // .onTrue(TurretCommands.updateState(turret,171, 50));
+        // programmingController.povUp()
+        // .onTrue(TurretCommands.updateState(turret,171, 55));
+        // programmingController.povLeft()
+        // .onTrue(TurretCommands.updateState(turret,171, 60));
+        // programmingController.povDown()
+        // .onTrue(TurretCommands.updateState(turret, 171, 65));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox
@@ -333,16 +326,15 @@ public class RobotContainer {
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
-        programmingController.button(7).onTrue(TurretCommands.trackHub(turret, 1));
 
-        programmingController.povRight()
-            .onTrue(TurretCommands.updateState(turret, 90, 5));
-        programmingController.povUp()
-            .onTrue(TurretCommands.updateState(turret, 360, 5));
-        programmingController.povLeft()
-            .onTrue(TurretCommands.updateState(turret, 270, 5));
-        programmingController.povDown()
-            .onTrue(TurretCommands.updateState(turret, 180, 5));
+        // programmingController.povRight()
+        // .onTrue(TurretCommands.updateState(turret, 90, 5));
+        // programmingController.povUp()
+        // .onTrue(TurretCommands.updateState(turret, 360, 5));
+        // programmingController.povLeft()
+        // .onTrue(TurretCommands.updateState(turret, 270, 5));
+        // programmingController.povDown()
+        // .onTrue(TurretCommands.updateState(turret, 180, 5));
         break;
     }
 
@@ -371,6 +363,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return autoChooser.get();
   }
 }

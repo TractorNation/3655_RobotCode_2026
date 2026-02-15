@@ -97,8 +97,7 @@ public class VisionSubsystem extends SubsystemBase {
       for (var observation : inputs[cameraIndex].poseObservations) {
         // Check whether to reject pose
         boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
-            || (observation.tagCount() == 1
-                && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+            || observation.ambiguity() > maxAmbiguity // Cannot be high ambiguity
             || Math.abs(observation.pose().getZ()) > maxZError || // Must have realistic Z coordinate
 
             !isInsideField(observation);
@@ -108,9 +107,9 @@ public class VisionSubsystem extends SubsystemBase {
         if (rejectPose) {
           robotPosesRejected.add(observation.pose());
           continue;
-        } else {
-          robotPosesAccepted.add(observation.pose());
         }
+
+        robotPosesAccepted.add(observation.pose());
 
         // Calculate standard deviations
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
@@ -119,6 +118,9 @@ public class VisionSubsystem extends SubsystemBase {
         if (observation.type() == PoseObservationType.MEGATAG_2) {
           linearStdDev *= linearStdDevMegatag2Factor;
           angularStdDev *= angularStdDevMegatag2Factor;
+        } else {
+          linearStdDev *= linearStdDevMegatag1Factor;
+          angularStdDev *= angularStdDevMegatag1Factor;
         }
 
         if (cameraIndex < cameraStdDevFactors.length) {

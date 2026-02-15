@@ -19,7 +19,6 @@ public class TurretIOTalonFX implements TurretIO {
   private final TalonFX topRingMotor;
   private final TalonFX bottomRingMotor;
   private final CANcoder encoder;
-  // private final CANcoder temp;
 
   private final StatusSignal<Angle> topRingAngle;
   private final StatusSignal<Angle> bottomRingAngle;
@@ -31,13 +30,11 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<Current> topMotorCurrent;
   private final StatusSignal<Current> bottomMotorCurrent;
   
-  // private final StatusSignal<AngularVelocity> tempVelocity;
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
     bottomRingMotor = new TalonFX(TurretConstants.BOTTOM_RING_MOTOR_ID);
     encoder = new CANcoder(TurretConstants.CANCODER_ID);
-    // temp = new CANcoder(TurretConstants.TEMP_ENCODER_ID);
 
     var config = new TalonFXConfiguration();
 
@@ -66,8 +63,6 @@ public class TurretIOTalonFX implements TurretIO {
 
     topMotorCurrent = topRingMotor.getSupplyCurrent();
     bottomMotorCurrent = bottomRingMotor.getSupplyCurrent();
-
-    // tempVelocity = temp.getVelocity();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
