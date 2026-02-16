@@ -83,10 +83,8 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void targetHub(double shooterSpeed) {
-    Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
+    Pose2d currentPose = RobotState.getInstance().getPose();
     Translation2d hubPosition;
-    Translation2d robotPosition = new Translation2d(currentPose.getX(), currentPose.getY());
-    Rotation2d robotAngle = currentPose.getRotation();
     double targetAngle;
 
     switch (DriverStation.getAlliance().get()) {
@@ -98,13 +96,13 @@ public class TurretSubsystem extends SubsystemBase {
         hubPosition = TurretConstants.BLUE_HUB_POSITION;
     }
 
-    Translation2d robotToHub = hubPosition.minus(robotPosition);
+    Translation2d robotToHub = hubPosition.minus(currentPose.getTranslation());
 
-    targetAngle = (robotToHub.getAngle().minus(robotAngle).getDegrees() + 360) % 360;
+    targetAngle = robotToHub.getAngle().plus(currentPose.getRotation()).getDegrees();
 
     setTarget(targetAngle, shooterSpeed);
 
     Logger.recordOutput("Turret/TargetVector",
-        new Translation2d(shooterSpeed * 10, Rotation2d.fromDegrees(targetAngle)));
+        new Translation2d(shooterSpeed * 10, targetAngle));
   }
 }

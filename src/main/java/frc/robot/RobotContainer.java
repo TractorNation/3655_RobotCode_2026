@@ -93,6 +93,8 @@ public class RobotContainer {
   private final DriveSubsystem drive;
   // private final IntakeSubsystem intake;
 
+  private final TurretSubsystem turret;
+
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
 
@@ -145,9 +147,9 @@ public class RobotContainer {
 
         vision = new VisionSubsystem(
             new VisionIOLimelight("limelight-br"), new VisionIOLimelight("limelight-bl"));
-        intake = new IntakeSubsystem(new IntakeIOReal());
+        // intake = new IntakeSubsystem(new IntakeIOReal());
 
-        // turret = new TurretSubsystem(new TurretIOTalonFX());
+        turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -166,7 +168,7 @@ public class RobotContainer {
             new VisionIOSim("right", VisionConstants.robotToCamera1));
         // intake = new IntakeSubsystem(new IntakeIOSim());
 
-        // turret = new TurretSubsystem(new TurretIOSim());
+        turret = new TurretSubsystem(new TurretIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -192,8 +194,6 @@ public class RobotContainer {
         // });
         turret = new TurretSubsystem(new TurretIO() {
         });
-        // turret = new TurretSubsystem(new TurretIO() {
-        // });
         break;
     }
 
@@ -255,6 +255,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    turret.setDefaultCommand(TurretCommands.trackHub(turret, 25));
+
     // region Driver controls
     switch (Constants.currentDriver) {
       case MAIN:
@@ -270,23 +272,6 @@ public class RobotContainer {
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
-
-        mainTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.INTAKE))
-        .onFalse(IntakeCommands.stopIntake(intake));
-        mainTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.OUTPUT))
-        .onFalse(IntakeCommands.stopIntake(intake));
-        mainTranslation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.SNOWBLOWER))
-        .onFalse(IntakeCommands.stopIntake(intake));
-
-        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.LOBSHOT))
-        .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.LONGSHOT))
-        .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers

@@ -34,7 +34,7 @@ public class TurretConstants {
 
   //TODO: set coordinates for blue and red hub
   public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.702, 3.987); 
-  public static final Translation2d RED_HUB_POSITION = new Translation2d(494.61, 3.987);
+  public static final Translation2d RED_HUB_POSITION = new Translation2d(11.926, 3.987);
 
 
   public static class TurretState {
