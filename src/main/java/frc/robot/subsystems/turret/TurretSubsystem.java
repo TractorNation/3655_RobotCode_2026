@@ -24,6 +24,8 @@ public class TurretSubsystem extends SubsystemBase {
   private TrapezoidProfile.State goalState;
   private double setpoint;
 
+  Translation2d hubPosition;
+
   public TurretSubsystem(TurretIO io) {
     this.io = io;
     this.inputs = new TurretIOInputsAutoLogged();
@@ -35,6 +37,15 @@ public class TurretSubsystem extends SubsystemBase {
         TurretConstants.POSITION_KD, constraints);
 
     target = new TurretState(0, 0);
+
+    switch (DriverStation.getAlliance().get()) {
+      case Red:
+        hubPosition = TurretConstants.RED_HUB_POSITION;
+        break;
+      case Blue:
+      default:
+        hubPosition = TurretConstants.BLUE_HUB_POSITION;
+    }
   }
 
   @Override
@@ -84,25 +95,15 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void targetHub(double shooterSpeed) {
     Pose2d currentPose = RobotState.getInstance().getPose();
-    Translation2d hubPosition;
     double targetAngle;
-
-    switch (DriverStation.getAlliance().get()) {
-      case Red:
-        hubPosition = TurretConstants.RED_HUB_POSITION;
-        break;
-      case Blue:
-      default:
-        hubPosition = TurretConstants.BLUE_HUB_POSITION;
-    }
 
     Translation2d robotToHub = hubPosition.minus(currentPose.getTranslation());
 
-    targetAngle = robotToHub.getAngle().plus(currentPose.getRotation()).getDegrees();
+    Logger.recordOutput("Turret/HubPosition", hubPosition);
+    Logger.recordOutput("Turret/RobotToHub", robotToHub);
+
+    targetAngle = robotToHub.getAngle().getDegrees() + currentPose.getRotation().getDegrees();
 
     setTarget(targetAngle, shooterSpeed);
-
-    Logger.recordOutput("Turret/TargetVector",
-        new Translation2d(shooterSpeed * 10, targetAngle));
   }
 }

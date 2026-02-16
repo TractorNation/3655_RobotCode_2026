@@ -219,6 +219,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    turret.setDefaultCommand(TurretCommands.trackHub(turret, 0));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -254,8 +256,6 @@ public class RobotContainer {
    * CommandScheduler.
    */
   private void configureButtonBindings() {
-
-    turret.setDefaultCommand(TurretCommands.trackHub(turret, 25));
 
     // region Driver controls
     switch (Constants.currentDriver) {

@@ -74,62 +74,62 @@ public class VisionIOLimelight implements VisionIO {
         new double[] { RobotState.getInstance().getPose().getRotation().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0 });
 
     // NetworkTableInstance.getDefault()
-    //     .flush(); // Increases network traffic but recommended by Limelight
+    // .flush(); // Increases network traffic but recommended by Limelight
 
     // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
-    for (var rawSample : megatag1Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) continue;
-      for (int i = 11; i < rawSample.value.length; i += 7) {
-        tagIds.add((int) rawSample.value[i]);
-      }
-      poseObservations.add(
-          new PoseObservation(
-              // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
 
-              // 3D pose estimate
-              parsePose(rawSample.value),
+    var rawSampleMT1 = megatag1Subscriber.getAtomic();
 
-              // Ambiguity, using only the first tag because ambiguity isn't applicable for
-              // multitag
-              rawSample.value.length >= 18 ? rawSample.value[17] : 0.0,
-
-              // Tag count
-              (int) rawSample.value[7],
-
-              // Average tag distance
-              rawSample.value[9],
-
-              // Observation type
-              PoseObservationType.MEGATAG_1));
+    for (int i = 11; i < rawSampleMT1.value.length; i += 7) {
+      tagIds.add((int) rawSampleMT1.value[i]);
     }
-    for (var rawSample : megatag2Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) continue;
-      for (int i = 11; i < rawSample.value.length; i += 7) {
-        tagIds.add((int) rawSample.value[i]);
-      }
-      poseObservations.add(
-          new PoseObservation(
-              // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
+    poseObservations.add(
+        new PoseObservation(
+            // Timestamp, based on server timestamp of publish and latency
+            rawSampleMT1.timestamp * 1.0e-6 - rawSampleMT1.value[6] * 1.0e-3,
 
-              // 3D pose estimate
-              parsePose(rawSample.value),
+            // 3D pose estimate
+            parsePose(rawSampleMT1.value),
 
-              // Ambiguity, zeroed because the pose is already disambiguated
-              0.0,
+            // Ambiguity, using only the first tag because ambiguity isn't applicable for
+            // multitag
+            rawSampleMT1.value.length >= 18 ? rawSampleMT1.value[17] : 0.0,
 
-              // Tag count
-              (int) rawSample.value[7],
+            // Tag count
+            (int) rawSampleMT1.value[7],
 
-              // Average tag distance
-              rawSample.value[9],
+            // Average tag distance
+            rawSampleMT1.value[9],
 
-              // Observation type
-              PoseObservationType.MEGATAG_2));
+            // Observation type
+            PoseObservationType.MEGATAG_1));
+
+    var rawSampleMT2 = megatag2Subscriber.getAtomic();
+
+    for (int i = 11; i < rawSampleMT2.value.length; i += 7) {
+      tagIds.add((int) rawSampleMT2.value[i]);
     }
+    poseObservations.add(
+        new PoseObservation(
+            // Timestamp, based on server timestamp of publish and latency
+            rawSampleMT2.timestamp * 1.0e-6 - rawSampleMT2.value[6] * 1.0e-3,
+
+            // 3D pose estimate
+            parsePose(rawSampleMT2.value),
+
+            // Ambiguity, zeroed because the pose is already disambiguated
+            0.0,
+
+            // Tag count
+            (int) rawSampleMT2.value[7],
+
+            // Average tag distance
+            rawSampleMT2.value[9],
+
+            // Observation type
+            PoseObservationType.MEGATAG_2));
 
     // Save pose observations to inputs object
     inputs.poseObservations = new PoseObservation[poseObservations.size()];
