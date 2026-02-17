@@ -10,55 +10,71 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
- * The main robot class that manages the robot lifecycle and AdvantageKit logging.
+ * The main robot class that manages the robot lifecycle and AdvantageKit
+ * logging.
  * 
- * <p>This class extends {@link LoggedRobot} (from AdvantageKit) instead of {@link TimedRobot}
- * to enable advanced logging and replay capabilities. The robot lifecycle follows WPILib's
+ * <p>
+ * This class extends {@link LoggedRobot} (from AdvantageKit) instead of
+ * {@link TimedRobot}
+ * to enable advanced logging and replay capabilities. The robot lifecycle
+ * follows WPILib's
  * standard structure with initialization and periodic methods for each mode.
  * 
- * <p><b>Key Responsibilities:</b>
+ * <p>
+ * <b>Key Responsibilities:</b>
  * <ul>
- *   <li>Initialize AdvantageKit logger based on robot mode (REAL, SIM, REPLAY)</li>
- *   <li>Instantiate RobotContainer (which creates all subsystems)</li>
- *   <li>Run CommandScheduler every periodic cycle</li>
- *   <li>Handle mode transitions (autonomous, teleop, disabled, test)</li>
+ * <li>Initialize AdvantageKit logger based on robot mode (REAL, SIM,
+ * REPLAY)</li>
+ * <li>Instantiate RobotContainer (which creates all subsystems)</li>
+ * <li>Run CommandScheduler every periodic cycle</li>
+ * <li>Handle mode transitions (autonomous, teleop, disabled, test)</li>
  * </ul>
  * 
- * <p><b>AdvantageKit Integration:</b>
+ * <p>
+ * <b>AdvantageKit Integration:</b>
  * <ul>
- *   <li>REAL mode: Logs to USB stick at "/U/logs" and NetworkTables</li>
- *   <li>SIM mode: Logs to NetworkTables for visualization</li>
- *   <li>REPLAY mode: Reads from log files and injects data into IO implementations</li>
+ * <li>REAL mode: Logs to USB stick at "/U/logs" and NetworkTables</li>
+ * <li>SIM mode: Logs to NetworkTables for visualization</li>
+ * <li>REPLAY mode: Reads from log files and injects data into IO
+ * implementations</li>
  * </ul>
  * 
- * <p><b>Important:</b> Do not instantiate subsystems here. All subsystem creation
+ * <p>
+ * <b>Important:</b> Do not instantiate subsystems here. All subsystem creation
  * should happen in {@link RobotContainer}.
  */
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  Timer gcTimer = new Timer();
 
   /**
    * Initializes the robot when first started up.
    * 
-   * <p>This method:
+   * <p>
+   * This method:
    * <ul>
-   *   <li>Starts WPILib DataLogManager for basic logging</li>
-   *   <li>Configures AdvantageKit logger based on robot mode</li>
-   *   <li>Records build metadata (Git SHA, date, branch, etc.)</li>
-   *   <li>Sets up data receivers (USB logging, NetworkTables, replay source)</li>
-   *   <li>Creates RobotContainer (which initializes all subsystems)</li>
+   * <li>Starts WPILib DataLogManager for basic logging</li>
+   * <li>Configures AdvantageKit logger based on robot mode</li>
+   * <li>Records build metadata (Git SHA, date, branch, etc.)</li>
+   * <li>Sets up data receivers (USB logging, NetworkTables, replay source)</li>
+   * <li>Creates RobotContainer (which initializes all subsystems)</li>
    * </ul>
    * 
-   * <p>The logger configuration is critical for AdvantageKit's functionality.
-   * Different modes require different data receivers to enable logging and replay.
+   * <p>
+   * The logger configuration is critical for AdvantageKit's functionality.
+   * Different modes require different data receivers to enable logging and
+   * replay.
    */
   @Override
   public void robotInit() {
+
+    gcTimer.start();
 
     DataLogManager.start();
 
@@ -117,19 +133,23 @@ public class Robot extends LoggedRobot {
   }
 
   /**
-   * Called periodically during all robot modes (disabled, autonomous, teleop, test).
+   * Called periodically during all robot modes (disabled, autonomous, teleop,
+   * test).
    * 
-   * <p>This method runs the CommandScheduler, which is the heart of the command-based
+   * <p>
+   * This method runs the CommandScheduler, which is the heart of the
+   * command-based
    * framework. The scheduler:
    * <ul>
-   *   <li>Polls button/trigger states</li>
-   *   <li>Schedules newly-triggered commands</li>
-   *   <li>Executes running commands</li>
-   *   <li>Removes finished or interrupted commands</li>
-   *   <li>Calls subsystem periodic() methods</li>
+   * <li>Polls button/trigger states</li>
+   * <li>Schedules newly-triggered commands</li>
+   * <li>Executes running commands</li>
+   * <li>Removes finished or interrupted commands</li>
+   * <li>Calls subsystem periodic() methods</li>
    * </ul>
    * 
-   * <p><b>Critical:</b> This must be called every periodic cycle (every 20ms) for
+   * <p>
+   * <b>Critical:</b> This must be called every periodic cycle (every 20ms) for
    * the command-based framework to function. Without this, no commands will run
    * and subsystems won't update.
    */
@@ -141,6 +161,10 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // if (gcTimer.advanceIfElapsed(5)) {
+    //   System.gc();
+    // }
   }
 
   /** This function is called once when the robot is disabled. */

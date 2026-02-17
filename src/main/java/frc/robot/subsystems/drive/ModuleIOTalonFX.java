@@ -161,8 +161,8 @@ public class ModuleIOTalonFX implements ModuleIO {
   public void updateInputs(ModuleIOInputs inputs) {
     BaseStatusSignal.refreshAll(
         drivePosition,
+        turnVelocity,
         driveVelocity,
-        turnPosition,
         turnVelocity);
 
     inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());

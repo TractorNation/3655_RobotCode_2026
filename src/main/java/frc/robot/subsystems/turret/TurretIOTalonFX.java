@@ -29,7 +29,6 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<Angle> canCoderPosition;
   private final StatusSignal<Current> topMotorCurrent;
   private final StatusSignal<Current> bottomMotorCurrent;
-  
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
@@ -66,12 +65,8 @@ public class TurretIOTalonFX implements TurretIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
-        topRingAngle,
         topRingVelocity,
-        topRingTemperature,
-        bottomRingAngle,
         bottomRingVelocity,
-        bottomRingTemperature,
         canCoderPosition);
     topRingMotor.optimizeBusUtilization();
     bottomRingMotor.optimizeBusUtilization();
@@ -81,27 +76,15 @@ public class TurretIOTalonFX implements TurretIO {
   @Override
   public void updateInputs(TurretIOInputs inputs) {
     BaseStatusSignal.refreshAll(
-        topRingAngle,
         topRingVelocity,
-        topRingTemperature,
-        bottomRingAngle,
         bottomRingVelocity,
-        bottomRingTemperature,
-        topMotorCurrent,
-        bottomMotorCurrent,
         canCoderPosition);
 
     double topRingVelocityRPS = topRingVelocity.getValueAsDouble();
     double bottomRingVelocityRPS = bottomRingVelocity.getValueAsDouble();
 
-    inputs.topRingMotorPosition = topRingAngle.getValueAsDouble();
-    inputs.topRingMotorCurrent = topMotorCurrent.getValueAsDouble();
-    inputs.bottomRingMotorCurrent = bottomMotorCurrent.getValueAsDouble();
-    inputs.topRingMotorVelocity = topRingVelocityRPS;
-    inputs.topRingMotorTemperature = topRingTemperature.getValueAsDouble();
-    inputs.bottomRingMotorPosition = bottomRingAngle.getValueAsDouble();
-    inputs.bottomRingMotorVelocity = bottomRingVelocityRPS;
-    inputs.bottomRingMotorTemperature = bottomRingTemperature.getValueAsDouble();
+    inputs.topRingMotorVelocity = topRingVelocity.getValueAsDouble();
+    inputs.bottomRingMotorVelocity = bottomRingVelocity.getValueAsDouble();
 
     inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
         / TurretConstants.TURRET_TO_CANCODER_RATIO);

@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -23,8 +23,8 @@ public class TurretSubsystem extends SubsystemBase {
   private TrapezoidProfile.Constraints constraints;
   private TrapezoidProfile.State goalState;
   private double setpoint;
-
-  Translation2d hubPosition;
+  private Rectangle2d scoringZone;
+  private Translation2d hubPosition;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
@@ -41,10 +41,14 @@ public class TurretSubsystem extends SubsystemBase {
     switch (DriverStation.getAlliance().get()) {
       case Red:
         hubPosition = TurretConstants.RED_HUB_POSITION;
+        scoringZone = new Rectangle2d(new Translation2d(Units.inchesToMeters(469.11), Units.inchesToMeters(0)),
+            new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
         break;
       case Blue:
       default:
         hubPosition = TurretConstants.BLUE_HUB_POSITION;
+        scoringZone = new Rectangle2d(new Translation2d(0, 0),
+            new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(317.69)));
     }
   }
 
@@ -93,17 +97,16 @@ public class TurretSubsystem extends SubsystemBase {
     target.setShooterSpeed(shooterVelocityRotPerSec);
   }
 
-  public void targetHub(double shooterSpeed) {
+  public void targetHub(double shooterSpeedRequest) {
     Pose2d currentPose = RobotState.getInstance().getPose();
+    Translation2d translation = currentPose.getTranslation();
     double targetAngle;
+    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
 
-    Translation2d robotToHub = hubPosition.minus(currentPose.getTranslation());
+    Translation2d robotToHub = hubPosition.minus(translation);
 
-    Logger.recordOutput("Turret/HubPosition", hubPosition);
-    Logger.recordOutput("Turret/RobotToHub", robotToHub);
+    targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
-    targetAngle = robotToHub.getAngle().getDegrees() + currentPose.getRotation().getDegrees();
-
-    setTarget(targetAngle, shooterSpeed);
+    setTarget(-targetAngle, Math.min(shooterSpeed, 75));
   }
 }

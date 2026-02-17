@@ -31,11 +31,22 @@ public class VisionSubsystem extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
+  // Initialize logging values
+  List<Pose3d> allTagPoses;
+  List<Pose3d> allRobotPoses;
+  List<Pose3d> allRobotPosesAccepted;
+  List<Pose3d> allRobotPosesRejected;
+
   private static final Rectangle2d FIELD_BOUNDS = new Rectangle2d(Translation2d.kZero,
       new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
 
   public VisionSubsystem(VisionIO... io) {
     this.io = io;
+
+    allTagPoses = new LinkedList<>();
+    allRobotPoses = new LinkedList<>();
+    allRobotPosesAccepted = new LinkedList<>();
+    allRobotPosesRejected = new LinkedList<>();
 
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
@@ -68,11 +79,10 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
 
-    // Initialize logging values
-    List<Pose3d> allTagPoses = new LinkedList<>();
-    List<Pose3d> allRobotPoses = new LinkedList<>();
-    List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
-    List<Pose3d> allRobotPosesRejected = new LinkedList<>();
+    allTagPoses.clear();
+    allRobotPoses.clear();
+    allRobotPosesAccepted.clear();
+    allRobotPosesRejected.clear();
 
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
@@ -148,6 +158,7 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose3d[0]));
+          
       allTagPoses.addAll(tagPoses);
       allRobotPoses.addAll(robotPoses);
       allRobotPosesAccepted.addAll(robotPosesAccepted);
