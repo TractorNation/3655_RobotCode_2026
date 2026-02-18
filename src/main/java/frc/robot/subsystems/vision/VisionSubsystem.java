@@ -14,6 +14,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rectangle2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,12 +34,16 @@ public class VisionSubsystem extends SubsystemBase {
   private final Alert[] disconnectedAlerts;
   private AprilTagFieldLayout tagLayout;
 
+  private final Rectangle2d fIELD_BOUNDS = new Rectangle2d(
+      new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+      new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
+
   public VisionSubsystem(VisionIO... io) {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged[io.length];
 
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2026RebuiltWelded.m_resourceFile);
     } catch (IOException e) {
       DriverStation.reportError("Failed to load april tags :3 !!", null);
     }
@@ -59,27 +65,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isInsideField(PoseObservation observation) {
-    // Directions are relative to driver's perspective
-    // Blue Left: y = 0.7587x + 267.2
-    // Blue Right: y = -0.7587x - 49.95
-    // Red Left: y = 0.7587x - 474.187
-    // Red Right: y = -0.7587x + 791.337
-
-    double slope = Units.inchesToMeters(0.7587);
-    double x = observation.pose().getX();
-    double y = observation.pose().getY();
-
-    boolean isInsideBlueLeft = (y < slope*x + Units.inchesToMeters(267.2));
-    boolean isInsideBlueRight = (y > -slope*x + Units.inchesToMeters(49.95));
-    boolean isInsideRedLeft = (y > slope*x - Units.inchesToMeters(474.187));
-    boolean isInsideRedRight = (y < -slope*x + Units.inchesToMeters(791.337));
-    boolean isInsideRectangle = (x > 0 && x < tagLayout.getFieldLength() && y > 0 && y < tagLayout.getFieldWidth());
-
-    if(isInsideBlueRight && isInsideBlueLeft && isInsideRedLeft && isInsideRedRight && isInsideRectangle) {
-      return true;
-    } else {
-      return false;
-    }
+    return fIELD_BOUNDS.contains(observation.pose().getTranslation());
   }
 
   @Override
@@ -123,7 +109,6 @@ public class VisionSubsystem extends SubsystemBase {
                 || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || !isInsideField(observation)
-
 
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
