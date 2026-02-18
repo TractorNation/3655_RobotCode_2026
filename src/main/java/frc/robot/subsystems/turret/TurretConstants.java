@@ -28,7 +28,7 @@ public class TurretConstants {
   public static final double MOTOR_VELOCITY_KS = 0.0;
   public static final double MOTOR_VELOCITY_KV = 0.0;
 
-  public static final double POSITION_KP = 10;
+  public static final double POSITION_KP = 15;
   public static final double POSITION_KI = 0.0;
   public static final double POSITION_KD = 0.00;
 

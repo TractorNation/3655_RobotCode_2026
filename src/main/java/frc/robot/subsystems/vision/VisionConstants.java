@@ -1,73 +1,75 @@
-// Copyright (c) 2021-2026 Littleton Robotics
-// http://github.com/Mechanical-Advantage
-//
-// Use of this source code is governed by a BSD
-// license that can be found in the LICENSE file
-// at the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 
+/** Static values for the Vision subsystem */
 public class VisionConstants {
-  // AprilTag layout
-  public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "camera_0";
-  public static String camera1Name = "camera_1";
+  // the maximum distance a measurement will be accepted in meters
+  public static final double SINGLE_TAG_MAXIMUM = 3.5;
+  public static final double MULTI_TAG_MAXIMUM = 7.5;
 
-  // Robot to camera transforms
-  // used for sim
-  public static Transform3d robotToCamera0 = new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
+  public static final double MAX_AMBIGUITY = 0.25;
 
-  public static Transform3d robotToCamera1 = new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+  public static final double LINEAR_STD_DEV_FACTOR = 0.8;
+  public static final double ANGULAR_STD_DEV_FACTOR = 2;
 
-  // Basic filtering thresholds
-  public static double maxAmbiguity = 0.25;
-  public static double maxZError = 0.5;
+  public static final double MEGATAG2_LINEAR_FACTOR = 0.25;
+  public static final double MEGATAG2_ANGULAR_FACTOR = 2;
 
-  // Standard deviation baselines, for 1 meter distance and 1 tag
-  // (Adjusted automatically based on distance and # of tags)
-  public static double linearStdDevBaseline = 1; // Meters
-  public static double angularStdDevBaseline = 0.06; // Radians
+  public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(-0.117, 0.2814, 0.2);
+  public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,28, -15);
+  public static final Transform3d LEFT_ROBOT_TO_CAMERA = new Transform3d(LEFT_ROBOT_TO_CAMERA_TRANSLATION, LEFT_ROBOT_TO_CAMERA_ROTATION);
 
-  // Standard deviation multipliers for each camera
-  // (Adjust to trust some cameras more than others)
-  public static double[] cameraStdDevFactors = new double[] {
-      1, // Camera 0
-      1 // Camera 1
-  };
+  public static final Translation3d RIGHT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0.177, 0.214, 0.2);
+  public static final Rotation3d RIGHT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,28, 15);
+  public static final Transform3d RIGHT_ROBOT_TO_CAMERA = new Transform3d(RIGHT_ROBOT_TO_CAMERA_TRANSLATION, RIGHT_ROBOT_TO_CAMERA_ROTATION);
 
-  // Multipliers to apply for MegaTag 2 observations
-  public static double linearStdDevMegatag2Factor = 0.25; // More stable than full 3D solve
-  public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
+  /**
+   * A record to store position data for an observation.
+   * 
+   * @param tx The angle from the target on the x axis.
+   * @param ty The angle from the target on the y axis.
+   */
+  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
 
-  public static double linearStdDevMegatag1Factor = 0.8;
-  public static double angularStdDevMegatag1Factor = Double.POSITIVE_INFINITY;
-
-  /** Represents the angle to a simple target, not used for pose estimation. */
-  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
-  }
-
-  /** Represents a robot pose sample used for pose estimation. */
+  /**
+   * A Record to store data about the robots pose calculated from vision
+   * 
+   * @param timestamp          The time in seconds when this observation was
+   *                           recorded
+   * @param pose               A pose 3d representing the robot's position on the
+   *                           field
+   * @param ambiguity          A value between 0 and 1 representing how confident
+   *                           the vision system is in the pose where 0 is very
+   *                           confident and 1 is not confident
+   * @param tagCount           The number of tags that were used to calculate this
+   *                           pose
+   * @param averageTagDistance The average distance between tags used to calculate
+   *                           this pose
+   * 
+   * @param type               The way the pose was calculated, used to calculate
+   *                           standard deviations
+   */
   public static record PoseObservation(
       double timestamp,
-      Pose3d pose,
+      Pose2d pose,
       double ambiguity,
       int tagCount,
       double averageTagDistance,
-      PoseObservationType type) {
-  }
+      ObservationType type) {}
 
-  public static enum PoseObservationType {
+  public enum ObservationType {
     MEGATAG_1,
     MEGATAG_2,
-    PHOTONVISION
+    PHOTON
   }
 }

@@ -164,8 +164,8 @@ public class RobotContainer {
             new ModuleIOSim());
 
         vision = new VisionSubsystem(
-            new VisionIOSim("left", VisionConstants.robotToCamera0),
-            new VisionIOSim("right", VisionConstants.robotToCamera1));
+            new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
+            new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
         // intake = new IntakeSubsystem(new IntakeIOSim());
 
         turret = new TurretSubsystem(new TurretIOSim());

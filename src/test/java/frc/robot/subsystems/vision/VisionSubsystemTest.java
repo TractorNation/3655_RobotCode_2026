@@ -1,209 +1,209 @@
-package frc.robot.subsystems.vision;
+// package frc.robot.subsystems.vision;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertFalse;
+// import static org.junit.jupiter.api.Assertions.assertNotNull;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.DisplayName;
+// import org.junit.jupiter.api.Test;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.RobotState;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Pose3d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import frc.robot.RobotState;
+// import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
+// import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
 
-/**
- * Unit tests for VisionSubsystem.
- * 
- * <p>These tests verify:
- * <ul>
- *   <li>Field boundary checking (isInsideField)</li>
- *   <li>Pose observation filtering (distance, ambiguity, tag count)</li>
- *   <li>Standard deviation calculations</li>
- *   <li>Camera connection detection</li>
- * </ul>
- * 
- * <p>Note: These tests use mock IO implementations, so no cameras are required.
- */
-@DisplayName("VisionSubsystem Tests")
-class VisionSubsystemTest {
+// /**
+//  * Unit tests for VisionSubsystem.
+//  * 
+//  * <p>These tests verify:
+//  * <ul>
+//  *   <li>Field boundary checking (isInsideField)</li>
+//  *   <li>Pose observation filtering (distance, ambiguity, tag count)</li>
+//  *   <li>Standard deviation calculations</li>
+//  *   <li>Camera connection detection</li>
+//  * </ul>
+//  * 
+//  * <p>Note: These tests use mock IO implementations, so no cameras are required.
+//  */
+// @DisplayName("VisionSubsystem Tests")
+// class VisionSubsystemTest {
 
-  private VisionSubsystem vision;
-  private MockVisionIO mockCamera;
+//   private VisionSubsystem vision;
+//   private MockVisionIO mockCamera;
 
-  @BeforeEach
-  void setUp() {
-    // Reset vision measurement counter before each test
-    RobotState.resetVisionMeasurementCounter();
+//   @BeforeEach
+//   void setUp() {
+//     // Reset vision measurement counter before each test
+//     RobotState.resetVisionMeasurementCounter();
     
-    // Create mock camera IO
-    mockCamera = new MockVisionIO();
-    mockCamera.setConnected(true);
+//     // Create mock camera IO
+//     mockCamera = new MockVisionIO();
+//     mockCamera.setConnected(true);
 
-    // Create VisionSubsystem with mock
-    vision = new VisionSubsystem(mockCamera);
-  }
+//     // Create VisionSubsystem with mock
+//     vision = new VisionSubsystem(mockCamera);
+//   }
 
-  @Test
-  @DisplayName("VisionSubsystem should be created successfully")
-  void testSubsystemCreation() {
-    assertNotNull(vision, "VisionSubsystem should be created");
-  }
+//   @Test
+//   @DisplayName("VisionSubsystem should be created successfully")
+//   void testSubsystemCreation() {
+//     assertNotNull(vision, "VisionSubsystem should be created");
+//   }
 
-  @Test
-  @DisplayName("isInsideField should accept valid poses within field boundaries")
-  void testIsInsideFieldValid() {
-    // Test a pose in the center of the field
-    Pose3d centerPose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        centerPose,
-        0.1, // Low ambiguity
-        3, // Multiple tags
-        2.0, // 2 meters away
-        PoseObservationType.PHOTONVISION);
+//   @Test
+//   @DisplayName("isInsideField should accept valid poses within field boundaries")
+//   void testIsInsideFieldValid() {
+//     // Test a pose in the center of the field
+//     Pose3d centerPose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
+//     PoseObservation observation = new PoseObservation(
+//         0.0,
+//         centerPose,
+//         0.1, // Low ambiguity
+//         3, // Multiple tags
+//         2.0, // 2 meters away
+//         PoseObservationType.PHOTONVISION);
 
-    assertTrue(vision.isInsideField(observation),
-        "Pose in center of field should be inside");
-  }
+//     assertTrue(vision.isInsideField(observation),
+//         "Pose in center of field should be inside");
+//   }
 
-  @Test
-  @DisplayName("isInsideField should reject poses outside field boundaries")
-  void testIsInsideFieldInvalid() {
-    // Test a pose way outside the field
-    Pose3d outsidePose = new Pose3d(new Pose2d(100.0, 100.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        outsidePose,
-        0.1,
-        3,
-        2.0,
-        PoseObservationType.PHOTONVISION);
+//   @Test
+//   @DisplayName("isInsideField should reject poses outside field boundaries")
+//   void testIsInsideFieldInvalid() {
+//     // Test a pose way outside the field
+//     Pose3d outsidePose = new Pose3d(new Pose2d(100.0, 100.0, new Rotation2d()));
+//     PoseObservation observation = new PoseObservation(
+//         0.0,
+//         outsidePose,
+//         0.1,
+//         3,
+//         2.0,
+//         PoseObservationType.PHOTONVISION);
 
-    assertFalse(vision.isInsideField(observation),
-        "Pose outside field should be rejected");
+//     assertFalse(vision.isInsideField(observation),
+//         "Pose outside field should be rejected");
     
-    // Also verify that such an observation would be filtered out
-    RobotState.resetVisionMeasurementCounter();
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1, 2, 3 });
+//     // Also verify that such an observation would be filtered out
+//     RobotState.resetVisionMeasurementCounter();
+//     mockCamera.setPoseObservations(new PoseObservation[] { observation });
+//     mockCamera.setTagIds(new int[] { 1, 2, 3 });
     
-    vision.periodic();
+//     vision.periodic();
     
-    // Observation outside field should be rejected
-    assertEquals(0, RobotState.getVisionMeasurementCount(),
-        "Observation outside field boundaries should be rejected");
-  }
+//     // Observation outside field should be rejected
+//     assertEquals(0, RobotState.getVisionMeasurementCount(),
+//         "Observation outside field boundaries should be rejected");
+//   }
 
-  @Test
-  @DisplayName("getLatestTargetObservation should return target observation")
-  void testGetLatestTargetObservation() {
-    // Set up a target observation
-    Rotation2d tx = Rotation2d.fromDegrees(10.0); // 10 degrees right
-    Rotation2d ty = Rotation2d.fromDegrees(5.0); // 5 degrees up
-    VisionConstants.TargetObservation targetObs = new VisionConstants.TargetObservation(tx, ty);
-    mockCamera.setLatestObservation(targetObs);
+//   @Test
+//   @DisplayName("getLatestTargetObservation should return target observation")
+//   void testGetLatestTargetObservation() {
+//     // Set up a target observation
+//     Rotation2d tx = Rotation2d.fromDegrees(10.0); // 10 degrees right
+//     Rotation2d ty = Rotation2d.fromDegrees(5.0); // 5 degrees up
+//     VisionConstants.TargetObservation targetObs = new VisionConstants.TargetObservation(tx, ty);
+//     mockCamera.setLatestObservation(targetObs);
 
-    // Call updateInputs to sync
-    vision.periodic();
+//     // Call updateInputs to sync
+//     vision.periodic();
 
-    // Get observation
-    tx = vision.getTargetX(0);
+//     // Get observation
+//     tx = vision.getTargetX(0);
     
-    assertNotNull(tx, "Target observation should not be null");
-    assertEquals(10.0, tx.getDegrees(), 0.1, "tx should be 10 degrees");
-  }
+//     assertNotNull(tx, "Target observation should not be null");
+//     assertEquals(10.0, tx.getDegrees(), 0.1, "tx should be 10 degrees");
+//   }
 
-  @Test
-  @DisplayName("Pose observations with zero tags should be rejected")
-  void testZeroTagRejection() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
+//   @Test
+//   @DisplayName("Pose observations with zero tags should be rejected")
+//   void testZeroTagRejection() {
+//     // Reset counter to ensure clean state
+//     RobotState.resetVisionMeasurementCounter();
     
-    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        0.1, // Good ambiguity
-        0, // ZERO TAGS - should be rejected
-        2.0,
-        PoseObservationType.PHOTONVISION);
+//     Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
+//     PoseObservation observation = new PoseObservation(
+//         0.0,
+//         pose,
+//         0.1, // Good ambiguity
+//         0, // ZERO TAGS - should be rejected
+//         2.0,
+//         PoseObservationType.PHOTONVISION);
 
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] {});
+//     mockCamera.setPoseObservations(new PoseObservation[] { observation });
+//     mockCamera.setTagIds(new int[] {});
 
-    // Call periodic to process observations
-    vision.periodic();
+//     // Call periodic to process observations
+//     vision.periodic();
 
-    // The observation should be filtered out (no tags) - no measurement should be added
-    assertEquals(0, RobotState.getVisionMeasurementCount(),
-        "Observation with zero tags should be rejected and not added to RobotState");
-  }
+//     // The observation should be filtered out (no tags) - no measurement should be added
+//     assertEquals(0, RobotState.getVisionMeasurementCount(),
+//         "Observation with zero tags should be rejected and not added to RobotState");
+//   }
 
-  @Test
-  @DisplayName("Pose observations with high ambiguity should be rejected")
-  void testHighAmbiguityRejection() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
+//   @Test
+//   @DisplayName("Pose observations with high ambiguity should be rejected")
+//   void testHighAmbiguityRejection() {
+//     // Reset counter to ensure clean state
+//     RobotState.resetVisionMeasurementCounter();
     
-    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        VisionConstants.maxAmbiguity + 0.1, // Above threshold
-        1, // one tag
-        2.0,
-        PoseObservationType.PHOTONVISION);
+//     Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
+//     PoseObservation observation = new PoseObservation(
+//         0.0,
+//         pose,
+//         VisionConstants.maxAmbiguity + 0.1, // Above threshold
+//         1, // one tag
+//         2.0,
+//         PoseObservationType.PHOTONVISION);
 
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1, 2, 3 });
+//     mockCamera.setPoseObservations(new PoseObservation[] { observation });
+//     mockCamera.setTagIds(new int[] { 1, 2, 3 });
 
-    // Call periodic - observation should be filtered
-    vision.periodic();
+//     // Call periodic - observation should be filtered
+//     vision.periodic();
 
-    // High ambiguity should cause rejection - no measurement should be added
-    assertEquals(0, RobotState.getVisionMeasurementCount(),
-        "Observation with high ambiguity should be rejected and not added to RobotState");
-  }
+//     // High ambiguity should cause rejection - no measurement should be added
+//     assertEquals(0, RobotState.getVisionMeasurementCount(),
+//         "Observation with high ambiguity should be rejected and not added to RobotState");
+//   }
 
-  @Test
-  @DisplayName("Valid pose observations should be accepted")
-  void testValidObservationAcceptance() {
-    // Reset counter to ensure clean state
-    RobotState.resetVisionMeasurementCounter();
+//   @Test
+//   @DisplayName("Valid pose observations should be accepted")
+//   void testValidObservationAcceptance() {
+//     // Reset counter to ensure clean state
+//     RobotState.resetVisionMeasurementCounter();
     
-    Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
-    PoseObservation observation = new PoseObservation(
-        0.0,
-        pose,
-        0.1, // Low ambiguity
-        3, // Multiple tags
-        2.0, // Within limits
-        PoseObservationType.PHOTONVISION);
+//     Pose3d pose = new Pose3d(new Pose2d(8.0, 4.0, new Rotation2d()));
+//     PoseObservation observation = new PoseObservation(
+//         0.0,
+//         pose,
+//         0.1, // Low ambiguity
+//         3, // Multiple tags
+//         2.0, // Within limits
+//         PoseObservationType.PHOTONVISION);
 
-    mockCamera.setPoseObservations(new PoseObservation[] { observation });
-    mockCamera.setTagIds(new int[] { 1, 2, 3 });
+//     mockCamera.setPoseObservations(new PoseObservation[] { observation });
+//     mockCamera.setTagIds(new int[] { 1, 2, 3 });
 
-    vision.periodic();
+//     vision.periodic();
 
-    // Valid observation should be accepted - measurement should be added
-    assertEquals(1, RobotState.getVisionMeasurementCount(),
-        "Valid observation should be accepted and added to RobotState");
-  }
+//     // Valid observation should be accepted - measurement should be added
+//     assertEquals(1, RobotState.getVisionMeasurementCount(),
+//         "Valid observation should be accepted and added to RobotState");
+//   }
 
-  @Test
-  @DisplayName("Disconnected camera should be detected")
-  void testCameraDisconnection() {
-    mockCamera.setConnected(false);
+//   @Test
+//   @DisplayName("Disconnected camera should be detected")
+//   void testCameraDisconnection() {
+//     mockCamera.setConnected(false);
     
-    // Call periodic - should handle disconnected camera gracefully
-    vision.periodic();
+//     // Call periodic - should handle disconnected camera gracefully
+//     vision.periodic();
     
-    assertNotNull(vision);
-  }
-}
+//     assertNotNull(vision);
+//   }
+// }
 

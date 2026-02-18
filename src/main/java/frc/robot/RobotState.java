@@ -15,6 +15,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /**
  * Singleton class that manages the robot's pose estimation and state.
@@ -86,6 +88,12 @@ public class RobotState {
       Rotation2d gyroRotation,
       SwerveModulePosition[] moduleDeltas,
       SwerveModulePosition[] wheelPositions) {
+  }
+
+  public record VisionMeasurement(
+      double timestamp,
+      Pose2d pose,
+      Matrix<N3, N1> stdDevs) {
   }
 
   private SwerveDriveKinematics kinematics;
@@ -198,17 +206,11 @@ public class RobotState {
    *                    estimate, and
    *                    standard deviations (uncertainty)
    */
-  public synchronized void addVisionMeasurement(Pose2d pose, double timestamp,
-      Matrix<N3, N1> stdDevs) {
+  public synchronized void addVisionMeasurement(VisionMeasurement measurement) {
     poseEstimator.addVisionMeasurement(
-        pose,
-        timestamp,
-        stdDevs);
-
-    // Test-only: Track vision measurements for testing
-    if (visionMeasurementCount != null) {
-      visionMeasurementCount[0]++;
-    }
+        measurement.pose,
+        measurement.timestamp,
+        measurement.stdDevs);
   }
 
   // Test-only: Counter for vision measurements (null in production)
