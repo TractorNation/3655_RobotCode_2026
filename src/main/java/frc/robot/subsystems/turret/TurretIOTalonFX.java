@@ -12,23 +12,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
 
 public class TurretIOTalonFX implements TurretIO {
   private final TalonFX topRingMotor;
   private final TalonFX bottomRingMotor;
   private final CANcoder encoder;
 
-  private final StatusSignal<Angle> topRingAngle;
-  private final StatusSignal<Angle> bottomRingAngle;
   private final StatusSignal<AngularVelocity> topRingVelocity;
   private final StatusSignal<AngularVelocity> bottomRingVelocity;
-  private final StatusSignal<Temperature> topRingTemperature;
-  private final StatusSignal<Temperature> bottomRingTemperature;
   private final StatusSignal<Angle> canCoderPosition;
-  private final StatusSignal<Current> topMotorCurrent;
-  private final StatusSignal<Current> bottomMotorCurrent;
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
@@ -52,16 +44,9 @@ public class TurretIOTalonFX implements TurretIO {
     topRingMotor.getConfigurator().apply(config);
     bottomRingMotor.getConfigurator().apply(config);
 
-    topRingAngle = topRingMotor.getPosition();
-    bottomRingAngle = bottomRingMotor.getPosition();
     topRingVelocity = topRingMotor.getVelocity();
     bottomRingVelocity = bottomRingMotor.getVelocity();
-    topRingTemperature = topRingMotor.getDeviceTemp();
-    bottomRingTemperature = bottomRingMotor.getDeviceTemp();
     canCoderPosition = encoder.getPosition();
-
-    topMotorCurrent = topRingMotor.getSupplyCurrent();
-    bottomMotorCurrent = bottomRingMotor.getSupplyCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
