@@ -8,7 +8,7 @@ import frc.robot.subsystems.intake.IntakeConstants.IntakeMode;
 public class IntakeCommands {
 
   public static Command runIntake(IntakeSubsystem intake, IntakeMode mode) {
-    final double intakeSpeed = 1;
+    final double intakeSpeed = 0.5;
 
     return Commands.runOnce(() -> {
       switch (mode) {
@@ -16,7 +16,8 @@ public class IntakeCommands {
           intake.runMotors(intakeSpeed, intakeSpeed, intakeSpeed); // + + +
           break;
         case OUTPUT:
-          intake.runMotors(intakeSpeed, -intakeSpeed, -intakeSpeed); // + - -
+          intake.runMotors(1, -0.75, -1); // + - -
+          intake.runConveyor(-0.6);
           break;
         case LOBSHOT:
           intake.runMotors(1, -0.5, -0.8); // + - -
@@ -25,7 +26,7 @@ public class IntakeCommands {
           intake.runMotors(intakeSpeed, intakeSpeed, -intakeSpeed); // + + -
           break;
         case SNOWBLOWER:
-          intake.runMotors(1, -1, intakeSpeed); // + - +
+          intake.runMotors(0.5, -1, intakeSpeed); // + - +
           break;
         case TEST_TOP:
           intake.runMotors(0, 1, 0);
@@ -39,6 +40,10 @@ public class IntakeCommands {
           break;
       }
     }, intake);
+  }
+
+  public static Command runIndexer(IntakeSubsystem intake) {
+    return Commands.runOnce(() -> {intake.runIndexerMotors();}, intake);
   }
 
   public static Command stopIntake(IntakeSubsystem intake) {

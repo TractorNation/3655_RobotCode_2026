@@ -91,8 +91,7 @@ public class RobotContainer {
   // However, it must be initialized to run properly
   private final VisionSubsystem vision;
   private final DriveSubsystem drive;
-  // private final IntakeSubsystem intake;
-
+  private final IntakeSubsystem intake;
   private final TurretSubsystem turret;
 
   // Programming controller
@@ -146,8 +145,8 @@ public class RobotContainer {
             new ModuleIOTalonFX(3));
 
         vision = new VisionSubsystem(
-            new VisionIOLimelight("limelight-br"), new VisionIOLimelight("limelight-bl"));
-        // intake = new IntakeSubsystem(new IntakeIOReal());
+            new VisionIOLimelight("limelight-fl"), new VisionIOLimelight("limelight-fr"));
+        intake = new IntakeSubsystem(new IntakeIOReal());
 
         turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
@@ -166,7 +165,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
             new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
-        // intake = new IntakeSubsystem(new IntakeIOSim());
+        intake = new IntakeSubsystem(new IntakeIOSim());
 
         turret = new TurretSubsystem(new TurretIOSim());
         break;
@@ -190,8 +189,8 @@ public class RobotContainer {
             new VisionIO() {
             });
 
-        // intake = new IntakeSubsystem(new IntakeIO() {
-        // });
+        intake = new IntakeSubsystem(new IntakeIO() {
+        });
         turret = new TurretSubsystem(new TurretIO() {
         });
         break;
@@ -219,7 +218,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackHub(turret, 5));
+    // turret.setDefaultCommand(TurretCommands.trackHub(turret, 5));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -263,8 +262,8 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -1.0,
-                () -> mainTranslation.StickXAxis() * -1.0,
+                () -> mainTranslation.StickYAxis() * -.8,
+                () -> mainTranslation.StickXAxis() * -.8,
                 () -> mainRotation.StickXAxis() * -1.0,
                 1,
                 mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
@@ -331,15 +330,18 @@ public class RobotContainer {
      * by default it has nothing since operator controls the robot's mechanisms and
      * need the drive base
      */
-    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.INTAKE))
-    // .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.OUTPUT))
-    // .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.SNOWBLOWER))
-    // .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.INTAKE))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.OUTPUT))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
+        IntakeMode.SNOWBLOWER))
+        .onFalse(IntakeCommands.stopIntake(intake));
+
+    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+
   }
 
   /**

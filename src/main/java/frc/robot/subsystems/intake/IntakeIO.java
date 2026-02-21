@@ -14,9 +14,15 @@ public interface IntakeIO {
   public default void updateInputs(IntakeIOInputs inputs) {
   }
 
-  public default void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
+  public default void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
   }
 
   public default void stopMotors() {
   }
+
+  public default void runIndexerMotors() {
+
+  }
+
+  public default void runConveyor(double speed) {}
 }
