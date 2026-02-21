@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
-import frc.robot.commands.TurretCommands;
+import frc.robot.commands.TakeBallAndShootPrettyPlease;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -342,6 +342,8 @@ public class RobotContainer {
 
     tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
 
+    tractorController.button(9).onTrue(TakeBallAndShootPrettyPlease.run(turret, intake))
+        .onFalse(TakeBallAndShootPrettyPlease.stop(turret, intake));
   }
 
   /**

@@ -7,6 +7,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -35,10 +37,12 @@ public class TurretIOTalonFX implements TurretIO {
     config.Slot0.kV = TurretConstants.MOTOR_VELOCITY_KV;
     config.Slot0.kS = TurretConstants.MOTOR_VELOCITY_KS;
     config.Feedback.SensorToMechanismRatio = TurretConstants.MOTOR_TO_RING_GEAR_RATIO;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     var encoderConfig = new CANcoderConfiguration();
     encoderConfig.MagnetSensor.MagnetOffset = TurretConstants.CANCODER_OFFSET.getRotations();
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+    encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     encoder.getConfigurator().apply(encoderConfig);
 
     topRingMotor.getConfigurator().apply(config);

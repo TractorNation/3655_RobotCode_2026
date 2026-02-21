@@ -37,6 +37,8 @@ public class TurretSubsystem extends SubsystemBase {
         TurretConstants.POSITION_KD, constraints);
 
     target = new TurretState(0, 0);
+    
+    setTarget(0, 0);
 
     switch (DriverStation.getAlliance().get()) {
       case Red:
@@ -56,7 +58,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
 
-    goalState = new TrapezoidProfile.State(Units.degreesToRotations(wrapTarget(target.getPosition())), 0);
+    goalState = new TrapezoidProfile.State(Units.degreesToRotations(target.getPosition()), 0);
 
     setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
 
@@ -92,8 +94,13 @@ public class TurretSubsystem extends SubsystemBase {
     return currentPosition + difference;
   }
 
+  public void shootPlease() {
+    io.setBottomRingMotorVelocity(-10);
+    io.setTopRingMotorVelocity(10);
+  }
+
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
-    target.setPosition(targetPositionDegrees);
+    target.setPosition(wrapTarget(targetPositionDegrees));
     target.setShooterSpeed(shooterVelocityRotPerSec);
   }
 
@@ -108,5 +115,13 @@ public class TurretSubsystem extends SubsystemBase {
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
     setTarget(-targetAngle, Math.min(shooterSpeed, 75));
+  }
+
+  public void stopMotors() {
+    io.stopShooter();
+  }
+
+  public void runShooter(double shooterSpeedRotPerSec) {
+    setTarget(target.positionDegrees, shooterSpeedRotPerSec);
   }
 }
