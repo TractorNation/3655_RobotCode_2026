@@ -20,7 +20,7 @@ public class IntakeCommands {
           intake.runConveyor(-0.6);
           break;
         case LOBSHOT:
-          intake.runMotors(1, -0.5, -0.8); // + - -
+          intake.runMotors(0.45, -1, -0.5); // + - -
           break;
         case LONGSHOT:
           intake.runMotors(intakeSpeed, intakeSpeed, -intakeSpeed); // + + -
@@ -43,7 +43,12 @@ public class IntakeCommands {
   }
 
   public static Command runIndexer(IntakeSubsystem intake) {
-    return Commands.runOnce(() -> {intake.runIndexerMotors();}, intake);
+    return Commands.sequence(
+        Commands.runOnce(() -> intake.runIndexerMotors(), intake),
+        Commands.runOnce(() -> intake.runAgitator(-0.5), intake),
+        Commands.waitSeconds(2),
+        Commands.runOnce(() -> intake.runAgitator(0.5), intake),
+        Commands.waitSeconds(0.5)).repeatedly();
   }
 
   public static Command stopIntake(IntakeSubsystem intake) {

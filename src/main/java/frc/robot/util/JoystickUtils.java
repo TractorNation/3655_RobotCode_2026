@@ -14,15 +14,17 @@ public class JoystickUtils {
   public static double curveInput(double input, double deadband) {
 
     // returns zero if input is less than deadband
-    if (MathUtil.applyDeadband(input, deadband) == 0) return 0;
+    if (MathUtil.applyDeadband(input, deadband) == 0)
+      return 0;
 
-    double correctedValue = input;
+    double correctedValue = Math.copySign((Math.pow(Math.abs(input), 4) + (.055 * input)), input);
 
-    // does funky math to force linear output between deadband and 1
-    correctedValue = (correctedValue - (deadband * Math.signum(correctedValue))) / (1 - deadband);
+    // // does funky math to force linear output between deadband and 1
+    // correctedValue = (correctedValue - (deadband * Math.signum(correctedValue)))
+    // / (1 - deadband);
 
-    // raises input to a specified power for a smoother feel
-    correctedValue = Math.copySign(Math.pow(Math.abs(correctedValue), 2), input);
+    // // raises input to a specified power for a smoother feel
+    // correctedValue = Math.copySign(Math.pow(Math.abs(correctedValue), 3), input);
 
     return Math.min(correctedValue, 1.0);
   }

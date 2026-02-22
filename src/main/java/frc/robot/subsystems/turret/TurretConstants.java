@@ -17,7 +17,7 @@ public class TurretConstants {
   public static final double MOTOR_TO_RING_GEAR_RATIO = 6.2857;
   public static final double TURRET_TO_CANCODER_RATIO = 6.7692;
 
-  public static final Rotation2d CANCODER_OFFSET = Rotation2d.fromRotations(-0.197754);
+  public static final Rotation2d CANCODER_OFFSET = Rotation2d.fromRotations(0);
 
   public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 4.0;
   public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;

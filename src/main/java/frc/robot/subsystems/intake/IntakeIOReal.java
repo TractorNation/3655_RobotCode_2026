@@ -14,9 +14,10 @@ public class IntakeIOReal implements IntakeIO {
 
   private final TalonFX conveyorMotor = new TalonFX(IntakeConstants.CONVEYOR_ID);
   private final TalonFX kickerMotor = new TalonFX(IntakeConstants.KICKER_ID);
+  private final TalonFX agitatorMotor = new TalonFX(IntakeConstants.AGITATOR_ID);
 
   SparkMaxConfig frontConfig;
-  SparkMaxConfig topConfig; 
+  SparkMaxConfig topConfig;
   SparkMaxConfig backConfig;
 
   public IntakeIOReal() {
@@ -54,17 +55,23 @@ public class IntakeIOReal implements IntakeIO {
     backMotor.stopMotor();
     conveyorMotor.stopMotor();
     kickerMotor.stopMotor();
+    agitatorMotor.stopMotor();
   }
 
-  @Override 
+  @Override
   public void runIndexerMotors() {
     conveyorMotor.set(0.8);
-    kickerMotor.set(-0.6);
+    kickerMotor.set(-0.7);
   }
 
   @Override
   public void runConveyor(double speed) {
-    conveyorMotor.set(speed);
+    // conveyorMotor.set(speed);
+  }
+
+  @Override
+  public void runAgitator(double speed) {
+    agitatorMotor.set(speed);
   }
 
 }

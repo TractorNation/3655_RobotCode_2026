@@ -25,4 +25,6 @@ public interface IntakeIO {
   }
 
   public default void runConveyor(double speed) {}
+
+  public default void runAgitator(double speed) {}
 }

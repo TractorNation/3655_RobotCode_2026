@@ -3,6 +3,8 @@ package frc.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.TakeBallAndShootPrettyPlease;
+import frc.robot.commands.TurretCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -198,6 +201,11 @@ public class RobotContainer {
 
     // region Autonomous Commands
 
+    new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+        .onFalse(IntakeCommands.stopIntake(intake));
+
+    new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -218,7 +226,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // turret.setDefaultCommand(TurretCommands.trackHub(turret, 5));
+    turret.setDefaultCommand(TurretCommands.trackHub(turret, 5));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -262,8 +270,8 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -.8,
-                () -> mainTranslation.StickXAxis() * -.8,
+                () -> mainTranslation.StickYAxis() * -0.88,
+                () -> mainTranslation.StickXAxis() * -0.88,
                 () -> mainRotation.StickXAxis() * -1.0,
                 1,
                 mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
@@ -339,11 +347,17 @@ public class RobotContainer {
     tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
         IntakeMode.SNOWBLOWER))
         .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(6).onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(9).onTrue(TakeBallAndShootPrettyPlease.run(turret, intake))
-        .onFalse(TakeBallAndShootPrettyPlease.stop(turret, intake));
+    tractorController.axisMagnitudeGreaterThan(3, 0.1)
+        .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
+
+    tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
+        .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));
   }
 
   /**

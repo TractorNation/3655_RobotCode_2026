@@ -31,4 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopMotors() {
     io.stopMotors();
   }
+
+  public void runAgitator(double speed) {
+    io.runAgitator(speed);
+  }
 }

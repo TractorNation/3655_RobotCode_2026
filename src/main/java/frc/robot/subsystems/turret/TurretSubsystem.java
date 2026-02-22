@@ -25,6 +25,7 @@ public class TurretSubsystem extends SubsystemBase {
   private double setpoint;
   private Rectangle2d scoringZone;
   private Translation2d hubPosition;
+  private double shooterMultipler = 10;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
@@ -37,7 +38,7 @@ public class TurretSubsystem extends SubsystemBase {
         TurretConstants.POSITION_KD, constraints);
 
     target = new TurretState(0, 0);
-    
+
     setTarget(0, 0);
 
     switch (DriverStation.getAlliance().get()) {
@@ -76,10 +77,12 @@ public class TurretSubsystem extends SubsystemBase {
 
     Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
     Logger.recordOutput("Turret/targetPosition", target.getPosition());
-    Logger.recordOutput("Shooter/CurrentVelocity",
-        inputs.shooterVelocity);
+    Logger.recordOutput("Shooter/CurrentVelocity", inputs.shooterVelocity);
     Logger.recordOutput("Shooter/TargetVelocity", target.getShooterSpeed());
-    Logger.recordOutput("Turret/TopRingGearVelocity", inputs.topRingMotorVelocity);
+    Logger.recordOutput("Turret/TopRingGear/Velocity", inputs.topRingMotorVelocity);
+    Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
+    Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
+    Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -92,11 +95,6 @@ public class TurretSubsystem extends SubsystemBase {
       difference += 360;
 
     return currentPosition + difference;
-  }
-
-  public void shootPlease() {
-    io.setBottomRingMotorVelocity(-10);
-    io.setTopRingMotorVelocity(10);
   }
 
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
@@ -114,11 +112,15 @@ public class TurretSubsystem extends SubsystemBase {
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
-    setTarget(-targetAngle, Math.min(shooterSpeed, 75));
+    setTarget(-targetAngle, 50);
+  }
+
+  public void updateTarget(double value) {
+    setTarget(target.positionDegrees + (value * 5), target.shooterSpeedRotPerSec);
   }
 
   public void stopMotors() {
-    io.stopShooter();
+    setTarget(target.positionDegrees, 0);
   }
 
   public void runShooter(double shooterSpeedRotPerSec) {
