@@ -130,7 +130,7 @@ public final class Constants {
    * This is used to select different constants (e.g., gear ratios, masses) for
    * different robot builds (competition bot vs. prototype bot).
    */
-  public static final RobotType currentRobot = RobotType.PROTOBOT;
+  public static final RobotType currentRobot = RobotType.COMPBOT;
 
   /**
    * Robot type options for different hardware configurations.

@@ -14,25 +14,25 @@ public class DriveConstants {
   public static final int FL_TURN_ID = 2;
   public static final int FL_ENCODER_ID = 3;
   public static final Rotation2d PROTOBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.432129);
-  public static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.431396);
+  public static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.322510);
 
   public static final int FR_DRIVE_ID = 4;
   public static final int FR_TURN_ID = 5;
   public static final int FR_ENCODER_ID = 6;
   public static final Rotation2d PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.111084);
-  public static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.395996);
+  public static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.431885);
 
   public static final int BL_DRIVE_ID = 7;
   public static final int BL_TURN_ID = 8;
   public static final int BL_ENCODER_ID = 9;
   public static final Rotation2d PROTOBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.062500);
-  public static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.062744);
+  public static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.380127);
 
   public static final int BR_DRIVE_ID = 10;
   public static final int BR_TURN_ID = 11;
   public static final int BR_ENCODER_ID = 12;
   public static final Rotation2d PROTOBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.485596);
-  public static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.483887);
+  public static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.278320);
 
   public static final int PIGEON_ID = 20;
 
