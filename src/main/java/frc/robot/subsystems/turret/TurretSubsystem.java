@@ -102,17 +102,18 @@ public class TurretSubsystem extends SubsystemBase {
     target.setShooterSpeed(shooterVelocityRotPerSec);
   }
 
-  public void targetHub(double shooterSpeedRequest) {
+  public void targetHub() {
     Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
     Translation2d translation = currentPose.getTranslation();
     double targetAngle;
-    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
-
     Translation2d robotToHub = hubPosition.minus(translation);
+
+    double shooterSpeedRequest = Math.min(robotToHub.getNorm() * 10, 75);
+    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
-    setTarget(-targetAngle, 50);
+    setTarget(-targetAngle, shooterSpeed);
   }
 
   public void updateTarget(double value) {

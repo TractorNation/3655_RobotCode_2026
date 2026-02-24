@@ -226,7 +226,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackHub(turret, 5));
+    turret.setDefaultCommand(TurretCommands.trackHub(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -355,6 +355,9 @@ public class RobotContainer {
 
     tractorController.axisMagnitudeGreaterThan(3, 0.1)
         .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
+
+    tractorController.button(5).onTrue(Commands.run(() -> turret.runShooter(85), turret))
+        .onFalse(Commands.runOnce(() -> turret.runShooter(0), turret));
 
     tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
         .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));

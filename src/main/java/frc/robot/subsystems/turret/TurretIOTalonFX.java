@@ -44,6 +44,7 @@ public class TurretIOTalonFX implements TurretIO {
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     encoder.getConfigurator().apply(encoderConfig);
+    encoder.setPosition(0);
 
     topRingMotor.getConfigurator().apply(config);
     bottomRingMotor.getConfigurator().apply(config);

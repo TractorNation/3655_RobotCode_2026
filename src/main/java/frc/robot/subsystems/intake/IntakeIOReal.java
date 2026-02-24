@@ -66,7 +66,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void runConveyor(double speed) {
-    // conveyorMotor.set(speed);
+    conveyorMotor.set(speed);
   }
 
   @Override
