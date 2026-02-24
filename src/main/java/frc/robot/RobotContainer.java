@@ -92,10 +92,10 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   // Vision does not have any direct commands, so it is "unused" in this file
   // However, it must be initialized to run properly
-  private final VisionSubsystem vision;
   private final DriveSubsystem drive;
-  private final IntakeSubsystem intake;
-  private final TurretSubsystem turret;
+  // private final IntakeSubsystem intake;
+  // private final TurretSubsystem turret;
+  // private final VisionSubsystem vision;
 
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
@@ -147,11 +147,11 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        vision = new VisionSubsystem(
-            new VisionIOLimelight("limelight-fl"), new VisionIOLimelight("limelight-fr"));
-        intake = new IntakeSubsystem(new IntakeIOReal());
+        // vision = new VisionSubsystem(
+        //     new VisionIOLimelight("limelight-fl"), new VisionIOLimelight("limelight-fr"));
+        // intake = new IntakeSubsystem(new IntakeIOReal());
 
-        turret = new TurretSubsystem(new TurretIOTalonFX());
+        // turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -165,12 +165,12 @@ public class RobotContainer {
             new ModuleIOSim(),
             new ModuleIOSim());
 
-        vision = new VisionSubsystem(
-            new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
-            new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
-        intake = new IntakeSubsystem(new IntakeIOSim());
+        // vision = new VisionSubsystem(
+        //     new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
+        //     new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
+        // intake = new IntakeSubsystem(new IntakeIOSim());
 
-        turret = new TurretSubsystem(new TurretIOSim());
+        // turret = new TurretSubsystem(new TurretIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -188,23 +188,23 @@ public class RobotContainer {
             },
             new ModuleIO() {
             });
-        vision = new VisionSubsystem(
-            new VisionIO() {
-            });
+        // vision = new VisionSubsystem(
+        //     new VisionIO() {
+        //     });
 
-        intake = new IntakeSubsystem(new IntakeIO() {
-        });
-        turret = new TurretSubsystem(new TurretIO() {
-        });
+        // intake = new IntakeSubsystem(new IntakeIO() {
+        // });
+        // turret = new TurretSubsystem(new TurretIO() {
+        // });
         break;
     }
 
     // region Autonomous Commands
 
-    new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
-        .onFalse(IntakeCommands.stopIntake(intake));
+    // new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
 
-    new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+    // new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -226,7 +226,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackHub(turret));
+    // turret.setDefaultCommand(TurretCommands.trackHub(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -270,9 +270,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -0.88,
-                () -> mainTranslation.StickXAxis() * -0.88,
-                () -> mainRotation.StickXAxis() * -1.0,
+                () -> mainTranslation.StickYAxis() * 0.88,
+                () -> mainTranslation.StickXAxis() * 0.88,
+                () -> -mainRotation.StickXAxis(),
                 1,
                 mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
 
@@ -338,29 +338,29 @@ public class RobotContainer {
      * by default it has nothing since operator controls the robot's mechanisms and
      * need the drive base
      */
-    tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.INTAKE))
-        .onFalse(IntakeCommands.stopIntake(intake));
-    tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.OUTPUT))
-        .onFalse(IntakeCommands.stopIntake(intake));
-    tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
-        IntakeMode.SNOWBLOWER))
-        .onFalse(IntakeCommands.stopIntake(intake));
-    tractorController.button(6).onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
-        .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
+    //     IntakeMode.INTAKE))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
+    //     IntakeMode.OUTPUT))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
+    //     IntakeMode.SNOWBLOWER))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(6).onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
-        .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
+    //     .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.axisMagnitudeGreaterThan(3, 0.1)
-        .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
+    // tractorController.axisMagnitudeGreaterThan(3, 0.1)
+    //     .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
 
-    tractorController.button(5).onTrue(Commands.run(() -> turret.runShooter(85), turret))
-        .onFalse(Commands.runOnce(() -> turret.runShooter(0), turret));
+    // tractorController.button(5).onTrue(Commands.run(() -> turret.runShooter(85), turret))
+    //     .onFalse(Commands.runOnce(() -> turret.runShooter(0), turret));
 
-    tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
-        .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));
+    // tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
+    //     .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));
   }
 
   /**
