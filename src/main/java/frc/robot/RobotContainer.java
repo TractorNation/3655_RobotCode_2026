@@ -270,9 +270,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -0.88,
-                () -> mainTranslation.StickXAxis() * -0.88,
-                () -> mainRotation.StickXAxis() * -1.0,
+                () -> mainTranslation.StickYAxis() * -.8,
+                () -> mainTranslation.StickXAxis() * -.8,
+                () -> mainRotation.StickXAxis() * -.85,
                 1,
                 mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
 
@@ -361,6 +361,9 @@ public class RobotContainer {
 
     tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
         .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));
+
+    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.updateShooterSpeed(-1), turret));
+    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.updateShooterSpeed(1), turret));
   }
 
   /**
