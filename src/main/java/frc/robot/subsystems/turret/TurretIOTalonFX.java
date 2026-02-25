@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
@@ -98,12 +97,5 @@ public class TurretIOTalonFX implements TurretIO {
   public void stopShooter() {
     topRingMotor.setControl(new VelocityVoltage(0.0));
     bottomRingMotor.setControl(new VelocityVoltage(0.0));
-  }
-
-  @Override
-  public double getTurretPosition() {
-    return Units.rotationsToDegrees(
-        canCoderPosition.getValueAsDouble()
-            / TurretConstants.TURRET_TO_CANCODER_RATIO);
   }
 }

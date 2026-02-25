@@ -32,8 +32,4 @@ public interface TurretIO {
 
   public default void stopShooter() {
   }
-
-  public default double getTurretPosition() {
-    return 0.0;
-  }
 }
