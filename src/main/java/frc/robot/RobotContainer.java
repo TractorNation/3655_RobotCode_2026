@@ -203,6 +203,8 @@ public class RobotContainer {
         .onFalse(IntakeCommands.stopIntake(intake));
 
     new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+    new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
+    new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -268,15 +270,22 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -.8,
-                () -> mainTranslation.StickXAxis() * -.8,
-                () -> mainRotation.StickXAxis() * -.85,
-                1,
-                mainTranslation.fireStage1().or(mainTranslation.fireStage2())));
+                () -> mainTranslation.StickYAxis() * -.9,
+                () -> mainTranslation.StickXAxis() * -.9,
+                () -> mainRotation.StickXAxis() * -.95,
+                0.75,
+                mainTranslation.fireStage1()));
 
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+
+        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
+            .onFalse(IntakeCommands.stopIntake(intake));
+        mainRotation.A2().onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
+            .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
       // Programming uses Xbox controllers
@@ -354,14 +363,16 @@ public class RobotContainer {
     tractorController.axisMagnitudeGreaterThan(3, 0.1)
         .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
 
-    tractorController.button(5).onTrue(Commands.run(() -> turret.runShooter(85), turret))
-        .onFalse(Commands.runOnce(() -> turret.runShooter(0), turret));
+    tractorController.button(5).onTrue(IntakeCommands.reverseIndexer(intake))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(9).onTrue(Commands.runOnce(() -> intake.runConveyor(0.6), intake))
-        .onFalse(Commands.runOnce(() -> intake.runConveyor(0), intake));
+    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
+    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
+    tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-70), turret));
+    tractorController.button(12).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(0), turret));
 
-    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.updateShooterSpeed(-1), turret));
-    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.updateShooterSpeed(1), turret));
+    tractorController.button(19).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(-1), turret));
+    tractorController.button(20).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(1), turret));
   }
 
   /**

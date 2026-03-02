@@ -22,7 +22,7 @@ public class TurretConstants {
   public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 4.0;
   public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;
 
-  public static final double MOTOR_VELOCITY_KP = 1.5;
+  public static final double MOTOR_VELOCITY_KP = 2.5;
   public static final double MOTOR_VELOCITY_KI = 0.0;
   public static final double MOTOR_VELOCITY_KD = 0.00;
   public static final double MOTOR_VELOCITY_KS = 0.0;

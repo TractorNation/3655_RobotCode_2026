@@ -36,8 +36,13 @@ public class IntakeSubsystem extends SubsystemBase {
     io.stopMotors();
   }
 
-  public void runAgitator(double speed) {
-    io.runAgitator(speed);
+  public void runKicker(double speed) {
+    io.runKicker(speed);
+  }
+
+  public void reverseIndexerMotors() {
+    io.runKicker(0.7);
+    io.runConveyor(-0.7);
   }
 
   public void runSnowblower() {

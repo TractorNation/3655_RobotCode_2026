@@ -60,8 +60,8 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void runIndexerMotors() {
-    conveyorMotor.set(0.8);
-    kickerMotor.set(-0.7);
+    kickerMotor.set(-0.75);
+    conveyorMotor.set(0.4);
   }
 
   @Override
@@ -70,8 +70,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void runAgitator(double speed) {
-    agitatorMotor.set(speed);
+  public void runKicker(double speed) {
+    kickerMotor.set(speed);
   }
 
 }
