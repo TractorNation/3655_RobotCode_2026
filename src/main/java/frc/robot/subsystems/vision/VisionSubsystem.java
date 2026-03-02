@@ -26,6 +26,7 @@ import frc.robot.RobotState.VisionMeasurement;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.util.FieldUtil;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -33,10 +34,6 @@ public class VisionSubsystem extends SubsystemBase {
   private final VisionIO[] io;
   private final Alert[] disconnectedAlerts;
   private AprilTagFieldLayout tagLayout;
-
-  private final Rectangle2d FIELD_BOUNDS = new Rectangle2d(
-      new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
-      new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
 
   public VisionSubsystem(VisionIO... io) {
     this.io = io;
@@ -65,7 +62,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isInsideField(PoseObservation observation) {
-    return FIELD_BOUNDS.contains(observation.pose().getTranslation()) && (observation.pose().getTranslation() != Translation2d.kZero);
+    return FieldUtil.FIELD_BOUNDS.contains(observation.pose().getTranslation()) && (observation.pose().getTranslation() != Translation2d.kZero);
   }
 
   @Override

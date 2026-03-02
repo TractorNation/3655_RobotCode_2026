@@ -1,11 +1,15 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
+import frc.robot.util.FieldUtil;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final IntakeIO io;
-  private final IntakeIO.IntakeIOInputs inputs = new IntakeIO.IntakeIOInputs();
+  private final IntakeIOInputs inputs = new IntakeIOInputs();
+  private final double maxDistanceFromWall = 11;
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
@@ -34,5 +38,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void runAgitator(double speed) {
     io.runAgitator(speed);
+  }
+
+  public void runSnowblower() {
+    double distance = FieldUtil.getDistanceToWall(RobotState.getInstance().getPose());
+
+    runMotors((0.5 / maxDistanceFromWall) * distance, (-1 / maxDistanceFromWall) * distance,
+        (1 / maxDistanceFromWall) * distance); // + - +
   }
 }

@@ -26,7 +26,7 @@ public class IntakeCommands {
           intake.runMotors(intakeSpeed, intakeSpeed, -intakeSpeed); // + + -
           break;
         case SNOWBLOWER:
-          intake.runMotors(0.5, -1, intakeSpeed); // + - +
+          intake.runSnowblower();
           break;
         case TEST_TOP:
           intake.runMotors(0, 1, 0);
