@@ -65,27 +65,27 @@
     {
       "anchor": {
         "x": 5.802236467236466,
-        "y": 5.384702380952381
+        "y": 5.507905982905982
       },
       "prevControl": {
-        "x": 6.396566951566951,
-        "y": 5.371782153032153
+        "x": 6.448247863247861,
+        "y": 5.52082621082621
       },
       "nextControl": {
-        "x": 5.207905982905981,
-        "y": 5.3976226088726085
+        "x": 5.207884420758994,
+        "y": 5.496018941976433
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.119535714285715,
-        "y": 5.384702380952381
+        "x": 3.5514404761904768,
+        "y": 5.507905982905982
       },
       "prevControl": {
-        "x": 2.809450244200244,
-        "y": 5.378242266992267
+        "x": 3.241355006105006,
+        "y": 5.5014458689458685
       },
       "nextControl": null,
       "isLocked": false,
@@ -154,7 +154,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "inake mid",
+      "name": "start-intake",
       "waypointRelativePos": 1.983812949640287,
       "endWaypointRelativePos": 3.357913669064749,
       "command": {
@@ -165,13 +165,13 @@
       }
     },
     {
-      "name": "shoot",
+      "name": "set-turret-speed-46",
       "waypointRelativePos": 5.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "shoot"
+          "name": "set-turret-speed-46"
         }
       }
     }
