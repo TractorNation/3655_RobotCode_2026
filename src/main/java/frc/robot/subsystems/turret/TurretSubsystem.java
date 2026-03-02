@@ -1,4 +1,5 @@
 package frc.robot.subsystems.turret;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -24,6 +25,8 @@ public class TurretSubsystem extends SubsystemBase {
   private double setpoint;
   private Rectangle2d scoringZone;
   private Translation2d hubPosition;
+
+  // Temp variable for finding ideal speeds
   public static double shooterSpeedIncremented = 0;
 
   public TurretSubsystem(TurretIO io) {
@@ -86,7 +89,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double wrapTarget(double targetPositionDegrees) {
-    double currentPosition = io.getTurretPosition();
+    double currentPosition = inputs.turretPosition.getDegrees();
     double difference = targetPositionDegrees - currentPosition;
 
     while (difference > 180)
