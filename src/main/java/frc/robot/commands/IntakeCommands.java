@@ -26,7 +26,9 @@ public class IntakeCommands {
           intake.runMotors(intakeSpeed, intakeSpeed, -intakeSpeed); // + + -
           break;
         case SNOWBLOWER:
-          intake.runMotors(0.5, -1, intakeSpeed); // + - +
+          intake.runMotors(0.5,
+              -1,
+              intakeSpeed); // + - +
           break;
         case TEST_TOP:
           intake.runMotors(0, 1, 0);
@@ -43,12 +45,11 @@ public class IntakeCommands {
   }
 
   public static Command runIndexer(IntakeSubsystem intake) {
-    return Commands.sequence(
-        Commands.runOnce(() -> intake.runIndexerMotors(), intake),
-        Commands.runOnce(() -> intake.runAgitator(-0.5), intake),
-        Commands.waitSeconds(2),
-        Commands.runOnce(() -> intake.runAgitator(0.5), intake),
-        Commands.waitSeconds(0.5)).repeatedly();
+    return Commands.runOnce(() -> intake.runIndexerMotors(), intake);
+  }
+
+  public static Command reverseIndexer(IntakeSubsystem intake) {
+    return Commands.runOnce(() -> intake.reverseIndexerMotors(), intake);
   }
 
   public static Command stopIntake(IntakeSubsystem intake) {
