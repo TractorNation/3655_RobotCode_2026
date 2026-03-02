@@ -1,6 +1,4 @@
 package frc.robot.subsystems.turret;
-
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -26,9 +24,7 @@ public class TurretSubsystem extends SubsystemBase {
   private double setpoint;
   private Rectangle2d scoringZone;
   private Translation2d hubPosition;
-  private double shooterMultipler = 10;
-
-  public static double shooterSpeed = 0;
+  public static double shooterSpeedIncremented = 0;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
@@ -86,7 +82,7 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
-    Logger.recordOutput("Turret/ShootterSpeedReal", shooterSpeed);
+    Logger.recordOutput("Turret/ShootterSpeedIncrement", shooterSpeedIncremented);
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -112,13 +108,12 @@ public class TurretSubsystem extends SubsystemBase {
     double targetAngle;
     Translation2d robotToHub = hubPosition.minus(translation);
 
-    double shooterSpeedRequest = Math.min(shooterSpeed, 85);
+    double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
     double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
-    Logger.recordOutput("Turret/distanceToHub", robotToHub.getNorm());
-
+    Logger.recordOutput("Turret/DistanceToHub", robotToHub.getNorm());
     setTarget(-targetAngle, shooterSpeed);
   }
 
@@ -126,8 +121,12 @@ public class TurretSubsystem extends SubsystemBase {
     setTarget(target.positionDegrees + (value * 5), target.shooterSpeedRotPerSec);
   }
 
-  public void updateShooterSpeed(double increment) {
-    shooterSpeed += increment;
+  public void incrementShooterSpeed(double increment) {
+    shooterSpeedIncremented += increment;
+  }
+
+  public void setShooterSpeed(double speed) {
+    shooterSpeedIncremented = speed;
   }
 
   public void stopMotors() {
