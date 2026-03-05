@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.RobotState;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.util.JoystickUtils;
 
@@ -162,9 +161,9 @@ public class DriveCommands {
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds = new ChassisSpeeds(
-              linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
-              linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
-              omega * DriveConstants.MAX_ANGULAR_SPEED);
+              linearVelocity.getX() * Constants.RobotConfig.MAX_LINEAR_SPEED,
+              linearVelocity.getY() * Constants.RobotConfig.MAX_LINEAR_SPEED,
+              omega * Constants.RobotConfig.MAX_ANGULAR_SPEED);
 
           boolean isFlipped = DriverStation.getAlliance().isPresent()
               && DriverStation.getAlliance().get() == Alliance.Red;
@@ -317,7 +316,7 @@ public class DriveCommands {
                   for (int i = 0; i < 4; i++) {
                     state.wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
                   }
-                  state.wheelRadius = (state.gyroDelta * Constants.DRIVE_BASE_RADIUS) / state.wheelDelta;
+                  state.wheelRadius = (state.gyroDelta * Constants.RobotConfig.DRIVE_BASE_RADIUS) / state.wheelDelta;
 
                   Logger.recordOutput("Drive/Commands/WheelRadius/Wheel Radius", state.wheelRadius);
                 })

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.IntakeMode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.TurretCommands;
@@ -28,9 +29,6 @@ import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretIOTalonFX;
 import frc.robot.subsystems.turret.TurretSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants.IntakeMode;
-import frc.robot.subsystems.vision.VisionConstants;
-
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -134,7 +132,7 @@ public class RobotContainer {
    * are hardware-agnostic.
    */
   public RobotContainer() {
-    switch (Constants.currentMode) {
+    switch (Constants.RobotConfig.currentMode) {
       // Real robot, instantiate hardware IO implementations
       // These implementations read from and write to actual hardware
       case REAL:
@@ -165,8 +163,8 @@ public class RobotContainer {
             new ModuleIOSim());
 
         // vision = new VisionSubsystem(
-        // new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
-        // new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
+        // new VisionIOSim("left", Constants.Vision.LEFT_ROBOT_TO_CAMERA),
+        // new VisionIOSim("right", Constants.Vision.RIGHT_ROBOT_TO_CAMERA));
         intake = new IntakeSubsystem(new IntakeIOSim());
 
         // turret = new TurretSubsystem(new TurretIOSim());
@@ -269,7 +267,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // region Driver controls
-    switch (Constants.currentDriver) {
+    switch (Constants.RobotConfig.currentDriver) {
       case MAIN:
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(

@@ -14,18 +14,17 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
-import frc.robot.subsystems.vision.VisionConstants.ObservationType;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.Constants;
+import frc.robot.Constants.ObservationType;
+import frc.robot.Constants.PoseObservation;
+import frc.robot.Constants.TargetObservation;
 import frc.robot.util.FieldUtil;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -102,15 +101,15 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Multiple tags in observation
             observation.tagCount() == 0 // Must have at least one tag
-                || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
-                || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
+                || observation.ambiguity() > Constants.Vision.MAX_AMBIGUITY // Must be a trustworthy pose
+                || observation.averageTagDistance() > Constants.Vision.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || !isInsideField(observation)
 
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
-                || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
-                || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
+                || observation.ambiguity() > Constants.Vision.MAX_AMBIGUITY // Must be a trustworthy pose
+                || observation.averageTagDistance() > Constants.Vision.SINGLE_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || !isInsideField(observation);
 
@@ -129,15 +128,15 @@ public class VisionSubsystem extends SubsystemBase {
         double angularStdDev;
 
         // Calculate standard deviations
-        linearStdDev = VisionConstants.LINEAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+        linearStdDev = Constants.Vision.LINEAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
             / observation.tagCount();
-        angularStdDev = VisionConstants.ANGULAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+        angularStdDev = Constants.Vision.ANGULAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
             / observation.tagCount();
 
         if (observation.type() == ObservationType.MEGATAG_2) {
-          linearStdDev = VisionConstants.MEGATAG2_LINEAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+          linearStdDev = Constants.Vision.MEGATAG2_LINEAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
               / observation.tagCount();
-          angularStdDev = VisionConstants.MEGATAG2_ANGULAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+          angularStdDev = Constants.Vision.MEGATAG2_ANGULAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
               / observation.tagCount();
         }
 

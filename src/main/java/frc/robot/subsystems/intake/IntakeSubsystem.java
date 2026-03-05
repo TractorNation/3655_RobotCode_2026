@@ -1,11 +1,11 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeState;
+import frc.robot.Constants;
 import frc.robot.RobotState;
-import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -14,8 +14,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final IntakeIOInputs inputs = new IntakeIOInputs();
   private IntakeState state = IntakeState.TUCKED;
   private IntakeState preBumpSafeState = state;
-  private Rectangle2d redBumps = new Rectangle2d(new Translation2d(0, 0), new Translation2d(0, 0));
-  private Rectangle2d blueBumps = new Rectangle2d(new Translation2d(0, 0), new Translation2d(0, 0));
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
@@ -58,18 +56,18 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     switch (state) {
       case TUCKED:
-        io.setSliderPosition(IntakeConstants.SliderPositions.IN);
+        io.setSliderPosition(Constants.SliderPositions.IN);
         break;
       case TRANSITION:
         // Set actual intake to its up position
-        io.setSliderPosition(IntakeConstants.SliderPositions.TRANSITION);
+        io.setSliderPosition(Constants.SliderPositions.TRANSITION);
         break;
       case OUT:
-        io.setSliderPosition(IntakeConstants.SliderPositions.OUT);
+        io.setSliderPosition(Constants.SliderPositions.OUT);
         // set actual intake to its down position
         break;
       case BUMP_SAFE:
-        io.setSliderPosition(IntakeConstants.SliderPositions.BUMP_SAFE);
+        io.setSliderPosition(Constants.SliderPositions.BUMP_SAFE);
         // maybe just rotate actual intake up a bit, have to figure that out later
       default:
         break;
@@ -83,8 +81,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void staySafeFromBump() {
     Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
     Translation2d translation = currentPose.getTranslation();
-    
-    if(redBumps.contains(translation) || blueBumps.contains(translation)) {
+
+    if (Constants.Field.RED_BUMP_ZONE.contains(translation) || Constants.Field.BLUE_BUMP_ZONE.contains(translation)) {
       setState(IntakeState.BUMP_SAFE);
     } else {
       setState(preBumpSafeState);

@@ -6,12 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.DriveConstants;
 
 /**
  * Unit tests for validating robot constants.
  * 
- * <p>These tests ensure that constants are physically reasonable and consistent.
+ * <p>
+ * These tests ensure that constants are physically reasonable and consistent.
  * This helps catch configuration errors early.
  */
 @DisplayName("Constants Validation Tests")
@@ -20,25 +20,25 @@ class ConstantsTest {
   @Test
   @DisplayName("Track width should be positive")
   void testTrackWidthPositive() {
-    assertTrue(Constants.TRACK_WIDTH_X > 0, "Track width X should be positive");
-    assertTrue(Constants.TRACK_WIDTH_Y > 0, "Track width Y should be positive");
+    assertTrue(Constants.RobotConfig.TRACK_WIDTH_X > 0, "Track width X should be positive");
+    assertTrue(Constants.RobotConfig.TRACK_WIDTH_Y > 0, "Track width Y should be positive");
   }
 
   @Test
   @DisplayName("Bumper width should be larger than track width")
   void testBumperLargerThanTrack() {
     assertTrue(
-        Constants.BUMPER_WIDTH_X >= Constants.TRACK_WIDTH_X,
+        Constants.RobotConfig.BUMPER_WIDTH_X >= Constants.RobotConfig.TRACK_WIDTH_X,
         "Bumper width X should be >= track width X");
     assertTrue(
-        Constants.BUMPER_WIDTH_Y >= Constants.TRACK_WIDTH_Y,
+        Constants.RobotConfig.BUMPER_WIDTH_Y >= Constants.RobotConfig.TRACK_WIDTH_Y,
         "Bumper width Y should be >= track width Y");
   }
 
   @Test
   @DisplayName("Max linear speed should be positive and reasonable")
   void testMaxLinearSpeed() {
-    double maxSpeedMps = DriveConstants.MAX_LINEAR_SPEED;
+    double maxSpeedMps = Constants.RobotConfig.MAX_LINEAR_SPEED;
     assertTrue(maxSpeedMps > 0, "Max linear speed should be positive");
     
     // FRC robots typically don't exceed 20 ft/s (~6 m/s)
@@ -50,9 +50,9 @@ class ConstantsTest {
   @Test
   @DisplayName("Wheel radius should be positive and reasonable")
   void testWheelRadius() {
-    double radius = DriveConstants.WHEEL_RADIUS;
+    double radius = Constants.RobotConfig.WHEEL_RADIUS;
     assertTrue(radius > 0, "Wheel radius should be positive");
-    
+
     // Wheel radius should be reasonable (typical swerve wheels are 2-4 inches)
     double minRadius = Units.inchesToMeters(1.0);
     double maxRadius = Units.inchesToMeters(5.0);
@@ -64,20 +64,19 @@ class ConstantsTest {
   @Test
   @DisplayName("Gear ratios should be positive")
   void testGearRatios() {
-    assertTrue(DriveConstants.DRIVE_GEAR_RATIO > 0, "Drive gear ratio should be positive");
-    assertTrue(DriveConstants.TURN_GEAR_RATIO > 0, "Turn gear ratio should be positive");
+    assertTrue(Constants.OffsetAndRatio.Drive.DRIVE_GEAR_RATIO > 0, "Drive gear ratio should be positive");
+    assertTrue(Constants.OffsetAndRatio.Drive.TURN_GEAR_RATIO > 0, "Turn gear ratio should be positive");
   }
 
   @Test
   @DisplayName("Robot mass should be positive and reasonable")
   void testRobotMass() {
-    double mass = DriveConstants.ROBOT_MASS_KG;
+    double mass = Constants.RobotConfig.ROBOT_MASS_KG;
     assertTrue(mass > 0, "Robot mass should be positive");
-    
+
     // FRC robots are limited to ~125 lbs (~57 kg) with bumpers
     double maxMass = Units.lbsToKilograms(150);
     assertTrue(mass <= maxMass,
         String.format("Robot mass %.2f kg seems unreasonably high", mass));
   }
 }
-

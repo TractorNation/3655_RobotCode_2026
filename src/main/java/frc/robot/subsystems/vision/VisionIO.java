@@ -7,8 +7,8 @@ package frc.robot.subsystems.vision;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.Constants.PoseObservation;
+import frc.robot.Constants.TargetObservation;
 
 /** The interface for logging vision data */
 public interface VisionIO {

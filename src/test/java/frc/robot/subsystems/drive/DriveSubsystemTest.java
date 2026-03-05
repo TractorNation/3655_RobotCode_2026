@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.Constants;
 
 /**
  * Unit tests for DriveSubsystem.
@@ -83,7 +84,7 @@ class DriveSubsystemTest {
               driveVelocity));
 
       // Verify velocity is reasonable (should convert to ~1 m/s)
-      double speedMps = driveVelocity * DriveConstants.WHEEL_RADIUS;
+      double speedMps = driveVelocity * Constants.RobotConfig.WHEEL_RADIUS;
       assertTrue(speedMps > 0.5 && speedMps < 2.0,
           String.format("Module speed should be around 1 m/s, got %.2f m/s", speedMps));
     }
@@ -132,7 +133,7 @@ class DriveSubsystemTest {
     // resetHeadings expects. In the real robot, the modules are already at their
     // current positions when resetHeadings is called.
     for (int i = 0; i < mockModules.length; i++) {
-      Rotation2d expectedAngle = DriveConstants.moduleTranslations[i].getAngle();
+      Rotation2d expectedAngle = Constants.RobotConfig.moduleTranslations[i].getAngle();
       mockModules[i].setTurnPositionInput(expectedAngle);
     }
 
@@ -148,7 +149,7 @@ class DriveSubsystemTest {
     double tolerance = 0.03;
 
     for (int i = 0; i < mockModules.length; i++) {
-      Rotation2d expectedAngle = DriveConstants.moduleTranslations[i].getAngle();
+      Rotation2d expectedAngle = Constants.RobotConfig.moduleTranslations[i].getAngle();
       Rotation2d actualAngle = mockModules[i].getTurnSetpoint();
 
       // Check if angles match
@@ -182,7 +183,7 @@ class DriveSubsystemTest {
   @DisplayName("Kinematics should desaturate wheel speeds correctly")
   void testKinematicsDesaturation() {
     // Create a chassis speed that would exceed max wheel speed
-    double maxSpeed = DriveConstants.MAX_LINEAR_SPEED;
+    double maxSpeed = Constants.RobotConfig.MAX_LINEAR_SPEED;
     ChassisSpeeds excessiveSpeeds = new ChassisSpeeds(maxSpeed * 2, maxSpeed * 2, 0.0);
 
     // Run velocity - should desaturate automatically
@@ -191,13 +192,13 @@ class DriveSubsystemTest {
     // The kinematics.desaturateWheelSpeeds is called internally
     // After desaturation, module speeds should not exceed MAX_LINEAR_SPEED
     // Convert module velocities from rotations/sec to m/s for verification
-    double maxModuleSpeedMps = DriveConstants.MAX_LINEAR_SPEED;
+    double maxModuleSpeedMps = Constants.RobotConfig.MAX_LINEAR_SPEED;
     double tolerance = 0.1; // Allow small tolerance
 
     for (int i = 0; i < mockModules.length; i++) {
       MockModuleIO module = mockModules[i];
       double moduleVelocityRotPerSec = module.getDriveVelocity();
-      double moduleSpeedMps = moduleVelocityRotPerSec * DriveConstants.WHEEL_RADIUS;
+      double moduleSpeedMps = moduleVelocityRotPerSec * Constants.RobotConfig.WHEEL_RADIUS;
 
       // Desaturated speeds should not exceed maximum
       assertTrue(Math.abs(moduleSpeedMps) <= maxModuleSpeedMps + tolerance,

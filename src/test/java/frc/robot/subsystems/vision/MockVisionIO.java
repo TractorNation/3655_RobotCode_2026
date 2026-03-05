@@ -1,7 +1,7 @@
 // package frc.robot.subsystems.vision;
 
-// import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-// import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+// import frc.robot.subsystems.vision.Constants.Vision.PoseObservation;
+// import frc.robot.subsystems.vision.Constants.Vision.TargetObservation;
 
 // /**
 //  * Mock implementation of VisionIO for unit testing.

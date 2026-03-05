@@ -14,10 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.FieldUtil;
 
@@ -134,7 +131,7 @@ public class RobotState {
         new SwerveModulePosition()
     };
 
-    kinematics = DriveConstants.kinematics;
+    kinematics = Constants.RobotConfig.kinematics;
 
     odometry = new SwerveDriveOdometry(
         kinematics,
@@ -175,7 +172,7 @@ public class RobotState {
       rawGyroRotation = measurement.gyroRotation;
     } else {
       // Use the angle delta from the kinematics and module deltas
-      Twist2d twist = DriveConstants.kinematics.toTwist2d(measurement.moduleDeltas);
+      Twist2d twist = Constants.RobotConfig.kinematics.toTwist2d(measurement.moduleDeltas);
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 

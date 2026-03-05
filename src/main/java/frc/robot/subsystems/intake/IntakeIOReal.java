@@ -12,15 +12,16 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.Constants;
 
 public class IntakeIOReal implements IntakeIO {
-  private final SparkFlex frontMotor = new SparkFlex(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
-  private final SparkFlex topMotor = new SparkFlex(IntakeConstants.TOP_MOTOR_ID, MotorType.kBrushless);
-  private final SparkFlex backMotor = new SparkFlex(IntakeConstants.BACK_MOTOR_ID, MotorType.kBrushless);
+  private final SparkFlex frontMotor = new SparkFlex(Constants.DeviceID.Intake.FRONT_MOTOR_ID, MotorType.kBrushless);
+  private final SparkFlex topMotor = new SparkFlex(Constants.DeviceID.Intake.TOP_MOTOR_ID, MotorType.kBrushless);
+  private final SparkFlex backMotor = new SparkFlex(Constants.DeviceID.Intake.BACK_MOTOR_ID, MotorType.kBrushless);
 
-  private final TalonFX conveyorMotor = new TalonFX(IntakeConstants.CONVEYOR_ID);
-  private final TalonFX kickerMotor = new TalonFX(IntakeConstants.KICKER_ID);
-  private final TalonFX sliderMotor = new TalonFX(IntakeConstants.SLIDER_ID);
+  private final TalonFX conveyorMotor = new TalonFX(Constants.DeviceID.Intake.CONVEYOR_ID);
+  private final TalonFX kickerMotor = new TalonFX(Constants.DeviceID.Intake.KICKER_ID);
+  private final TalonFX sliderMotor = new TalonFX(Constants.DeviceID.Intake.SLIDER_ID);
 
   SparkMaxConfig frontConfig;
   SparkMaxConfig topConfig;
@@ -42,10 +43,10 @@ public class IntakeIOReal implements IntakeIO {
 
     sliderConfig = new TalonFXConfiguration();
     sliderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    sliderConfig.Feedback.SensorToMechanismRatio = IntakeConstants.SLIDER_RATIO;
-    sliderConfig.Slot0.kP = IntakeConstants.SLIDER_KP;
-    sliderConfig.Slot0.kI = IntakeConstants.SLIDER_KI;
-    sliderConfig.Slot0.kD = IntakeConstants.SLIDER_KD;
+    sliderConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.SLIDER_RATIO;
+    sliderConfig.Slot0.kP = Constants.PID.Intake.SLIDER_KP;
+    sliderConfig.Slot0.kI = Constants.PID.Intake.SLIDER_KI;
+    sliderConfig.Slot0.kD = Constants.PID.Intake.SLIDER_KD;
     sliderMotor.getConfigurator().apply(sliderConfig);
 
     sliderPosition = sliderMotor.getPosition();
