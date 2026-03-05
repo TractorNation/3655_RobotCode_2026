@@ -34,6 +34,8 @@ public final class Constants {
       public static final int TOP_MOTOR_ID = 24;
       public static final int BACK_MOTOR_ID = 25;
       public static final int SLIDER_ID = 26;
+      public static final int ARM_RIGHT = 27;
+      public static final int ARM_LEFT = 28;
     }
 
     public static final class Drive {
@@ -91,6 +93,7 @@ public final class Constants {
 
     public static final class Intake {
       public static final double SLIDER_RATIO = 25;
+      public static final double ARM_RATIO = 16;
     }
 
     public static final class Drive {
@@ -109,7 +112,7 @@ public final class Constants {
       public static double DRIVE_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
           ? COMPBOT_DRIVE_GEAR_RATIO
           : PROTOBOT_DRIVE_GEAR_RATIO;
-      public static double TURN_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
+        public static double TURN_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
           ? COMPBOT_TURN_GEAR_RATIO
           : PROTOBOT_TURN_GEAR_RATIO;
       public static Rotation2d FRONT_LEFT_ENCODER_OFFSET = (RobotConfig.currentRobot == RobotType.COMPBOT)

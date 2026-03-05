@@ -2,9 +2,12 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -22,12 +25,15 @@ public class IntakeIOReal implements IntakeIO {
   private final TalonFX conveyorMotor = new TalonFX(Constants.DeviceID.Intake.CONVEYOR_ID);
   private final TalonFX kickerMotor = new TalonFX(Constants.DeviceID.Intake.KICKER_ID);
   private final TalonFX sliderMotor = new TalonFX(Constants.DeviceID.Intake.SLIDER_ID);
+  private final TalonFX rightArmMotor = new TalonFX(Constants.DeviceID.Intake.ARM_RIGHT);
+  private final TalonFX leftArmMotor = new TalonFX(Constants.DeviceID.Intake.ARM_LEFT);
 
   SparkMaxConfig frontConfig;
   SparkMaxConfig topConfig;
   SparkMaxConfig backConfig;
 
   TalonFXConfiguration sliderConfig;
+  TalonFXConfiguration armConfig;
   StatusSignal<Angle> sliderPosition;
 
   public IntakeIOReal() {
@@ -48,6 +54,14 @@ public class IntakeIOReal implements IntakeIO {
     sliderConfig.Slot0.kI = Constants.PID.Intake.SLIDER_KI;
     sliderConfig.Slot0.kD = Constants.PID.Intake.SLIDER_KD;
     sliderMotor.getConfigurator().apply(sliderConfig);
+
+    armConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.ARM_RATIO;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    leftArmMotor.getConfigurator().apply(armConfig);
+    rightArmMotor.getConfigurator().apply(armConfig);
+
+    leftArmMotor.setControl(new Follower(Constants.DeviceID.Intake.ARM_RIGHT, MotorAlignmentValue.Aligned));
 
     sliderPosition = sliderMotor.getPosition();
   }
