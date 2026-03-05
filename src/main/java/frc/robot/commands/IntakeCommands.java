@@ -3,7 +3,6 @@ package frc.robot.commands;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants.IntakeMode;
@@ -80,5 +79,9 @@ public class IntakeCommands {
           (-1 / IntakeConstants.MAX_SNOW_WALL_DISTANCE) * distance); // + - -
       intake.runConveyor(-0.6);
     }, intake);
+  }
+
+  public static Command staySafeFromBump(IntakeSubsystem intake) {
+    return Commands.run(() -> intake.staySafeFromBump(), intake);
   }
 }
