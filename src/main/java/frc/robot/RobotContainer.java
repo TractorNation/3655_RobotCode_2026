@@ -91,7 +91,7 @@ public class RobotContainer {
   // Vision does not have any direct commands, so it is "unused" in this file
   // However, it must be initialized to run properly
   private final DriveSubsystem drive;
-  // private final IntakeSubsystem intake;
+  private final IntakeSubsystem intake;
   // private final TurretSubsystem turret;
   // private final VisionSubsystem vision;
 
@@ -146,8 +146,9 @@ public class RobotContainer {
             new ModuleIOTalonFX(3));
 
         // vision = new VisionSubsystem(
-        //     new VisionIOLimelight("limelight-fl"), new VisionIOLimelight("limelight-fr"));
-        // intake = new IntakeSubsystem(new IntakeIOReal());
+        // new VisionIOLimelight("limelight-fl"), new
+        // VisionIOLimelight("limelight-fr"));
+        intake = new IntakeSubsystem(new IntakeIOReal());
 
         // turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
@@ -164,9 +165,9 @@ public class RobotContainer {
             new ModuleIOSim());
 
         // vision = new VisionSubsystem(
-        //     new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
-        //     new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
-        // intake = new IntakeSubsystem(new IntakeIOSim());
+        // new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
+        // new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
+        intake = new IntakeSubsystem(new IntakeIOSim());
 
         // turret = new TurretSubsystem(new TurretIOSim());
         break;
@@ -187,11 +188,11 @@ public class RobotContainer {
             new ModuleIO() {
             });
         // vision = new VisionSubsystem(
-        //     new VisionIO() {
-        //     });
-
-        // intake = new IntakeSubsystem(new IntakeIO() {
+        // new VisionIO() {
         // });
+
+        intake = new IntakeSubsystem(new IntakeIO() {
+        });
         // turret = new TurretSubsystem(new TurretIO() {
         // });
         break;
@@ -199,12 +200,15 @@ public class RobotContainer {
 
     // region Autonomous Commands
 
-    // new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake,
+    // IntakeMode.INTAKE))
+    // .onFalse(IntakeCommands.stopIntake(intake));
 
     new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
-    new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
-    new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
+    // new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(-46), turret));
+    // new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(-66), turret));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -280,11 +284,11 @@ public class RobotContainer {
 
         mainTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
-        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntake(intake, IntakeMode.INTAKE))
+        mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.INTAKE))
             .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, IntakeMode.SNOWBLOWER))
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.SNOWBLOWER))
             .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.A2().onTrue(IntakeCommands.runIntake(intake, IntakeMode.OUTPUT))
+        mainRotation.A2().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
             .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
@@ -346,33 +350,41 @@ public class RobotContainer {
      * need the drive base
      */
     // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
-    //     IntakeMode.INTAKE))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // IntakeMode.INTAKE))
+    // .onFalse(IntakeCommands.stopIntake(intake));
     // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
-    //     IntakeMode.OUTPUT))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // IntakeMode.OUTPUT))
+    // .onFalse(IntakeCommands.stopIntake(intake));
     // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
-    //     IntakeMode.SNOWBLOWER))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(6).onTrue(IntakeCommands.runIntake(intake, IntakeMode.LOBSHOT))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // IntakeMode.SNOWBLOWER))
+    // .onFalse(IntakeCommands.stopIntake(intake));
+    // tractorController.button(6).onTrue(IntakeCommands.runIntake(intake,
+    // IntakeMode.LOBSHOT))
+    // .onFalse(IntakeCommands.stopIntake(intake));
 
     // tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
-    //     .onFalse(IntakeCommands.stopIntake(intake));
+    // .onFalse(IntakeCommands.stopIntake(intake));
 
     // tractorController.axisMagnitudeGreaterThan(3, 0.1)
-    //     .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
+    // .onTrue(Commands.run(() ->
+    // turret.updateTarget(tractorController.getRawAxis(3)), turret));
 
     tractorController.button(5).onTrue(IntakeCommands.reverseIndexer(intake))
         .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
-    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
-    tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-70), turret));
-    tractorController.button(12).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(0), turret));
+    // tractorController.button(11).onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(-46), turret));
+    // tractorController.button(13).onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(-66), turret));
+    // tractorController.button(15).onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(-70), turret));
+    // tractorController.button(12).onTrue(Commands.runOnce(() ->
+    // turret.setShooterSpeed(0), turret));
 
-    tractorController.button(19).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(-1), turret));
-    tractorController.button(20).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(1), turret));
+    // tractorController.button(19).onTrue(Commands.runOnce(() ->
+    // turret.incrementShooterSpeed(-1), turret));
+    // tractorController.button(20).onTrue(Commands.runOnce(() ->
+    // turret.incrementShooterSpeed(1), turret));
   }
 
   /**

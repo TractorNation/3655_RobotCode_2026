@@ -1,15 +1,14 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotState;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
-import frc.robot.util.FieldUtil;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputs inputs = new IntakeIOInputs();
-  private final double maxDistanceFromWall = 11;
+  private IntakeState state = IntakeState.TUCKED;
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
@@ -45,10 +44,30 @@ public class IntakeSubsystem extends SubsystemBase {
     io.runConveyor(-0.7);
   }
 
-  public void runSnowblower() {
-    double distance = FieldUtil.getDistanceToWall(RobotState.getInstance().getPose());
-
-    runMotors((0.5 / maxDistanceFromWall) * distance, (-1 / maxDistanceFromWall) * distance,
-        (1 / maxDistanceFromWall) * distance); // + - +
+  public void setState(IntakeState state) {
+    this.state = state;
+    switch (state) {
+      case TUCKED:
+        io.setSliderPosition(IntakeConstants.SliderPositions.IN);
+        break;
+      case TRANSITION:
+        // Set actual intake to its up position
+        io.setSliderPosition(IntakeConstants.SliderPositions.TRANSITION);
+        break;
+      case OUT:
+        io.setSliderPosition(IntakeConstants.SliderPositions.OUT);
+        // set actual intake to its down position
+        break;
+      case BUMP_SAFE:
+        io.setSliderPosition(IntakeConstants.SliderPositions.BUMP_SAFE);
+        // maybe just rotate actual intake up a bit, have to figure that out later
+      default:
+        break;
+    }
   }
+
+  public IntakeState getState() {
+    return state;
+  }
+
 }

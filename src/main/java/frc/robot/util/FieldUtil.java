@@ -20,16 +20,16 @@ public class FieldUtil {
     double scoringTableWallDistance = translation.getY();
     double otherWallDistance = FIELD_BOUNDS.getYWidth() - translation.getY();
 
-    if (rotation <= 45 && rotation >= -45) {
+    if (rotation <= 30 && rotation >= -30) {
       return redWallDistance;
-    } else if (rotation <= -45 && rotation >= -135) {
+    } else if (rotation <= -30 && rotation >= -150) {
       return otherWallDistance;
-    } else if ((rotation <= -135 && rotation >= -180) || (rotation <= 180 && rotation >= 135)) {
+    } else if ((rotation <= -150 && rotation >= -180) || (rotation <= 180 && rotation >= 150)) {
       return blueWallDistance;
-    } else if (rotation <= 135 && rotation >= 45) {
+    } else if (rotation <= 150 && rotation >= 30) {
       return scoringTableWallDistance;
     }
-      
+
     return 0.0;
   }
 }

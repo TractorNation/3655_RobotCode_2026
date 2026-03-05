@@ -9,22 +9,14 @@ public interface IntakeIO {
     public double frontMotorCurrent = 0.0;
     public double topMotorCurrent = 0.0;
     public double bottomMotorCurrent = 0.0;
+    public double sliderPosition = 0.0;
   }
 
-  public default void updateInputs(IntakeIOInputs inputs) {
-  }
-
-  public default void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
-  }
-
-  public default void stopMotors() {
-  }
-
-  public default void runIndexerMotors() {
-
-  }
-
+  public default void updateInputs(IntakeIOInputs inputs) {}
+  public default void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {}
+  public default void stopMotors() {}
+  public default void runIndexerMotors() {}
   public default void runConveyor(double speed) {}
-
   public default void runKicker(double speed) {}
+  public default void setSliderPosition(double position) {}
 }

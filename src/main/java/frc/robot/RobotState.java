@@ -16,7 +16,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.util.FieldUtil;
 
 /**
  * Singleton class that manages the robot's pose estimation and state.
@@ -346,6 +349,11 @@ public class RobotState {
   @AutoLogOutput(key = "RobotState/OdometryPose")
   public Pose2d getOdometryPose() {
     return odometry.getPoseMeters();
+  }
+
+  @AutoLogOutput(key = "RobotState/IntakeDistanceToWall")
+  public double getDistanceToWall() {
+    return FieldUtil.getDistanceToWall(RobotState.getInstance().getPose());
   }
 
 }
