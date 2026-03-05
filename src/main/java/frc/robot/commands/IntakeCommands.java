@@ -34,12 +34,12 @@ public class IntakeCommands {
       case TUCKED:
         return Commands.sequence(
             Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            Commands.waitSeconds(0.2),
+            Commands.waitSeconds(1),
             Commands.runOnce(() -> intake.setState(IntakeState.TUCKED), intake));
       case OUT:
         return Commands.sequence(
             Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            Commands.waitSeconds(0.2),
+            Commands.waitSeconds(1),
             Commands.runOnce(() -> intake.setState(IntakeState.OUT), intake));
       case BUMP_SAFE:
         return Commands.runOnce(() -> intake.setState(IntakeState.BUMP_SAFE), intake);
