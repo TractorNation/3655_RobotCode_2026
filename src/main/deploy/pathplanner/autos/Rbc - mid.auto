@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "depot + L climb"
+            "pathName": "Right bump close"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R - mid"
           }
         }
       ]

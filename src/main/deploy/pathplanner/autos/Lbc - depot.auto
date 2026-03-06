@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right bump close"
+            "pathName": "Left bump close"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "R+hp"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hp - bump"
+            "pathName": "L + depot"
           }
         }
       ]

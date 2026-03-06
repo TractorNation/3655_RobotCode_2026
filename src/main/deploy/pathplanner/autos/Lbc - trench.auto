@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M - hp"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Left bump close"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "hp - climb"
+            "pathName": "L + trench"
           }
         }
       ]
