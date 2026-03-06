@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeMode;
+import frc.robot.Constants.IntakeState;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.TurretCommands;
@@ -292,23 +293,22 @@ public class RobotContainer {
 
       // Programming uses Xbox controllers
       case PROGRAMMING:
-        drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> programmingController.getLeftY(),
-                () -> programmingController.getLeftX(),
-                () -> -programmingController.getRightX(),
-                1,
-                programmingController.leftBumper()));
+        // drive.setDefaultCommand(
+        // DriveCommands.joystickDrive(
+        // drive,
+        // () -> programmingController.getLeftY(),
+        // () -> programmingController.getLeftX(),
+        // () -> -programmingController.getRightX(),
+        // 1,
+        // programmingController.leftBumper()));
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        // programmingController.povRight()
-        // .onTrue(TurretCommands.updateState(turret,171, 50));
-        // programmingController.povUp()
-        // .onTrue(TurretCommands.updateState(turret,171, 55));
-        // programmingController.povLeft()
-        // .onTrue(TurretCommands.updateState(turret,171, 60));
+        programmingController.povUp()
+            .onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
+        programmingController.povDown()
+            .onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.TUCKED));
+
         // programmingController.povDown()
         // .onTrue(TurretCommands.updateState(turret, 171, 65));
         break;
@@ -347,21 +347,21 @@ public class RobotContainer {
      * by default it has nothing since operator controls the robot's mechanisms and
      * need the drive base
      */
-    // tractorController.button(1).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.INTAKE))
-    // .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(2).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.OUTPUT))
-    // .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(3).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.SNOWBLOWER))
-    // .onFalse(IntakeCommands.stopIntake(intake));
-    // tractorController.button(6).onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.LOBSHOT))
-    // .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(1).onTrue(IntakeCommands.runIntakeMode(intake,
+        IntakeMode.INTAKE))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(2).onTrue(IntakeCommands.runIntakeMode(intake,
+        IntakeMode.OUTPUT))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(3).onTrue(IntakeCommands.runIntakeMode(intake,
+        IntakeMode.SNOWBLOWER))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
-    // tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
-    // .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
+        .onFalse(IntakeCommands.stopIntake(intake));
+
+    tractorController.button(17).onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.TUCKED));
+    tractorController.button(18).onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
 
     // tractorController.axisMagnitudeGreaterThan(3, 0.1)
     // .onTrue(Commands.run(() ->

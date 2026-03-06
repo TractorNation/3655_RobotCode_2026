@@ -25,21 +25,21 @@ public class IntakeCommands {
   }
 
   public static Command setIntakePosition(IntakeSubsystem intake, IntakeState pos) {
-    IntakeState currentState = intake.getState();
-    if (currentState == pos || (currentState == IntakeState.TUCKED && pos == IntakeState.BUMP_SAFE)) {
+
+    if (intake.getState().equals(pos) || (intake.getState().equals(IntakeState.TUCKED) && pos.equals(IntakeState.BUMP_SAFE))) {
       return Commands.none();
     }
 
     switch (pos) {
       case TUCKED:
         return Commands.sequence(
-            Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            Commands.waitSeconds(1),
+            // Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
+            // Commands.waitSeconds(1),
             Commands.runOnce(() -> intake.setState(IntakeState.TUCKED), intake));
       case OUT:
         return Commands.sequence(
-            Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            Commands.waitSeconds(1),
+            // Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
+            // Commands.waitSeconds(1),
             Commands.runOnce(() -> intake.setState(IntakeState.OUT), intake));
       case BUMP_SAFE:
         return Commands.runOnce(() -> intake.setState(IntakeState.BUMP_SAFE), intake);

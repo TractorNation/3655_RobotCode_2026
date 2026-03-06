@@ -1,5 +1,8 @@
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +25,8 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.recordOutput("Intake/SliderPosition", inputs.sliderPosition);
+    Logger.recordOutput("Intake/IntakePosition", inputs.intakePosition);
   }
 
   public void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
@@ -51,20 +56,23 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setState(IntakeState state) {
     this.state = state;
+
     if (state != IntakeState.BUMP_SAFE) {
       preBumpSafeState = state;
     }
+
     switch (state) {
       case TUCKED:
         io.setSliderPosition(Constants.SliderPositions.IN);
         break;
+        
       case TRANSITION:
-        // Set actual intake to its up position
+        io.setIntakePosition(Constants.IntakePositions.UP);
         io.setSliderPosition(Constants.SliderPositions.TRANSITION);
         break;
       case OUT:
         io.setSliderPosition(Constants.SliderPositions.OUT);
-        // set actual intake to its down position
+        io.setIntakePosition(Constants.IntakePositions.UP);
         break;
       case BUMP_SAFE:
         io.setSliderPosition(Constants.SliderPositions.BUMP_SAFE);
@@ -74,6 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
+  @AutoLogOutput(key = "Intake/CurrentPosition")
   public IntakeState getState() {
     return state;
   }

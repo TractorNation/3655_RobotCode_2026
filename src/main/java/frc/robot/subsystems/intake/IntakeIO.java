@@ -10,6 +10,7 @@ public interface IntakeIO {
     public double topMotorCurrent = 0.0;
     public double bottomMotorCurrent = 0.0;
     public double sliderPosition = 0.0;
+    public double intakePosition = 0.0;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
@@ -19,4 +20,5 @@ public interface IntakeIO {
   public default void runConveyor(double speed) {}
   public default void runKicker(double speed) {}
   public default void setSliderPosition(double position) {}
+  public default void setIntakePosition(double position) {}
 }

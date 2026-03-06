@@ -69,9 +69,12 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final double SLIDER_KP = 0.25;
+      public static final double SLIDER_KP = 6;
       public static final double SLIDER_KI = 0.0;
       public static final double SLIDER_KD = 0.0;
+      public static final double INTAKE_KP = 2;
+      public static final double INTAKE_KI = 0.0;
+      public static final double INTAKE_KD = 0.0;
     }
 
     public static final class Drive {
@@ -112,7 +115,7 @@ public final class Constants {
       public static double DRIVE_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
           ? COMPBOT_DRIVE_GEAR_RATIO
           : PROTOBOT_DRIVE_GEAR_RATIO;
-        public static double TURN_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
+      public static double TURN_GEAR_RATIO = (RobotConfig.currentRobot == RobotType.COMPBOT)
           ? COMPBOT_TURN_GEAR_RATIO
           : PROTOBOT_TURN_GEAR_RATIO;
       public static Rotation2d FRONT_LEFT_ENCODER_OFFSET = (RobotConfig.currentRobot == RobotType.COMPBOT)
@@ -308,9 +311,14 @@ public final class Constants {
   // TODO: get real positions
   public static class SliderPositions {
     public static final double IN = 0.0;
-    public static final double TRANSITION = 1;
-    public static final double OUT = 2;
+    public static final double TRANSITION = 1.01;
+    public static final double OUT = 1.735;
     public static final double BUMP_SAFE = 1.5;
+  }
+
+  public static class IntakePositions {
+    public static final double UP = 0.03;
+    public static final double DOWN = 0.0;
   }
 
   public enum IntakeMode {
