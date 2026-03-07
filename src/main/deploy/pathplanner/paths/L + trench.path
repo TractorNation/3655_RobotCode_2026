@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.04797720797721,
-        "y": 4.3967663817663825
+        "x": 3.5514404761904768,
+        "y": 5.507905982905982
       },
       "prevControl": null,
       "nextControl": {
-        "x": 17.047977207977215,
-        "y": 4.3967663817663825
+        "x": 3.1535897435897438,
+        "y": 5.688789173789174
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "left bump close end"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 3.5514404761904768,
+        "y": 7.407179487179487
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 3.2311111111111113,
+        "y": 7.187535612535613
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "set-turret-speed-66",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "set-turret-speed-66"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.0,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.237
   },
   "reversed": false,
   "folder": null,

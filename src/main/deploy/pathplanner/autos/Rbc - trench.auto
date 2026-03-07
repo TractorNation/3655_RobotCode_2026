@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R+hp"
+            "pathName": "R + trench"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "hp - bump"
+            "name": "shoot"
           }
         }
       ]

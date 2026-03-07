@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test"
+            "pathName": "Right bump close"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]
