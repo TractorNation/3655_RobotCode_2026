@@ -26,9 +26,6 @@ public class IntakeCommands {
 
   public static Command setIntakePosition(IntakeSubsystem intake, IntakeState pos) {
 
-    if (intake.getState().equals(pos) || (intake.getState().equals(IntakeState.TUCKED) && pos.equals(IntakeState.BUMP_SAFE))) {
-      return Commands.none();
-    }
 
     switch (pos) {
       case TUCKED:

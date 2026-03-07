@@ -89,10 +89,10 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   // Vision does not have any direct commands, so it is "unused" in this file
   // However, it must be initialized to run properly
+  private final VisionSubsystem vision;
   private final DriveSubsystem drive;
   private final IntakeSubsystem intake;
-  // private final TurretSubsystem turret;
-  // private final VisionSubsystem vision;
+  private final TurretSubsystem turret;
 
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
@@ -144,12 +144,10 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        // vision = new VisionSubsystem(
-        // new VisionIOLimelight("limelight-fl"), new
-        // VisionIOLimelight("limelight-fr"));
+        vision = new VisionSubsystem(new VisionIOLimelight("limelight-fr"), new VisionIOLimelight("limelight-fl"));
         intake = new IntakeSubsystem(new IntakeIOReal());
 
-        // turret = new TurretSubsystem(new TurretIOTalonFX());
+        turret = new TurretSubsystem(new TurretIOTalonFX());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -163,12 +161,12 @@ public class RobotContainer {
             new ModuleIOSim(),
             new ModuleIOSim());
 
-        // vision = new VisionSubsystem(
-        // new VisionIOSim("left", Constants.Vision.LEFT_ROBOT_TO_CAMERA),
-        // new VisionIOSim("right", Constants.Vision.RIGHT_ROBOT_TO_CAMERA));
+        vision = new VisionSubsystem(
+            new VisionIOSim("left", Constants.Vision.LEFT_ROBOT_TO_CAMERA),
+            new VisionIOSim("right", Constants.Vision.RIGHT_ROBOT_TO_CAMERA));
         intake = new IntakeSubsystem(new IntakeIOSim());
 
-        // turret = new TurretSubsystem(new TurretIOSim());
+        turret = new TurretSubsystem(new TurretIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -186,28 +184,26 @@ public class RobotContainer {
             },
             new ModuleIO() {
             });
-        // vision = new VisionSubsystem(
-        // new VisionIO() {
-        // });
+        vision = new VisionSubsystem(
+            new VisionIO() {
+            });
 
         intake = new IntakeSubsystem(new IntakeIO() {
         });
-        // turret = new TurretSubsystem(new TurretIO() {
-        // });
+        turret = new TurretSubsystem(new TurretIO() {
+        });
         break;
     }
 
     // region Autonomous Commands
 
-    // new EventTrigger("start-intake").onTrue(IntakeCommands.runIntake(intake,
-    // IntakeMode.INTAKE))
-    // .onFalse(IntakeCommands.stopIntake(intake));
+    new EventTrigger("start-intake").onTrue(IntakeCommands.runIntakeMode(intake,
+        IntakeMode.INTAKE))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
     new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
-    // new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(-46), turret));
-    // new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(-66), turret));
+    new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
+    new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -229,7 +225,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // turret.setDefaultCommand(TurretCommands.trackHub(turret));
+    turret.setDefaultCommand(TurretCommands.trackHub(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -341,12 +337,6 @@ public class RobotContainer {
 
     // region Operator controls
 
-    /**
-     * This is where you would define button bindings and controls for our operator
-     * board,
-     * by default it has nothing since operator controls the robot's mechanisms and
-     * need the drive base
-     */
     tractorController.button(1).onTrue(IntakeCommands.runIntakeMode(intake,
         IntakeMode.INTAKE))
         .onFalse(IntakeCommands.stopIntake(intake));
@@ -363,26 +353,25 @@ public class RobotContainer {
     tractorController.button(17).onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.TUCKED));
     tractorController.button(18).onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
 
-    // tractorController.axisMagnitudeGreaterThan(3, 0.1)
-    // .onTrue(Commands.run(() ->
-    // turret.updateTarget(tractorController.getRawAxis(3)), turret));
+    tractorController.axisMagnitudeGreaterThan(3, 0.1)
+        .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
 
     tractorController.button(5).onTrue(IntakeCommands.reverseIndexer(intake))
         .onFalse(IntakeCommands.stopIntake(intake));
 
-    // tractorController.button(11).onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(-46), turret));
-    // tractorController.button(13).onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(-66), turret));
-    // tractorController.button(15).onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(-70), turret));
-    // tractorController.button(12).onTrue(Commands.runOnce(() ->
-    // turret.setShooterSpeed(0), turret));
+    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-46), turret));
+    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-66), turret));
+    tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(-70), turret));
+    tractorController.button(12).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(0), turret));
 
-    // tractorController.button(19).onTrue(Commands.runOnce(() ->
-    // turret.incrementShooterSpeed(-1), turret));
-    // tractorController.button(20).onTrue(Commands.runOnce(() ->
-    // turret.incrementShooterSpeed(1), turret));
+    tractorController.button(19).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(-1), turret));
+    tractorController.button(20).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(1), turret));
+
+    tractorController.button(14)
+        .onTrue(Commands.runOnce(() -> intake.setArmPosition(Constants.IntakePositions.UP), intake));
+    tractorController.button(16)
+        .onTrue(Commands.runOnce(() -> intake.setArmPosition(Constants.IntakePositions.DOWN), intake));
+
   }
 
   /**

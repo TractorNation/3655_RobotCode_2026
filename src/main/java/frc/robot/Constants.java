@@ -69,12 +69,15 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final double SLIDER_KP = 6;
+      public static final double SLIDER_KP = 14;
       public static final double SLIDER_KI = 0.0;
       public static final double SLIDER_KD = 0.0;
-      public static final double INTAKE_KP = 2;
-      public static final double INTAKE_KI = 0.0;
-      public static final double INTAKE_KD = 0.0;
+      public static final double INTAKE_LEFT_KP = 0.0;
+      public static final double INTAKE_LEFT_KI = 0.0;
+      public static final double INTAKE_LEFT_KD = 0.0;
+      public static final double INTAKE_RIGHT_KP = 0.0;
+      public static final double INTAKE_RIGHT_KI = 0.0;
+      public static final double INTAKE_RIGHT_KD = 0.0;
     }
 
     public static final class Drive {
@@ -96,18 +99,18 @@ public final class Constants {
 
     public static final class Intake {
       public static final double SLIDER_RATIO = 25;
-      public static final double ARM_RATIO = 16;
+      public static final double ARM_RATIO = 36;
     }
 
     public static final class Drive {
       private static final Rotation2d PROTOBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.432129);
-      private static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.322510);
+      private static final Rotation2d COMPBOT_FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.320068);
       private static final Rotation2d PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.111084);
-      private static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.431885);
+      private static final Rotation2d COMPBOT_FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.430908);
       private static final Rotation2d PROTOBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.062500);
-      private static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.380127);
+      private static final Rotation2d COMPBOT_BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(0.382324);
       private static final Rotation2d PROTOBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.485596);
-      private static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.278320);
+      private static final Rotation2d COMPBOT_BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.279297);
       private static final double PROTOBOT_DRIVE_GEAR_RATIO = 5.27;
       private static final double COMPBOT_DRIVE_GEAR_RATIO = 5.27;
       private static final double PROTOBOT_TURN_GEAR_RATIO = 26.09;
@@ -219,7 +222,7 @@ public final class Constants {
         new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
     public static final Rectangle2d BLUE_SCORING_ZONE = new Rectangle2d(new Translation2d(0, 0),
         new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(317.69)));
-    public static final double MAX_INTAKE_WALL_DISTANCE = 11;
+    public static final double MAX_INTAKE_WALL_DISTANCE = 10;
 
   }
 
@@ -311,14 +314,14 @@ public final class Constants {
   // TODO: get real positions
   public static class SliderPositions {
     public static final double IN = 0.0;
-    public static final double TRANSITION = 1.01;
+    public static final double TRANSITION = 1.25;
     public static final double OUT = 1.735;
     public static final double BUMP_SAFE = 1.5;
   }
 
   public static class IntakePositions {
-    public static final double UP = 0.03;
-    public static final double DOWN = 0.0;
+    public static final double UP = 0.0;
+    public static final double DOWN = -0.1;
   }
 
   public enum IntakeMode {

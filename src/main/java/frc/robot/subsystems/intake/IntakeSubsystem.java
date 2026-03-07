@@ -25,6 +25,36 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    if (state != IntakeState.BUMP_SAFE) {
+      preBumpSafeState = state;
+    }
+
+    switch (state) {
+      case TUCKED:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.IN);
+        io.setSliderPosition(Constants.SliderPositions.IN);
+        // io.setIntakePosition(Constants.IntakePositions.UP);
+        break;
+
+      case TRANSITION:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.TRANSITION);
+        // io.setIntakePosition(Constants.IntakePositions.UP);
+        io.setSliderPosition(Constants.SliderPositions.TRANSITION);
+        break;
+      case OUT:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.OUT);
+        io.setSliderPosition(Constants.SliderPositions.OUT);
+        // io.setIntakePosition(Constants.IntakePositions.DOWN);
+        break;
+      case BUMP_SAFE:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.BUMP_SAFE);
+        io.setSliderPosition(Constants.SliderPositions.BUMP_SAFE);
+        // maybe just rotate actual intake up a bit, have to figure that out later
+      default:
+        break;
+    }
+
     Logger.recordOutput("Intake/SliderPosition", inputs.sliderPosition);
     Logger.recordOutput("Intake/IntakePosition", inputs.intakePosition);
   }
@@ -56,30 +86,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setState(IntakeState state) {
     this.state = state;
+  }
 
-    if (state != IntakeState.BUMP_SAFE) {
-      preBumpSafeState = state;
-    }
-
-    switch (state) {
-      case TUCKED:
-        io.setSliderPosition(Constants.SliderPositions.IN);
-        break;
-        
-      case TRANSITION:
-        io.setIntakePosition(Constants.IntakePositions.UP);
-        io.setSliderPosition(Constants.SliderPositions.TRANSITION);
-        break;
-      case OUT:
-        io.setSliderPosition(Constants.SliderPositions.OUT);
-        io.setIntakePosition(Constants.IntakePositions.UP);
-        break;
-      case BUMP_SAFE:
-        io.setSliderPosition(Constants.SliderPositions.BUMP_SAFE);
-        // maybe just rotate actual intake up a bit, have to figure that out later
-      default:
-        break;
-    }
+  public void setArmPosition(double position) {
+    io.setIntakePosition(position);
   }
 
   @AutoLogOutput(key = "Intake/CurrentPosition")

@@ -17,7 +17,7 @@ public class JoystickUtils {
     if (MathUtil.applyDeadband(input, deadband) == 0)
       return 0;
 
-    double correctedValue = Math.copySign((Math.pow(Math.abs(input), 3)), input);
+    double correctedValue = Math.copySign((Math.pow(Math.abs(input), 2)), input);
 
     // // does funky math to force linear output between deadband and 1
     // correctedValue = (correctedValue - (deadband * Math.signum(correctedValue)))

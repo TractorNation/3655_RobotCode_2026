@@ -111,7 +111,7 @@ public class TurretSubsystem extends SubsystemBase {
     Translation2d robotToHub = hubPosition.minus(translation);
 
     double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
-    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
+    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : shooterSpeedRequest < 20 ? 0 : 20;
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 
