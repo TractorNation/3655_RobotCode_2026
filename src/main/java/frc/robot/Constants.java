@@ -30,9 +30,9 @@ public final class Constants {
     public static final class Intake {
       public static final int CONVEYOR_ID = 21;
       public static final int KICKER_ID = 22;
-      public static final int FRONT_MOTOR_ID = 23;
+      public static final int FRONT_MOTOR_ID = 0;
       public static final int TOP_MOTOR_ID = 24;
-      public static final int BACK_MOTOR_ID = 25;
+      public static final int BACK_MOTOR_ID = 23;
       public static final int SLIDER_ID = 26;
       public static final int ARM_RIGHT = 27;
       public static final int ARM_LEFT = 28;

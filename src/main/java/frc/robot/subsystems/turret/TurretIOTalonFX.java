@@ -38,6 +38,8 @@ public class TurretIOTalonFX implements TurretIO {
     config.Slot0.kS = Constants.PID.Turret.MOTOR_VELOCITY_KS;
     config.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Turret.MOTOR_TO_RING_GEAR_RATIO;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 60;
 
     var encoderConfig = new CANcoderConfiguration();
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
