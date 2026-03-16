@@ -35,7 +35,8 @@ public class TurretSubsystem extends SubsystemBase {
     this.inputs = new TurretIOInputsAutoLogged();
 
     constraints = new TrapezoidProfile.Constraints(
-        Constants.PID.Turret.TURRET_MAX_VELOCITY_ROT_PER_SEC, Constants.PID.Turret.TURRET_MAX_ACCELERATION_ROT_PER_SEC2);
+        Constants.PID.Turret.TURRET_MAX_VELOCITY_ROT_PER_SEC,
+        Constants.PID.Turret.TURRET_MAX_ACCELERATION_ROT_PER_SEC2);
 
     controller = new ProfiledPIDController(Constants.PID.Turret.POSITION_KP, Constants.PID.Turret.POSITION_KI,
         Constants.PID.Turret.POSITION_KD, constraints);
@@ -67,7 +68,8 @@ public class TurretSubsystem extends SubsystemBase {
     double desiredTurretVelocity = setpoint
         * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO;
 
-    double desiredShooterVelocity = target.getShooterSpeed() / Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO
+    double desiredShooterVelocity = target.getShooterSpeed()
+        / Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO
         / Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO;
 
     double topMotorTargetVelocity = desiredTurretVelocity + desiredShooterVelocity;
@@ -85,6 +87,8 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
     Logger.recordOutput("Turret/ShootterSpeedIncrement", shooterSpeedIncremented);
+    Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
+    Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -111,7 +115,7 @@ public class TurretSubsystem extends SubsystemBase {
     Translation2d robotToHub = hubPosition.minus(translation);
 
     double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
-    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : shooterSpeedRequest < 20 ? 0 : 20;
+    double shooterSpeed = shooterSpeedRequest;
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 

@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left bump close"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L + mid"
+            "pathName": "mid - hp"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hp - climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climb"
           }
         }
       ]

@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right bump close"
+            "pathName": "left close"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "R - mid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "pathName": "lc - depot + climb"
           }
         }
       ]

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left bump close"
+            "pathName": "left pass"
           }
         },
         {
@@ -17,13 +17,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 2.5
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot"
+                  "name": "low-outake"
                 }
               }
             ]
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L + depot"
+            "pathName": "lp 2nd"
           }
         },
         {

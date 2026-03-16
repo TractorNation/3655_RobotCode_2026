@@ -9,6 +9,8 @@ public interface IntakeIO {
     public double frontMotorCurrent = 0.0;
     public double topMotorCurrent = 0.0;
     public double bottomMotorCurrent = 0.0;
+    public double conveyorMotorCurrent = 0.0;
+    public double kickerMotorCurrent = 0.0;
     public double sliderPosition = 0.0;
     public double intakePosition = 0.0;
   }

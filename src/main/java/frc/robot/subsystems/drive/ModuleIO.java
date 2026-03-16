@@ -50,5 +50,13 @@ public interface ModuleIO {
 
   public default void setDriveVelocity(double rotationsPerSecond) {
   }
+
+  public default double getDriveCurrent(){
+    return 0.0;
+  }
+
+  public default double getTurnCurrent(){
+    return 0.0;
+  }
   
 }

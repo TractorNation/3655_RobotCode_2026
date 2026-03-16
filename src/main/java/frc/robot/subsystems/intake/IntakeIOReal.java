@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 import frc.robot.Constants;
 
 public class IntakeIOReal implements IntakeIO {
@@ -35,7 +36,9 @@ public class IntakeIOReal implements IntakeIO {
   // TalonFXConfiguration rightArmConfig;
   StatusSignal<Angle> sliderPosition;
   StatusSignal<Angle> intakePosition;
-
+  StatusSignal<Current> conveyorCurrent;
+  StatusSignal<Current> kickerCurrent;
+  
   public IntakeIOReal() {
     frontConfig = new SparkMaxConfig();
     topConfig = new SparkMaxConfig();
@@ -83,6 +86,8 @@ public class IntakeIOReal implements IntakeIO {
 
     sliderPosition = sliderMotor.getPosition();
     // intakePosition = rightArmMotor.getPosition();
+    conveyorCurrent = conveyorMotor.getSupplyCurrent();
+    kickerCurrent = kickerMotor.getSupplyCurrent();
   }
 
   @Override
@@ -94,6 +99,8 @@ public class IntakeIOReal implements IntakeIO {
     inputs.bottomMotorCurrent = backMotor.getOutputCurrent();
     inputs.sliderPosition = sliderPosition.getValueAsDouble();
     inputs.intakePosition = 0.0;
+    inputs.conveyorMotorCurrent = conveyorCurrent.getValueAsDouble();
+    inputs.kickerMotorCurrent = kickerCurrent.getValueAsDouble();
   }
 
   @Override
@@ -115,7 +122,7 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void runIndexerMotors() {
     runKicker(-0.75);
-    runConveyor(0.4);
+    // runConveyor(0.4);
   }
 
   @Override

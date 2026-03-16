@@ -57,6 +57,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     Logger.recordOutput("Intake/SliderPosition", inputs.sliderPosition);
     Logger.recordOutput("Intake/IntakePosition", inputs.intakePosition);
+    Logger.recordOutput("Intake/TopMotorCurrent", inputs.topMotorCurrent);
+    Logger.recordOutput("Intake/BottomMotorCurrent", inputs.bottomMotorCurrent);
+    Logger.recordOutput("Intake/FrontMotorCurrent", inputs.frontMotorCurrent);
+    Logger.recordOutput("Intake/ConveyorCurrent", inputs.conveyorMotorCurrent);
+    Logger.recordOutput("Intake/KickerCurrent", inputs.kickerMotorCurrent);
   }
 
   public void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {

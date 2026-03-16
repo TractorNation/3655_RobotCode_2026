@@ -3,47 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.295712250712251,
-        "y": 2.7284880952380957
+        "x": 3.3894761904761905,
+        "y": 2.436952380952381
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.897861518111518,
-        "y": 2.458732193732195
+        "x": 2.4319417721891314,
+        "y": 2.685140814259526
       },
       "isLocked": false,
       "linkedName": "right bump close end"
     },
     {
       "anchor": {
-        "x": 3.5514404761904768,
-        "y": 0.6886609686609699
+        "x": 0.6252857142857151,
+        "y": 0.7309285714285727
       },
       "prevControl": {
-        "x": 3.1923504273504273,
-        "y": 1.1796296296296305
+        "x": 1.294738095238096,
+        "y": 0.7525238095238103
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "hp"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [
+  "constraintZones": [
     {
-      "name": "set-turret-speed-46",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "set-turret-speed-46"
-        }
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.0,
@@ -54,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

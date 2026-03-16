@@ -211,6 +211,9 @@ public final class Constants {
   }
 
   public static final class Field {
+    public static final Rectangle2d FIELD_BOUNDS = new Rectangle2d(
+        new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+        new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
     public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.702, 3.987);
     public static final Translation2d RED_HUB_POSITION = new Translation2d(11.926, 3.987);
     public static final Rectangle2d BLUE_BUMP_ZONE = new Rectangle2d(new Translation2d(0, 0),
@@ -222,7 +225,7 @@ public final class Constants {
         new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
     public static final Rectangle2d BLUE_SCORING_ZONE = new Rectangle2d(new Translation2d(0, 0),
         new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(317.69)));
-    public static final double MAX_INTAKE_WALL_DISTANCE = 10;
+    public static final double MAX_INTAKE_WALL_DISTANCE = 13;
 
   }
 

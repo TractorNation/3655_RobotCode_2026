@@ -61,7 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isInsideField(PoseObservation observation) {
-    return FieldUtil.FIELD_BOUNDS.contains(observation.pose().getTranslation()) && (observation.pose().getTranslation() != Translation2d.kZero);
+    return Constants.Field.FIELD_BOUNDS.contains(observation.pose().getTranslation()) && (observation.pose().getTranslation() != Translation2d.kZero);
   }
 
   @Override

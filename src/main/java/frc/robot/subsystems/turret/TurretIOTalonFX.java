@@ -4,6 +4,9 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DynamicMotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,6 +16,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import frc.robot.Constants;
 
 public class TurretIOTalonFX implements TurretIO {
@@ -23,6 +27,8 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<AngularVelocity> topRingVelocity;
   private final StatusSignal<AngularVelocity> bottomRingVelocity;
   private final StatusSignal<Angle> canCoderPosition;
+  private final StatusSignal<Current> topRingCurrent;
+  private final StatusSignal<Current> bottomRingCurrent;
 
   public TurretIOTalonFX() {
     topRingMotor = new TalonFX(Constants.DeviceID.Turret.TOP_RING_MOTOR_ID);
@@ -40,6 +46,7 @@ public class TurretIOTalonFX implements TurretIO {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 60;
+    
 
     var encoderConfig = new CANcoderConfiguration();
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
@@ -54,11 +61,16 @@ public class TurretIOTalonFX implements TurretIO {
     topRingVelocity = topRingMotor.getVelocity();
     bottomRingVelocity = bottomRingMotor.getVelocity();
     canCoderPosition = encoder.getPosition();
+    topRingCurrent = topRingMotor.getSupplyCurrent();
+    bottomRingCurrent = bottomRingMotor.getSupplyCurrent();
+    
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         topRingVelocity,
+        topRingCurrent,
         bottomRingVelocity,
+        bottomRingCurrent,
         canCoderPosition);
     topRingMotor.optimizeBusUtilization();
     bottomRingMotor.optimizeBusUtilization();
@@ -84,6 +96,9 @@ public class TurretIOTalonFX implements TurretIO {
     inputs.shooterVelocity = (((topRingVelocityRPS
         - bottomRingVelocityRPS) * Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO)
         * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO);
+
+    inputs.bottomRingMotorCurrent = bottomRingCurrent.getValueAsDouble();
+    inputs.topRingMotorCurrent = topRingCurrent.getValueAsDouble();
   }
 
   @Override

@@ -266,6 +266,32 @@ public class DriveSubsystem extends SubsystemBase {
       }
     }
 
+    // Log Currents
+    for (int i = 0; i < 4; i++) {
+      switch (i) {
+        case 1:
+          // Front left
+          Logger.recordOutput("Drive/FrontLeftDriveCurrent", modules[0].getDriveCurrent());
+          Logger.recordOutput("Drive/FrontLeftTurnCurrent", modules[0].getTurnCurrent());
+          break;
+        case 2:
+          // Front right
+          Logger.recordOutput("Drive/FrontRightDriveCurrent", modules[1].getDriveCurrent());
+          Logger.recordOutput("Drive/FrontRightTurnCurrent", modules[1].getTurnCurrent());
+          break;
+        case 3:
+          // Back left
+          Logger.recordOutput("Drive/BackLeftDriveCurrent", modules[2].getDriveCurrent());
+          Logger.recordOutput("Drive/BackLeftTurnCurrent", modules[2].getTurnCurrent());
+          break;
+        case 4:
+          // Back right
+          Logger.recordOutput("Drive/BackRightDriveCurrent", modules[3].getDriveCurrent());
+          Logger.recordOutput("Drive/BackRightTurnCurrent", modules[3].getTurnCurrent());
+          break;
+      }
+    }
+
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;

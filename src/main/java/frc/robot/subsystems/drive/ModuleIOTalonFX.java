@@ -19,9 +19,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import frc.robot.Constants;
 
 import java.util.Queue;
+
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn
@@ -53,13 +56,18 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Angle> drivePosition;
   private final Queue<Double> drivePositionQueue;
   private final StatusSignal<AngularVelocity> driveVelocity;
+  private final StatusSignal<Current> driveCurrent;
 
   private final StatusSignal<Angle> turnPosition;
   private final Queue<Double> turnPositionQueue;
   private final StatusSignal<AngularVelocity> turnVelocity;
+  private final StatusSignal<Current> turnCurrent;
 
   private final boolean isTurnMotorInverted = false;
   private final Rotation2d absoluteEncoderOffset;
+
+  double driveMotorCurrent;
+  double turnMotorCurrent;
 
   public ModuleIOTalonFX(int index) {
 
@@ -142,10 +150,12 @@ public class ModuleIOTalonFX implements ModuleIO {
     drivePosition = driveTalon.getPosition();
     drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
     driveVelocity = driveTalon.getVelocity();
+    driveCurrent = driveTalon.getSupplyCurrent();
 
     turnPosition = turnTalon.getPosition();
     turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(turnTalon, turnTalon.getPosition());
     turnVelocity = turnTalon.getVelocity();
+    turnCurrent = turnTalon.getSupplyCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.RobotConfig.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
@@ -179,6 +189,13 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.odometryTurnPositions = turnPositionQueue.stream()
         .map((Double value) -> Rotation2d.fromRotations(value))
         .toArray(Rotation2d[]::new);
+
+    inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
+    inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
+
+    driveMotorCurrent = driveCurrent.getValueAsDouble();
+    turnMotorCurrent = turnCurrent.getValueAsDouble();
+
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
@@ -226,5 +243,15 @@ public class ModuleIOTalonFX implements ModuleIO {
         : InvertedValue.CounterClockwise_Positive;
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     turnTalon.getConfigurator().apply(config);
+  }
+
+  @Override
+  public double getDriveCurrent(){
+    return driveMotorCurrent;
+  } 
+
+  @Override
+  public double getTurnCurrent(){
+    return turnMotorCurrent;
   }
 }

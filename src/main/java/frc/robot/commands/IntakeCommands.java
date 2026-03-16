@@ -16,7 +16,10 @@ public class IntakeCommands {
       case INTAKE:
         return Commands.runOnce(() -> intake.runMotors(0.4, 0.4, 0.4), intake); // + + +
       case OUTPUT:
-        return runOutput(intake);
+        return Commands.runOnce(() -> {
+          intake.runMotors(0.75, -0.4, -0.4);
+          intake.runConveyor(-0.6);
+        }, intake);
       case SNOWBLOWER:
         return runSnowblower(intake);
       default:
@@ -25,7 +28,6 @@ public class IntakeCommands {
   }
 
   public static Command setIntakePosition(IntakeSubsystem intake, IntakeState pos) {
-
 
     switch (pos) {
       case TUCKED:

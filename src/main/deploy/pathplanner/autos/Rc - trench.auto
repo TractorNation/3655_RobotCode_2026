@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left bump close"
+            "pathName": "right close"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "L + trench"
+            "pathName": "rc + trench"
           }
         },
         {
