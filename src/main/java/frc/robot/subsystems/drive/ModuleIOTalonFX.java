@@ -24,8 +24,6 @@ import frc.robot.Constants;
 
 import java.util.Queue;
 
-import org.littletonrobotics.junction.Logger;
-
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn
  * motor controller, and CANcoder

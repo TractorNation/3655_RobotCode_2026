@@ -61,7 +61,7 @@ public final class Constants {
       public static final double MOTOR_VELOCITY_KD = 0.00;
       public static final double MOTOR_VELOCITY_KS = 0.0;
       public static final double MOTOR_VELOCITY_KV = 0.0;
-      public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 4.0;
+      public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 6.0;
       public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;
       public static final double POSITION_KP = 15;
       public static final double POSITION_KI = 0.0;
@@ -95,6 +95,7 @@ public final class Constants {
       public static final double RING_GEAR_TO_PLANET_GEAR_RATIO = (double) 88 / 16;
       public static final double MOTOR_TO_RING_GEAR_RATIO = 6.2857;
       public static final double TURRET_TO_CANCODER_RATIO = 6.7692;
+      public static final Translation2d ROBOT_TO_TURRET = new Translation2d(0,0);
     }
 
     public static final class Intake {
@@ -137,7 +138,7 @@ public final class Constants {
   }
 
   public static final class RobotConfig {
-    public static final Driver currentDriver = Driver.MAIN;
+    public static final Driver currentDriver = Driver.MACBOOK;
     public static final RobotType currentRobot = RobotType.COMPBOT;
 
     public static final Mode simMode = Mode.SIM;
@@ -185,6 +186,7 @@ public final class Constants {
         new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
+    public static final double TURRET_DT = 0.1;
   }
 
   public static final class Vision {

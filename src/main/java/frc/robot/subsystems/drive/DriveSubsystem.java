@@ -317,6 +317,8 @@ public class DriveSubsystem extends SubsystemBase {
               gyroInputs.connected ? gyroInputs.odometryYawPositions[i] : null,
               moduleDeltas,
               modulePositions));
+
+      RobotState.getInstance().updateChassisSpeeds(getChassisSpeeds());
     }
   }
 

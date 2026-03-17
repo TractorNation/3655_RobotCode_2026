@@ -45,15 +45,20 @@ public class TurretSubsystem extends SubsystemBase {
 
     setTarget(0, 0);
 
-    switch (DriverStation.getAlliance().get()) {
-      case Red:
-        hubPosition = Constants.Field.RED_HUB_POSITION;
-        scoringZone = Constants.Field.RED_SCORING_ZONE;
-        break;
-      case Blue:
-      default:
-        hubPosition = Constants.Field.BLUE_HUB_POSITION;
-        scoringZone = Constants.Field.BLUE_SCORING_ZONE;
+    if (DriverStation.getAlliance().isPresent()) {
+      switch (DriverStation.getAlliance().get()) {
+        case Red:
+          hubPosition = Constants.Field.RED_HUB_POSITION;
+          scoringZone = Constants.Field.RED_SCORING_ZONE;
+          break;
+        case Blue:
+        default:
+          hubPosition = Constants.Field.BLUE_HUB_POSITION;
+          scoringZone = Constants.Field.BLUE_SCORING_ZONE;
+      }
+    } else {
+      hubPosition = Constants.Field.BLUE_HUB_POSITION;
+      scoringZone = Constants.Field.BLUE_SCORING_ZONE;
     }
   }
 
@@ -86,7 +91,7 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
-    Logger.recordOutput("Turret/ShootterSpeedIncrement", shooterSpeedIncremented);
+    Logger.recordOutput("Turret/ShooterSpeedIncrement", shooterSpeedIncremented);
     Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
     Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
   }
@@ -109,8 +114,8 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void targetHub() {
-    Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
-    Translation2d translation = currentPose.getTranslation();
+    Pose2d currentPose = RobotState.getInstance().getFuturePose();
+    Translation2d translation = currentPose.getTranslation().plus(Constants.OffsetAndRatio.Turret.ROBOT_TO_TURRET);
     double targetAngle;
     Translation2d robotToHub = hubPosition.minus(translation);
 
