@@ -9,6 +9,18 @@
           "data": {
             "pathName": "mid - depot + climb"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }

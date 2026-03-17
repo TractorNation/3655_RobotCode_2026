@@ -207,9 +207,9 @@
     {
       "name": "intake 2",
       "minWaypointRelativePos": 3.7429280397022517,
-      "maxWaypointRelativePos": 7.405459057071943,
+      "maxWaypointRelativePos": 7.44119106699752,
       "constraints": {
-        "maxVelocity": 1.2,
+        "maxVelocity": 1.1,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -247,6 +247,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "drop-intake",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "drop-intake"
+        }
+      }
+    },
+    {
       "name": "start-intake",
       "waypointRelativePos": 2.599503722084369,
       "endWaypointRelativePos": 7.06600496277917,
@@ -254,6 +265,17 @@
         "type": "named",
         "data": {
           "name": "start-intake"
+        }
+      }
+    },
+    {
+      "name": "L-pass",
+      "waypointRelativePos": 3.010421836228287,
+      "endWaypointRelativePos": 8.030769230769192,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L-pass"
         }
       }
     }

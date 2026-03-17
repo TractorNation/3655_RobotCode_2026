@@ -154,13 +154,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "slider",
+      "name": "drop-intake",
       "waypointRelativePos": 1.0100210970464214,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "slider"
+          "name": "drop-intake"
         }
       }
     },
@@ -172,28 +172,6 @@
         "type": "named",
         "data": {
           "name": "start-intake"
-        }
-      }
-    },
-    {
-      "name": "set-turret-speed-46",
-      "waypointRelativePos": 4.628164556962045,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "set-turret-speed-46"
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 5.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
         }
       }
     }

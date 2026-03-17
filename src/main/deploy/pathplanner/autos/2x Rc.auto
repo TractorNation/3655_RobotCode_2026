@@ -11,25 +11,34 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 1.0
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Rbc.auto
-            "waitTime": 0.2
+            "pathName": "rc - 2x"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
-========
-            "pathName": "rc - 2x"
->>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/autos/2x Rc.auto
           }
         }
       ]

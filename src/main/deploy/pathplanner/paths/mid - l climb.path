@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.5622380952380954,
-        "y": 4.04579761904762
+        "y": 4.0242023809523815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1083073701233968,
-        "y": 2.6017689224506997
+        "x": 3.34932351606196,
+        "y": 4.155226737368466
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6252857142857151,
-        "y": 0.7309285714285727
+        "x": 1.067988095238096,
+        "y": 4.82322619047619
       },
       "prevControl": {
-        "x": 1.4351071428571442,
-        "y": 0.7417261904761903
+        "x": 1.078785714285715,
+        "y": 6.205321428571429
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "hp"
+      "linkedName": "l climb"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,

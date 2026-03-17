@@ -7,17 +7,13 @@
         {
           "type": "path",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Lbc - mid.auto
-            "pathName": "Left bump close"
+            "pathName": "right close"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "L + mid"
-========
-            "pathName": "right close"
->>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/autos/Right Close.auto
+            "name": "shoot"
           }
         }
       ]

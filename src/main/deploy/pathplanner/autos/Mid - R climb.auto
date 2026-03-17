@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "right sweep"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "rs 2nd"
+            "pathName": "mid - r climb"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

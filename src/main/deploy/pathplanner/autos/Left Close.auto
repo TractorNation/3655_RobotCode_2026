@@ -7,11 +7,13 @@
         {
           "type": "path",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Mid - depot.auto
-            "pathName": "Middle - climb"
-========
             "pathName": "left close"
->>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/autos/Left Close.auto
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

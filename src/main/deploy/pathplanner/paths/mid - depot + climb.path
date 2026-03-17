@@ -92,6 +92,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "drop-intake",
+      "waypointRelativePos": 0.18759305210918492,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "drop-intake"
+        }
+      }
+    },
+    {
       "name": "start-intake",
       "waypointRelativePos": 0.9083333333333328,
       "endWaypointRelativePos": 2.1988095238095067,

@@ -112,16 +112,16 @@
     },
     {
       "anchor": {
-        "x": 6.153666666666668,
-        "y": 3.0956071428571432
+        "x": 6.099678571428573,
+        "y": 3.2035833333333334
       },
       "prevControl": {
-        "x": 5.912787189259182,
-        "y": 3.02869617691062
+        "x": 5.858799094021087,
+        "y": 3.13667236738681
       },
       "nextControl": {
-        "x": 6.394546144074154,
-        "y": 3.1625181088036665
+        "x": 6.3405580488360584,
+        "y": 3.2704942992798567
       },
       "isLocked": false,
       "linkedName": null
@@ -209,7 +209,7 @@
       "minWaypointRelativePos": 3.8392857142857197,
       "maxWaypointRelativePos": 6.8107142857142975,
       "constraints": {
-        "maxVelocity": 1.2,
+        "maxVelocity": 1.1,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -247,6 +247,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "drop-intake",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "drop-intake"
+        }
+      }
+    },
+    {
       "name": "start-intake",
       "waypointRelativePos": 2.5392857142857204,
       "endWaypointRelativePos": 7.196428571428567,
@@ -254,6 +265,17 @@
         "type": "named",
         "data": {
           "name": "start-intake"
+        }
+      }
+    },
+    {
+      "name": "R-pass",
+      "waypointRelativePos": 2.8853598014888346,
+      "endWaypointRelativePos": 8.030769230769096,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "R-pass"
         }
       }
     }
