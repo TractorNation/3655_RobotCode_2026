@@ -56,6 +56,7 @@ public class IntakeCommands {
     return Commands.runOnce(() -> intake.reverseIndexerMotors(), intake);
   }
 
+
   public static Command stopIntake(IntakeSubsystem intake) {
     return Commands.runOnce(() -> {
       intake.stopMotors();
