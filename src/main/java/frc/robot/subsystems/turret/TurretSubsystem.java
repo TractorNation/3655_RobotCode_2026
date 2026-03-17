@@ -10,7 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.turret.TurretConstants.TurretState;
+import frc.robot.Constants.TurretState;
+import frc.robot.Constants;
 import frc.robot.RobotState;
 
 public class TurretSubsystem extends SubsystemBase {
@@ -34,26 +35,30 @@ public class TurretSubsystem extends SubsystemBase {
     this.inputs = new TurretIOInputsAutoLogged();
 
     constraints = new TrapezoidProfile.Constraints(
-        TurretConstants.TURRET_MAX_VELOCITY_ROT_PER_SEC, TurretConstants.TURRET_MAX_ACCELERATION_ROT_PER_SEC2);
+        Constants.PID.Turret.TURRET_MAX_VELOCITY_ROT_PER_SEC,
+        Constants.PID.Turret.TURRET_MAX_ACCELERATION_ROT_PER_SEC2);
 
-    controller = new ProfiledPIDController(TurretConstants.POSITION_KP, TurretConstants.POSITION_KI,
-        TurretConstants.POSITION_KD, constraints);
+    controller = new ProfiledPIDController(Constants.PID.Turret.POSITION_KP, Constants.PID.Turret.POSITION_KI,
+        Constants.PID.Turret.POSITION_KD, constraints);
 
     target = new TurretState(0, 0);
 
     setTarget(0, 0);
 
-    switch (DriverStation.getAlliance().get()) {
-      case Red:
-        hubPosition = TurretConstants.RED_HUB_POSITION;
-        scoringZone = new Rectangle2d(new Translation2d(Units.inchesToMeters(469.11), Units.inchesToMeters(0)),
-            new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
-        break;
-      case Blue:
-      default:
-        hubPosition = TurretConstants.BLUE_HUB_POSITION;
-        scoringZone = new Rectangle2d(new Translation2d(0, 0),
-            new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(317.69)));
+    if (DriverStation.getAlliance().isPresent()) {
+      switch (DriverStation.getAlliance().get()) {
+        case Red:
+          hubPosition = Constants.Field.RED_HUB_POSITION;
+          scoringZone = Constants.Field.RED_SCORING_ZONE;
+          break;
+        case Blue:
+        default:
+          hubPosition = Constants.Field.BLUE_HUB_POSITION;
+          scoringZone = Constants.Field.BLUE_SCORING_ZONE;
+      }
+    } else {
+      hubPosition = Constants.Field.BLUE_HUB_POSITION;
+      scoringZone = Constants.Field.BLUE_SCORING_ZONE;
     }
   }
 
@@ -66,10 +71,11 @@ public class TurretSubsystem extends SubsystemBase {
     setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
 
     double desiredTurretVelocity = setpoint
-        * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
+        * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO;
 
-    double desiredShooterVelocity = target.getShooterSpeed() / TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO
-        / TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO;
+    double desiredShooterVelocity = target.getShooterSpeed()
+        / Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO
+        / Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO;
 
     double topMotorTargetVelocity = desiredTurretVelocity + desiredShooterVelocity;
     double bottomMotorTargetVelocity = desiredTurretVelocity - desiredShooterVelocity;
@@ -85,7 +91,9 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
-    Logger.recordOutput("Turret/ShootterSpeedIncrement", shooterSpeedIncremented);
+    Logger.recordOutput("Turret/ShooterSpeedIncrement", shooterSpeedIncremented);
+    Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
+    Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -106,13 +114,13 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void targetHub() {
-    Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
-    Translation2d translation = currentPose.getTranslation();
+    Pose2d currentPose = RobotState.getInstance().getFuturePose();
+    Translation2d translation = currentPose.getTranslation().plus(Constants.OffsetAndRatio.Turret.ROBOT_TO_TURRET);
     double targetAngle;
     Translation2d robotToHub = hubPosition.minus(translation);
 
     double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
-    double shooterSpeed = scoringZone.contains(translation) ? shooterSpeedRequest : 0;
+    double shooterSpeed = shooterSpeedRequest;
 
     targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
 

@@ -13,8 +13,8 @@
 // import edu.wpi.first.math.geometry.Pose3d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import frc.robot.RobotState;
-// import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-// import frc.robot.subsystems.vision.VisionConstants.PoseObservationType;
+// import frc.robot.subsystems.vision.Constants.Vision.PoseObservation;
+// import frc.robot.subsystems.vision.Constants.Vision.PoseObservationType;
 
 // /**
 //  * Unit tests for VisionSubsystem.
@@ -105,7 +105,7 @@
 //     // Set up a target observation
 //     Rotation2d tx = Rotation2d.fromDegrees(10.0); // 10 degrees right
 //     Rotation2d ty = Rotation2d.fromDegrees(5.0); // 5 degrees up
-//     VisionConstants.TargetObservation targetObs = new VisionConstants.TargetObservation(tx, ty);
+//     Constants.Vision.TargetObservation targetObs = new Constants.Vision.TargetObservation(tx, ty);
 //     mockCamera.setLatestObservation(targetObs);
 
 //     // Call updateInputs to sync
@@ -154,7 +154,7 @@
 //     PoseObservation observation = new PoseObservation(
 //         0.0,
 //         pose,
-//         VisionConstants.maxAmbiguity + 0.1, // Above threshold
+//         Constants.Vision.maxAmbiguity + 0.1, // Above threshold
 //         1, // one tag
 //         2.0,
 //         PoseObservationType.PHOTONVISION);

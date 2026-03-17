@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import frc.robot.Constants;
 
 import java.util.Queue;
@@ -53,50 +54,55 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Angle> drivePosition;
   private final Queue<Double> drivePositionQueue;
   private final StatusSignal<AngularVelocity> driveVelocity;
+  private final StatusSignal<Current> driveCurrent;
 
   private final StatusSignal<Angle> turnPosition;
   private final Queue<Double> turnPositionQueue;
   private final StatusSignal<AngularVelocity> turnVelocity;
+  private final StatusSignal<Current> turnCurrent;
 
   private final boolean isTurnMotorInverted = false;
   private final Rotation2d absoluteEncoderOffset;
+
+  double driveMotorCurrent;
+  double turnMotorCurrent;
 
   public ModuleIOTalonFX(int index) {
 
     switch (index) {
       // Front left
       case 0:
-        driveTalon = new TalonFX(DriveConstants.FL_DRIVE_ID, Constants.CANIVORE);
-        turnTalon = new TalonFX(DriveConstants.FL_TURN_ID, Constants.CANIVORE);
-        cancoder = new CANcoder(DriveConstants.FL_ENCODER_ID, Constants.CANIVORE);
-        absoluteEncoderOffset = DriveConstants.FRONT_LEFT_ENCODER_OFFSET;
+        driveTalon = new TalonFX(Constants.DeviceID.Drive.FL_DRIVE_ID, Constants.DeviceID.CANIVORE);
+        turnTalon = new TalonFX(Constants.DeviceID.Drive.FL_TURN_ID, Constants.DeviceID.CANIVORE);
+        cancoder = new CANcoder(Constants.DeviceID.Drive.FL_ENCODER_ID, Constants.DeviceID.CANIVORE);
+        absoluteEncoderOffset = Constants.OffsetAndRatio.Drive.FRONT_LEFT_ENCODER_OFFSET;
         break;
       // Front right
       case 1:
-        driveTalon = new TalonFX(DriveConstants.FR_DRIVE_ID, Constants.CANIVORE);
-        turnTalon = new TalonFX(DriveConstants.FR_TURN_ID, Constants.CANIVORE);
-        cancoder = new CANcoder(DriveConstants.FR_ENCODER_ID, Constants.CANIVORE);
-        absoluteEncoderOffset = DriveConstants.FRONT_RIGHT_ENCODER_OFFSET;
+        driveTalon = new TalonFX(Constants.DeviceID.Drive.FR_DRIVE_ID, Constants.DeviceID.CANIVORE);
+        turnTalon = new TalonFX(Constants.DeviceID.Drive.FR_TURN_ID, Constants.DeviceID.CANIVORE);
+        cancoder = new CANcoder(Constants.DeviceID.Drive.FR_ENCODER_ID, Constants.DeviceID.CANIVORE);
+        absoluteEncoderOffset = Constants.OffsetAndRatio.Drive.FRONT_RIGHT_ENCODER_OFFSET;
         break;
       // Back left
       case 2:
-        driveTalon = new TalonFX(DriveConstants.BL_DRIVE_ID, Constants.CANIVORE);
-        turnTalon = new TalonFX(DriveConstants.BL_TURN_ID, Constants.CANIVORE);
-        cancoder = new CANcoder(DriveConstants.BL_ENCODER_ID, Constants.CANIVORE);
-        absoluteEncoderOffset = DriveConstants.BACK_LEFT_ENCODER_OFFSET;
+        driveTalon = new TalonFX(Constants.DeviceID.Drive.BL_DRIVE_ID, Constants.DeviceID.CANIVORE);
+        turnTalon = new TalonFX(Constants.DeviceID.Drive.BL_TURN_ID, Constants.DeviceID.CANIVORE);
+        cancoder = new CANcoder(Constants.DeviceID.Drive.BL_ENCODER_ID, Constants.DeviceID.CANIVORE);
+        absoluteEncoderOffset = Constants.OffsetAndRatio.Drive.BACK_LEFT_ENCODER_OFFSET;
         break;
       // Back right
       case 3:
-        driveTalon = new TalonFX(DriveConstants.BR_DRIVE_ID, Constants.CANIVORE);
-        turnTalon = new TalonFX(DriveConstants.BR_TURN_ID, Constants.CANIVORE);
-        cancoder = new CANcoder(DriveConstants.BR_ENCODER_ID, Constants.CANIVORE);
-        absoluteEncoderOffset = DriveConstants.BACK_RIGHT_ENCODER_OFFSET;
+        driveTalon = new TalonFX(Constants.DeviceID.Drive.BR_DRIVE_ID, Constants.DeviceID.CANIVORE);
+        turnTalon = new TalonFX(Constants.DeviceID.Drive.BR_TURN_ID, Constants.DeviceID.CANIVORE);
+        cancoder = new CANcoder(Constants.DeviceID.Drive.BR_ENCODER_ID, Constants.DeviceID.CANIVORE);
+        absoluteEncoderOffset = Constants.OffsetAndRatio.Drive.BACK_RIGHT_ENCODER_OFFSET;
         break;
       default:
         throw new RuntimeException("Invalid module index");
     }
 
-    final double DRIVE_GEAR_RATIO = DriveConstants.DRIVE_GEAR_RATIO;
+    final double DRIVE_GEAR_RATIO = Constants.OffsetAndRatio.Drive.DRIVE_GEAR_RATIO;
 
     var driveConfig = new TalonFXConfiguration();
 
@@ -104,11 +110,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     driveConfig.Feedback.RotorToSensorRatio = 1.0;
     driveConfig.Feedback.SensorToMechanismRatio = DRIVE_GEAR_RATIO;
-    driveConfig.Slot0.kP = DriveConstants.KP_DRIVE;
-    driveConfig.Slot0.kV = DriveConstants.KV_DRIVE;
-    driveConfig.Slot0.kS = DriveConstants.KS_DRIVE;
+    driveConfig.Slot0.kP = Constants.PID.Drive.KP_DRIVE;
+    driveConfig.Slot0.kV = Constants.PID.Drive.KV_DRIVE;
+    driveConfig.Slot0.kS = Constants.PID.Drive.KS_DRIVE;
 
-    driveConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.RobotConfig.DRIVE_CURRENT_LIMIT;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -119,11 +125,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Configure turn motor to use CANCoder for position feedback
     turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-    turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
+    turnConfig.Feedback.RotorToSensorRatio = Constants.OffsetAndRatio.Drive.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
-    turnConfig.Slot0.kP = DriveConstants.KP_TURN;
+    turnConfig.Slot0.kP = Constants.PID.Drive.KP_TURN;
 
-    turnConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.TURN_CURRENT_LIMIT;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = Constants.RobotConfig.TURN_CURRENT_LIMIT;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnTalon.getConfigurator().apply(turnConfig, .25);
@@ -142,13 +148,15 @@ public class ModuleIOTalonFX implements ModuleIO {
     drivePosition = driveTalon.getPosition();
     drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
     driveVelocity = driveTalon.getVelocity();
+    driveCurrent = driveTalon.getSupplyCurrent();
 
     turnPosition = turnTalon.getPosition();
     turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(turnTalon, turnTalon.getPosition());
     turnVelocity = turnTalon.getVelocity();
+    turnCurrent = turnTalon.getSupplyCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        DriveConstants.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
+        Constants.RobotConfig.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         driveVelocity,
@@ -179,6 +187,13 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.odometryTurnPositions = turnPositionQueue.stream()
         .map((Double value) -> Rotation2d.fromRotations(value))
         .toArray(Rotation2d[]::new);
+
+    inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
+    inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
+
+    driveMotorCurrent = driveCurrent.getValueAsDouble();
+    turnMotorCurrent = turnCurrent.getValueAsDouble();
+
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
@@ -226,5 +241,15 @@ public class ModuleIOTalonFX implements ModuleIO {
         : InvertedValue.CounterClockwise_Positive;
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     turnTalon.getConfigurator().apply(config);
+  }
+
+  @Override
+  public double getDriveCurrent(){
+    return driveMotorCurrent;
+  } 
+
+  @Override
+  public double getTurnCurrent(){
+    return turnMotorCurrent;
   }
 }

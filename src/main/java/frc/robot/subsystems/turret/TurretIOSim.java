@@ -1,6 +1,7 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants;
 
 public class TurretIOSim implements TurretIO {
   private double topRingVelocity = 0;
@@ -16,10 +17,10 @@ public class TurretIOSim implements TurretIO {
 
     inputs.turretPosition = Rotation2d.fromRotations(
         ((topRingPosition + bottomRingPosition) / 2.0)
-            * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO);
+            * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO);
 
     inputs.turretVelocity = ((topRingVelocity + bottomRingVelocity) / 2.0)
-        * TurretConstants.PLANET_GEAR_TO_TURRET_RATIO;
+        * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO;
 
     inputs.shooterVelocity = topRingVelocity - bottomRingVelocity;
 

@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotState;
 import frc.robot.RobotState.OdometryMeasurement;
@@ -148,25 +149,25 @@ public class DriveSubsystem extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
-    final double DRIVE_GEAR_RATIO = DriveConstants.DRIVE_GEAR_RATIO;
+    final double DRIVE_GEAR_RATIO = Constants.OffsetAndRatio.Drive.DRIVE_GEAR_RATIO;
 
     // Start odometry thread
     PhoenixOdometryThread.getInstance().start();
 
     ModuleConfig moduleConfig = new ModuleConfig(
-        DriveConstants.WHEEL_RADIUS,
-        DriveConstants.MAX_LINEAR_SPEED,
-        DriveConstants.WHEEL_COF,
+        Constants.RobotConfig.WHEEL_RADIUS,
+        Constants.RobotConfig.MAX_LINEAR_SPEED,
+        Constants.RobotConfig.WHEEL_COF,
         DCMotor.getKrakenX60Foc(1),
         DRIVE_GEAR_RATIO,
-        DriveConstants.DRIVE_CURRENT_LIMIT,
+        Constants.RobotConfig.DRIVE_CURRENT_LIMIT,
         1);
 
     RobotConfig config = new RobotConfig(
-        DriveConstants.ROBOT_MASS_KG,
-        DriveConstants.ROBOT_MOI,
+        Constants.RobotConfig.ROBOT_MASS_KG,
+        Constants.RobotConfig.ROBOT_MOI,
         moduleConfig,
-        DriveConstants.moduleTranslations);
+        Constants.RobotConfig.moduleTranslations);
 
     try {
       PathPlannerUtil.writeSettings(config, moduleConfig, DRIVE_GEAR_RATIO);
@@ -265,6 +266,32 @@ public class DriveSubsystem extends SubsystemBase {
       }
     }
 
+    // Log Currents
+    for (int i = 0; i < 4; i++) {
+      switch (i) {
+        case 1:
+          // Front left
+          Logger.recordOutput("Drive/FrontLeftDriveCurrent", modules[0].getDriveCurrent());
+          Logger.recordOutput("Drive/FrontLeftTurnCurrent", modules[0].getTurnCurrent());
+          break;
+        case 2:
+          // Front right
+          Logger.recordOutput("Drive/FrontRightDriveCurrent", modules[1].getDriveCurrent());
+          Logger.recordOutput("Drive/FrontRightTurnCurrent", modules[1].getTurnCurrent());
+          break;
+        case 3:
+          // Back left
+          Logger.recordOutput("Drive/BackLeftDriveCurrent", modules[2].getDriveCurrent());
+          Logger.recordOutput("Drive/BackLeftTurnCurrent", modules[2].getTurnCurrent());
+          break;
+        case 4:
+          // Back right
+          Logger.recordOutput("Drive/BackRightDriveCurrent", modules[3].getDriveCurrent());
+          Logger.recordOutput("Drive/BackRightTurnCurrent", modules[3].getTurnCurrent());
+          break;
+      }
+    }
+
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
@@ -290,6 +317,8 @@ public class DriveSubsystem extends SubsystemBase {
               gyroInputs.connected ? gyroInputs.odometryYawPositions[i] : null,
               moduleDeltas,
               modulePositions));
+
+      RobotState.getInstance().updateChassisSpeeds(getChassisSpeeds());
     }
   }
 
@@ -301,8 +330,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void runVelocity(ChassisSpeeds speeds) {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
-    SwerveModuleState[] setpointStates = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.MAX_LINEAR_SPEED);
+    SwerveModuleState[] setpointStates = Constants.RobotConfig.kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.RobotConfig.MAX_LINEAR_SPEED);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -335,9 +364,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
-      headings[i] = DriveConstants.moduleTranslations[i].getAngle();
+      headings[i] = Constants.RobotConfig.moduleTranslations[i].getAngle();
     }
-    DriveConstants.kinematics.resetHeadings(headings);
+    Constants.RobotConfig.kinematics.resetHeadings(headings);
     stop();
   }
 
@@ -367,7 +396,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "Drive/SwerveChassisSpeeds/Measured")
   private ChassisSpeeds getChassisSpeeds() {
-    return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
+    return Constants.RobotConfig.kinematics.toChassisSpeeds(getModuleStates());
   }
 
   /** Returns the position of each module in radians. */

@@ -23,7 +23,7 @@ public class GyroIOPigeon2 implements GyroIO {
    * <a href=
    * "https://assets.pokemon.com/assets/cms2/img/pokedex/full//016.png">pidgey</a>
    */
-  private final Pigeon2 pidgey = new Pigeon2(DriveConstants.PIGEON_ID, Constants.CANIVORE);
+  private final Pigeon2 pidgey = new Pigeon2(Constants.DeviceID.PIGEON_ID, Constants.DeviceID.CANIVORE);
 
   private final StatusSignal<Angle> yaw = pidgey.getYaw();
   private final Queue<Double> yawPositionQueue;
@@ -37,7 +37,7 @@ public class GyroIOPigeon2 implements GyroIO {
   public GyroIOPigeon2() {
     pidgey.getConfigurator().apply(new Pigeon2Configuration());
     pidgey.getConfigurator().setYaw(0.0);
-    yaw.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
+    yaw.setUpdateFrequency(Constants.RobotConfig.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(100.0);
     yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pidgey, pidgey.getYaw());
 

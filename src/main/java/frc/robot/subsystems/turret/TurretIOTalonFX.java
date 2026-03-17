@@ -13,6 +13,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import frc.robot.Constants;
 
 public class TurretIOTalonFX implements TurretIO {
   private final TalonFX topRingMotor;
@@ -22,24 +24,28 @@ public class TurretIOTalonFX implements TurretIO {
   private final StatusSignal<AngularVelocity> topRingVelocity;
   private final StatusSignal<AngularVelocity> bottomRingVelocity;
   private final StatusSignal<Angle> canCoderPosition;
+  private final StatusSignal<Current> topRingCurrent;
+  private final StatusSignal<Current> bottomRingCurrent;
 
   public TurretIOTalonFX() {
-    topRingMotor = new TalonFX(TurretConstants.TOP_RING_MOTOR_ID);
-    bottomRingMotor = new TalonFX(TurretConstants.BOTTOM_RING_MOTOR_ID);
-    encoder = new CANcoder(TurretConstants.CANCODER_ID);
+    topRingMotor = new TalonFX(Constants.DeviceID.Turret.TOP_RING_MOTOR_ID);
+    bottomRingMotor = new TalonFX(Constants.DeviceID.Turret.BOTTOM_RING_MOTOR_ID);
+    encoder = new CANcoder(Constants.DeviceID.Turret.CANCODER_ID);
 
     var config = new TalonFXConfiguration();
 
-    config.Slot0.kP = TurretConstants.MOTOR_VELOCITY_KP;
-    config.Slot0.kI = TurretConstants.MOTOR_VELOCITY_KI;
-    config.Slot0.kD = TurretConstants.MOTOR_VELOCITY_KD;
-    config.Slot0.kV = TurretConstants.MOTOR_VELOCITY_KV;
-    config.Slot0.kS = TurretConstants.MOTOR_VELOCITY_KS;
-    config.Feedback.SensorToMechanismRatio = TurretConstants.MOTOR_TO_RING_GEAR_RATIO;
+    config.Slot0.kP = Constants.PID.Turret.MOTOR_VELOCITY_KP;
+    config.Slot0.kI = Constants.PID.Turret.MOTOR_VELOCITY_KI;
+    config.Slot0.kD = Constants.PID.Turret.MOTOR_VELOCITY_KD;
+    config.Slot0.kV = Constants.PID.Turret.MOTOR_VELOCITY_KV;
+    config.Slot0.kS = Constants.PID.Turret.MOTOR_VELOCITY_KS;
+    config.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Turret.MOTOR_TO_RING_GEAR_RATIO;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 60;
+    
 
     var encoderConfig = new CANcoderConfiguration();
-    encoderConfig.MagnetSensor.MagnetOffset = TurretConstants.CANCODER_OFFSET.getRotations();
     encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     encoder.getConfigurator().apply(encoderConfig);
@@ -52,11 +58,16 @@ public class TurretIOTalonFX implements TurretIO {
     topRingVelocity = topRingMotor.getVelocity();
     bottomRingVelocity = bottomRingMotor.getVelocity();
     canCoderPosition = encoder.getPosition();
+    topRingCurrent = topRingMotor.getSupplyCurrent();
+    bottomRingCurrent = bottomRingMotor.getSupplyCurrent();
+    
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         topRingVelocity,
+        topRingCurrent,
         bottomRingVelocity,
+        bottomRingCurrent,
         canCoderPosition);
     topRingMotor.optimizeBusUtilization();
     bottomRingMotor.optimizeBusUtilization();
@@ -77,11 +88,14 @@ public class TurretIOTalonFX implements TurretIO {
     inputs.bottomRingMotorVelocity = bottomRingVelocity.getValueAsDouble();
 
     inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
-        / TurretConstants.TURRET_TO_CANCODER_RATIO);
+        / Constants.OffsetAndRatio.Turret.TURRET_TO_CANCODER_RATIO);
 
     inputs.shooterVelocity = (((topRingVelocityRPS
-        - bottomRingVelocityRPS) * TurretConstants.RING_GEAR_TO_PLANET_GEAR_RATIO)
-        * TurretConstants.PLANET_GEAR_TO_SHOOTER_RATIO);
+        - bottomRingVelocityRPS) * Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO)
+        * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO);
+
+    inputs.bottomRingMotorCurrent = bottomRingCurrent.getValueAsDouble();
+    inputs.topRingMotorCurrent = topRingCurrent.getValueAsDouble();
   }
 
   @Override

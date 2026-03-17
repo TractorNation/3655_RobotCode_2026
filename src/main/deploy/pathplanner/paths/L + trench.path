@@ -3,13 +3,18 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5514404761904768,
-        "y": 5.507905982905982
+        "x": 3.40027380952381,
+        "y": 5.6114523809523815
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
         "x": 3.2698717948717944,
         "y": 5.662948717948718
+========
+        "x": 3.4110714285714296,
+        "y": 6.064952380952381
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
       },
       "isLocked": false,
       "linkedName": "left bump close end"
@@ -20,8 +25,13 @@
         "y": 7.407179487179487
       },
       "prevControl": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
         "x": 3.2311111111111113,
         "y": 7.187535612535613
+========
+        "x": 3.4110714285714296,
+        "y": 7.090726190476191
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,13 +75,17 @@
   },
   "goalEndState": {
     "velocity": 0,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
     "rotation": 89.76263312857932
+========
+    "rotation": -90.237
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

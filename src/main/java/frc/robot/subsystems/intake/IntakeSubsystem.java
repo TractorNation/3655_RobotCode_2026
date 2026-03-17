@@ -1,15 +1,22 @@
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeState;
+import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
-import frc.robot.util.FieldUtil;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputs inputs = new IntakeIOInputs();
-  private final double maxDistanceFromWall = 11;
+  private IntakeState state = IntakeState.TUCKED;
+  private IntakeState preBumpSafeState = state;
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
@@ -18,6 +25,43 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    if (state != IntakeState.BUMP_SAFE) {
+      preBumpSafeState = state;
+    }
+
+    switch (state) {
+      case TUCKED:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.IN);
+        io.setSliderPosition(Constants.SliderPositions.IN);
+        // io.setIntakePosition(Constants.IntakePositions.UP);
+        break;
+
+      case TRANSITION:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.TRANSITION);
+        // io.setIntakePosition(Constants.IntakePositions.UP);
+        io.setSliderPosition(Constants.SliderPositions.TRANSITION);
+        break;
+      case OUT:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.OUT);
+        io.setSliderPosition(Constants.SliderPositions.OUT);
+        // io.setIntakePosition(Constants.IntakePositions.DOWN);
+        break;
+      case BUMP_SAFE:
+        Logger.recordOutput("Intake/Target", Constants.SliderPositions.BUMP_SAFE);
+        io.setSliderPosition(Constants.SliderPositions.BUMP_SAFE);
+        // maybe just rotate actual intake up a bit, have to figure that out later
+      default:
+        break;
+    }
+
+    Logger.recordOutput("Intake/SliderPosition", inputs.sliderPosition);
+    Logger.recordOutput("Intake/IntakePosition", inputs.intakePosition);
+    Logger.recordOutput("Intake/TopMotorCurrent", inputs.topMotorCurrent);
+    Logger.recordOutput("Intake/BottomMotorCurrent", inputs.bottomMotorCurrent);
+    Logger.recordOutput("Intake/FrontMotorCurrent", inputs.frontMotorCurrent);
+    Logger.recordOutput("Intake/ConveyorCurrent", inputs.conveyorMotorCurrent);
+    Logger.recordOutput("Intake/KickerCurrent", inputs.kickerMotorCurrent);
   }
 
   public void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
@@ -45,10 +89,27 @@ public class IntakeSubsystem extends SubsystemBase {
     io.runConveyor(-0.7);
   }
 
-  public void runSnowblower() {
-    double distance = FieldUtil.getDistanceToWall(RobotState.getInstance().getPose());
+  public void setState(IntakeState state) {
+    this.state = state;
+  }
 
-    runMotors((0.5 / maxDistanceFromWall) * distance, (-1 / maxDistanceFromWall) * distance,
-        (1 / maxDistanceFromWall) * distance); // + - +
+  public void setArmPosition(double position) {
+    io.setIntakePosition(position);
+  }
+
+  @AutoLogOutput(key = "Intake/CurrentPosition")
+  public IntakeState getState() {
+    return state;
+  }
+
+  public void staySafeFromBump() {
+    Pose2d currentPose = RobotState.getInstance().getEstimatedPose();
+    Translation2d translation = currentPose.getTranslation();
+
+    if (Constants.Field.RED_BUMP_ZONE.contains(translation) || Constants.Field.BLUE_BUMP_ZONE.contains(translation)) {
+      setState(IntakeState.BUMP_SAFE);
+    } else {
+      setState(preBumpSafeState);
+    }
   }
 }

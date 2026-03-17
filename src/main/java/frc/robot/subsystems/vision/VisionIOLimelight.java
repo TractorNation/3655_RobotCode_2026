@@ -17,9 +17,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.RobotState;
-import frc.robot.subsystems.vision.VisionConstants.ObservationType;
-import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
-import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.Constants.ObservationType;
+import frc.robot.Constants.PoseObservation;
+import frc.robot.Constants.TargetObservation;
 import frc.robot.util.LimelightHelpers;
 
 /** Uses a Limelight camera to do vision calculations. */

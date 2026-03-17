@@ -3,25 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5514404761904768,
-        "y": 2.7284880952380957
+        "x": 3.40027380952381,
+        "y": 5.6114523809523815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3451136608780185,
-        "y": 2.869659074136093
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
+        "x": 3.2698717948717944,
+        "y": 5.662948717948718
+========
+        "x": 3.4110714285714296,
+        "y": 6.064952380952381
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
       },
       "isLocked": false,
-      "linkedName": "right bump close end"
+      "linkedName": "left bump close end"
     },
     {
       "anchor": {
-        "x": 2.8305840455840454,
-        "y": 4.138361823361825
+        "x": 3.5514404761904768,
+        "y": 7.407179487179487
       },
       "prevControl": {
-        "x": 2.8693447293447294,
-        "y": 3.634472934472936
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
+        "x": 3.2311111111111113,
+        "y": 7.187535612535613
+========
+        "x": 3.4110714285714296,
+        "y": 7.090726190476191
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,13 +43,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "set-turret-speed-46",
+      "name": "set-turret-speed-66",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "set-turret-speed-46"
+          "name": "set-turret-speed-66"
         }
       }
     },
@@ -65,13 +75,17 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/L + trench.path
+    "rotation": 89.76263312857932
+========
+    "rotation": -90.237
+>>>>>>>> supercompbotbranch:src/main/deploy/pathplanner/paths/lc + trench.path
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

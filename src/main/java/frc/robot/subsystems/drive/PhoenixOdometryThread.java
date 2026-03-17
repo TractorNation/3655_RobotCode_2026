@@ -73,7 +73,7 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     DriveSubsystem.odometryLock.lock();
     try {
-      CANBus bus = new CANBus(Constants.CANIVORE_NAME);
+      CANBus bus = new CANBus(Constants.DeviceID.CANIVORE_NAME);
       isCANFD = bus.isNetworkFD();
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
@@ -105,13 +105,13 @@ public class PhoenixOdometryThread extends Thread {
       signalsLock.lock();
       try {
         if (isCANFD) {
-          BaseStatusSignal.waitForAll(2.0 / DriveConstants.ODOMETRY_FREQUENCY, signals);
+          BaseStatusSignal.waitForAll(2.0 / Constants.RobotConfig.ODOMETRY_FREQUENCY, signals);
         } else {
           // "waitForAll" does not support blocking on multiple
           // signals with a bus that is not CAN FD, regardless
           // of Pro licensing. No reasoning for this behavior
           // is provided by the documentation.
-          Thread.sleep((long) (1000.0 / DriveConstants.ODOMETRY_FREQUENCY));
+          Thread.sleep((long) (1000.0 / Constants.RobotConfig.ODOMETRY_FREQUENCY));
           if (signals.length > 0)
             BaseStatusSignal.refreshAll(signals);
         }
