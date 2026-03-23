@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeMode;
-import frc.robot.Constants.IntakeState;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,35 +26,9 @@ public class IntakeCommands {
     }
   }
 
-  public static Command setIntakePosition(IntakeSubsystem intake, IntakeState pos) {
-
-    switch (pos) {
-      case TUCKED:
-        return Commands.sequence(
-            // Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            // Commands.waitSeconds(1),
-            Commands.runOnce(() -> intake.setState(IntakeState.TUCKED), intake));
-      case OUT:
-        return Commands.sequence(
-            // Commands.runOnce(() -> intake.setState(IntakeState.TRANSITION), intake),
-            // Commands.waitSeconds(1),
-            Commands.runOnce(() -> intake.setState(IntakeState.OUT), intake));
-      case BUMP_SAFE:
-        return Commands.runOnce(() -> intake.setState(IntakeState.BUMP_SAFE), intake);
-      default:
-        return Commands.none();
-
-    }
-  }
-
   public static Command runIndexer(IntakeSubsystem intake) {
     return Commands.runOnce(() -> intake.runIndexerMotors(), intake);
   }
-
-  public static Command reverseIndexer(IntakeSubsystem intake) {
-    return Commands.runOnce(() -> intake.reverseIndexerMotors(), intake);
-  }
-
 
   public static Command stopIntake(IntakeSubsystem intake) {
     return Commands.runOnce(() -> {
@@ -81,7 +54,7 @@ public class IntakeCommands {
     }, intake);
   }
 
-  public static Command staySafeFromBump(IntakeSubsystem intake) {
-    return Commands.run(() -> intake.staySafeFromBump(), intake);
+  public static Command setPosition(IntakeSubsystem intake, double position) {
+    return Commands.runOnce(() -> intake.setPosition(position), intake);
   }
 }

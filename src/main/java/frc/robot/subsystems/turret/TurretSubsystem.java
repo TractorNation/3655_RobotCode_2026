@@ -24,6 +24,8 @@ public class TurretSubsystem extends SubsystemBase {
   private TrapezoidProfile.Constraints constraints;
   private TrapezoidProfile.State goalState;
   private double setpoint;
+
+  @SuppressWarnings("unused")
   private Rectangle2d scoringZone;
   private Translation2d hubPosition;
 
@@ -114,8 +116,9 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void targetHub() {
+
     Pose2d currentPose = RobotState.getInstance().getFuturePose();
-    Translation2d translation = currentPose.getTranslation().plus(Constants.OffsetAndRatio.Turret.ROBOT_TO_TURRET);
+    Translation2d translation = currentPose.getTranslation().plus(Constants.RobotConfig.ROBOT_TO_TURRET);
     double targetAngle;
     Translation2d robotToHub = hubPosition.minus(translation);
 

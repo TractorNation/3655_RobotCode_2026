@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeMode;
-import frc.robot.Constants.IntakeState;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.TurretCommands;
@@ -204,10 +203,9 @@ public class RobotContainer {
     new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake));
     new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(46), turret));
     new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(66), turret));
-    new EventTrigger("slider").onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices");
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -290,24 +288,19 @@ public class RobotContainer {
 
       // Programming uses Xbox controllers
       case PROGRAMMING:
-        // drive.setDefaultCommand(
-        // DriveCommands.joystickDrive(
-        // drive,
-        // () -> programmingController.getLeftY(),
-        // () -> programmingController.getLeftX(),
-        // () -> -programmingController.getRightX(),
-        // 1,
-        // programmingController.leftBumper()));
+        drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+        drive,
+        () -> programmingController.getLeftY(),
+        () -> programmingController.getLeftX(),
+        () -> -programmingController.getRightX(),
+        1,
+        programmingController.leftBumper()));
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
-
-        programmingController.povUp()
-            .onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
-        programmingController.povDown()
-            .onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.TUCKED));
-
-        // programmingController.povDown()
-        // .onTrue(TurretCommands.updateState(turret, 171, 65));
+        programmingController.a().onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
+        programmingController.povUp().onTrue(IntakeCommands.setPosition(intake, 0.2));
+        programmingController.povDown().onTrue(IntakeCommands.setPosition(intake, 0.1));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox
@@ -355,22 +348,19 @@ public class RobotContainer {
 
     // tractorController.button(17).onTrue(IntakeCommands.setIntakePosition(intake,
     // IntakeState.TUCKED));
-    tractorController.button(18).onTrue(IntakeCommands.setIntakePosition(intake, IntakeState.OUT));
 
     tractorController.axisMagnitudeGreaterThan(3, 0.1)
         .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
 
-    tractorController.button(5).onTrue(IntakeCommands.reverseIndexer(intake))
-        .onFalse(IntakeCommands.stopIntake(intake));
-
     tractorController.button(11).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(46), turret));
-    tractorController.button(16).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(5), turret));
-    tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(15), turret));
     tractorController.button(13).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(66), turret));
     tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(70), turret));
     tractorController.button(12).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(0), turret));
     tractorController.button(19).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(1), turret));
     tractorController.button(20).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(-1), turret));
+
+    tractorController.button(14).onTrue(IntakeCommands.setPosition(intake, 0.1));
+    tractorController.button(16).onTrue(IntakeCommands.setPosition(intake, 0.2));
   }
 
   /**

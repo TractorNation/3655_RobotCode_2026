@@ -34,8 +34,7 @@ public final class Constants {
       public static final int TOP_MOTOR_ID = 24;
       public static final int BACK_MOTOR_ID = 23;
       public static final int SLIDER_ID = 26;
-      public static final int ARM_RIGHT = 27;
-      public static final int ARM_LEFT = 28;
+      public static final int ARM_ID = 27;
     }
 
     public static final class Drive {
@@ -63,7 +62,7 @@ public final class Constants {
       public static final double MOTOR_VELOCITY_KV = 0.0;
       public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 6.0;
       public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;
-      public static final double POSITION_KP = 15;
+      public static final double POSITION_KP = 5;
       public static final double POSITION_KI = 0.0;
       public static final double POSITION_KD = 0.00;
     }
@@ -72,12 +71,10 @@ public final class Constants {
       public static final double SLIDER_KP = 14;
       public static final double SLIDER_KI = 0.0;
       public static final double SLIDER_KD = 0.0;
-      public static final double INTAKE_LEFT_KP = 0.0;
-      public static final double INTAKE_LEFT_KI = 0.0;
-      public static final double INTAKE_LEFT_KD = 0.0;
-      public static final double INTAKE_RIGHT_KP = 0.0;
-      public static final double INTAKE_RIGHT_KI = 0.0;
-      public static final double INTAKE_RIGHT_KD = 0.0;
+      public static final double INTAKE_KP = 100;
+      public static final double INTAKE_KI = 0.0;
+      public static final double INTAKE_KD = 0.0;
+      public static final double INTAKE_KG = 1.8;
     }
 
     public static final class Drive {
@@ -95,7 +92,6 @@ public final class Constants {
       public static final double RING_GEAR_TO_PLANET_GEAR_RATIO = (double) 88 / 16;
       public static final double MOTOR_TO_RING_GEAR_RATIO = 6.2857;
       public static final double TURRET_TO_CANCODER_RATIO = 6.7692;
-      public static final Translation2d ROBOT_TO_TURRET = new Translation2d(0,0);
     }
 
     public static final class Intake {
@@ -138,7 +134,7 @@ public final class Constants {
   }
 
   public static final class RobotConfig {
-    public static final Driver currentDriver = Driver.MACBOOK;
+    public static final Driver currentDriver = Driver.MAIN;
     public static final RobotType currentRobot = RobotType.COMPBOT;
 
     public static final Mode simMode = Mode.SIM;
@@ -187,6 +183,8 @@ public final class Constants {
     };
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
     public static final double TURRET_DT = 0.1;
+    public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Units.inchesToMeters(-5),
+        Units.inchesToMeters(5.25));
   }
 
   public static final class Vision {

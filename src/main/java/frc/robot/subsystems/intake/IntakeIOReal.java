@@ -3,9 +3,10 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -19,110 +20,74 @@ import frc.robot.Constants;
 public class IntakeIOReal implements IntakeIO {
   private final SparkFlex frontMotor = new SparkFlex(Constants.DeviceID.Intake.FRONT_MOTOR_ID, MotorType.kBrushless);
   private final SparkFlex topMotor = new SparkFlex(Constants.DeviceID.Intake.TOP_MOTOR_ID, MotorType.kBrushless);
-  private final SparkFlex backMotor = new SparkFlex(Constants.DeviceID.Intake.BACK_MOTOR_ID, MotorType.kBrushless);
-
-  private final TalonFX conveyorMotor = new TalonFX(Constants.DeviceID.Intake.CONVEYOR_ID);
+  private final TalonFX armMotor = new TalonFX(Constants.DeviceID.Intake.ARM_ID);
+  private final SparkFlex conveyorMotor = new SparkFlex(Constants.DeviceID.Intake.CONVEYOR_ID, MotorType.kBrushless);
   private final TalonFX kickerMotor = new TalonFX(Constants.DeviceID.Intake.KICKER_ID);
-  private final TalonFX sliderMotor = new TalonFX(Constants.DeviceID.Intake.SLIDER_ID);
-  // private final TalonFX rightArmMotor = new TalonFX(Constants.DeviceID.Intake.ARM_RIGHT);
-  // private final TalonFX leftArmMotor = new TalonFX(Constants.DeviceID.Intake.ARM_LEFT);
 
   SparkMaxConfig frontConfig;
   SparkMaxConfig topConfig;
-  SparkMaxConfig backConfig;
+  TalonFXConfiguration armConfig;
 
-  TalonFXConfiguration sliderConfig;
-  // TalonFXConfiguration leftArmConfig;
-  // TalonFXConfiguration rightArmConfig;
-  StatusSignal<Angle> sliderPosition;
-  StatusSignal<Angle> intakePosition;
-  StatusSignal<Current> conveyorCurrent;
   StatusSignal<Current> kickerCurrent;
-  
+  StatusSignal<Angle> position;
+
+  double positionRotations = 0.2;
+
   public IntakeIOReal() {
     frontConfig = new SparkMaxConfig();
     topConfig = new SparkMaxConfig();
-    backConfig = new SparkMaxConfig();
     frontConfig.inverted(true);
     topConfig.inverted(true);
-    backConfig.inverted(false);
     frontMotor.configure(frontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     topMotor.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    backMotor.configure(backConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    sliderConfig = new TalonFXConfiguration();
-    sliderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    sliderConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.SLIDER_RATIO;
-    sliderConfig.Slot0.kP = Constants.PID.Intake.SLIDER_KP;
-    sliderConfig.Slot0.kI = Constants.PID.Intake.SLIDER_KI;
-    sliderConfig.Slot0.kD = Constants.PID.Intake.SLIDER_KD;
-    sliderConfig.Slot0.kV = 0.025;
-    sliderConfig.Slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
-    sliderConfig.Slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    sliderConfig.Slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    sliderConfig.MotionMagic.MotionMagicCruiseVelocity = 13;
-    sliderConfig.MotionMagic.MotionMagicAcceleration = 160;
-    sliderConfig.MotionMagic.MotionMagicJerk = 1600;
-    sliderMotor.getConfigurator().apply(sliderConfig);
+    armConfig = new TalonFXConfiguration();
+    armConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.ARM_RATIO;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    armConfig.Slot0.kP = Constants.PID.Intake.INTAKE_KP;
+    armConfig.Slot0.kI = Constants.PID.Intake.INTAKE_KI;
+    armConfig.Slot0.kD = Constants.PID.Intake.INTAKE_KD;
+    armConfig.Slot0.kG = Constants.PID.Intake.INTAKE_KG;
 
-    // leftArmConfig = new TalonFXConfiguration();
-    // leftArmConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.ARM_RATIO;
-    // leftArmConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // leftArmConfig.Slot0.kP = Constants.PID.Intake.INTAKE_LEFT_KP;
-    // leftArmConfig.Slot0.kI = Constants.PID.Intake.INTAKE_LEFT_KI;
-    // leftArmConfig.Slot0.kD = Constants.PID.Intake.INTAKE_LEFT_KD;
-    // leftArmConfig.Slot0.kG = 0.0;
+    armMotor.getConfigurator().apply(armConfig);
 
-    // rightArmConfig = new TalonFXConfiguration();
-    // rightArmConfig.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Intake.ARM_RATIO;
-    // rightArmConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // rightArmConfig.Slot0.kP = Constants.PID.Intake.INTAKE_RIGHT_KP;
-    // rightArmConfig.Slot0.kI = Constants.PID.Intake.INTAKE_RIGHT_KI;
-    // rightArmConfig.Slot0.kD = Constants.PID.Intake.INTAKE_RIGHT_KD;
-    // rightArmConfig.Slot0.kG = 0.0;
+    armMotor.setPosition(0.25);
 
-    // leftArmMotor.getConfigurator().apply(leftArmConfig);
-    // rightArmMotor.getConfigurator().apply(rightArmConfig);
-
-    sliderPosition = sliderMotor.getPosition();
-    // intakePosition = rightArmMotor.getPosition();
-    conveyorCurrent = conveyorMotor.getSupplyCurrent();
+    position = armMotor.getPosition();
     kickerCurrent = kickerMotor.getSupplyCurrent();
+
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    BaseStatusSignal.refreshAll(sliderPosition);
-
+    BaseStatusSignal.refreshAll(position, kickerCurrent);
     inputs.frontMotorCurrent = frontMotor.getOutputCurrent();
     inputs.topMotorCurrent = topMotor.getOutputCurrent();
-    inputs.bottomMotorCurrent = backMotor.getOutputCurrent();
-    inputs.sliderPosition = sliderPosition.getValueAsDouble();
-    inputs.intakePosition = 0.0;
-    inputs.conveyorMotorCurrent = conveyorCurrent.getValueAsDouble();
+    inputs.intakePosition = position.getValueAsDouble();
     inputs.kickerMotorCurrent = kickerCurrent.getValueAsDouble();
+
+    armMotor.setControl(new PositionVoltage(positionRotations));
   }
 
   @Override
   public void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
     frontMotor.set(frontMotorSpeed);
     topMotor.set(topMotorSpeed);
-    backMotor.set(backMotorSpeed);
   }
 
   @Override
   public void stopMotors() {
     frontMotor.stopMotor();
     topMotor.stopMotor();
-    backMotor.stopMotor();
     conveyorMotor.stopMotor();
     kickerMotor.stopMotor();
   }
 
   @Override
   public void runIndexerMotors() {
-    runKicker(-0.75);
-    // runConveyor(0.4);
+    runKicker(-0.6);
+    runConveyor(-0.4);
   }
 
   @Override
@@ -136,14 +101,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setSliderPosition(double position) {
-    sliderMotor.setControl(new MotionMagicVoltage(0).withPosition(position));
+  public void setPosition(double position) {
+    positionRotations = position;
   }
-
-  // @Override
-  // public void setIntakePosition(double position) {
-  //   rightArmMotor.setControl(new MotionMagicVoltage(position));
-  //   leftArmMotor.setControl(new MotionMagicVoltage(position));
-  // }
 
 }

@@ -21,6 +21,5 @@ public interface IntakeIO {
   public default void runIndexerMotors() {}
   public default void runConveyor(double speed) {}
   public default void runKicker(double speed) {}
-  public default void setSliderPosition(double position) {}
-  public default void setIntakePosition(double position) {}
+  public default void setPosition(double position) {}
 }

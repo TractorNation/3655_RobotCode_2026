@@ -25,7 +25,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.ObservationType;
 import frc.robot.Constants.PoseObservation;
 import frc.robot.Constants.TargetObservation;
-import frc.robot.util.FieldUtil;
 
 public class VisionSubsystem extends SubsystemBase {
 
