@@ -30,7 +30,7 @@ public final class Constants {
     public static final class Intake {
       public static final int CONVEYOR_ID = 21;
       public static final int KICKER_ID = 22;
-      public static final int FRONT_MOTOR_ID = 0;
+      public static final int FRONT_MOTOR_ID = 25;
       public static final int TOP_MOTOR_ID = 24;
       public static final int BACK_MOTOR_ID = 23;
       public static final int SLIDER_ID = 26;
@@ -62,7 +62,7 @@ public final class Constants {
       public static final double MOTOR_VELOCITY_KV = 0.0;
       public static final double TURRET_MAX_VELOCITY_ROT_PER_SEC = 6.0;
       public static final double TURRET_MAX_ACCELERATION_ROT_PER_SEC2 = 4;
-      public static final double POSITION_KP = 5;
+      public static final double POSITION_KP = 16;
       public static final double POSITION_KI = 0.0;
       public static final double POSITION_KD = 0.00;
     }
@@ -183,8 +183,7 @@ public final class Constants {
     };
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
     public static final double TURRET_DT = 0.1;
-    public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Units.inchesToMeters(-5),
-        Units.inchesToMeters(5.25));
+    public static final double ROBOT_TO_TURRET = Units.inchesToMeters(7.25);
   }
 
   public static final class Vision {

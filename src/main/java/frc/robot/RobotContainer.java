@@ -143,7 +143,7 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        vision = new VisionSubsystem(new VisionIOLimelight("limelight-fr"), new VisionIOLimelight("limelight-fl"));
+        vision = new VisionSubsystem(new VisionIOLimelight("limelight-front"), new VisionIOLimelight("limelight-back"));
         intake = new IntakeSubsystem(new IntakeIOReal());
 
         turret = new TurretSubsystem(new TurretIOTalonFX());

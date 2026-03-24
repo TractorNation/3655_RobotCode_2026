@@ -86,7 +86,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void runIndexerMotors() {
-    runKicker(-0.6);
+    runKicker(-0.85);
     runConveyor(-0.4);
   }
 

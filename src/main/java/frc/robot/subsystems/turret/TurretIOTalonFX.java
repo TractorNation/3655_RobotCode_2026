@@ -42,15 +42,13 @@ public class TurretIOTalonFX implements TurretIO {
     config.Feedback.SensorToMechanismRatio = Constants.OffsetAndRatio.Turret.MOTOR_TO_RING_GEAR_RATIO;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 60;
-    
+    config.CurrentLimits.SupplyCurrentLimit = 47;
 
     var encoderConfig = new CANcoderConfiguration();
-    encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     encoder.getConfigurator().apply(encoderConfig);
 
-    encoder.setPosition(0.5);
+    encoder.setPosition(0);
 
     topRingMotor.getConfigurator().apply(config);
     bottomRingMotor.getConfigurator().apply(config);
@@ -60,7 +58,6 @@ public class TurretIOTalonFX implements TurretIO {
     canCoderPosition = encoder.getPosition();
     topRingCurrent = topRingMotor.getSupplyCurrent();
     bottomRingCurrent = bottomRingMotor.getSupplyCurrent();
-    
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
@@ -79,7 +76,9 @@ public class TurretIOTalonFX implements TurretIO {
     BaseStatusSignal.refreshAll(
         topRingVelocity,
         bottomRingVelocity,
-        canCoderPosition);
+        canCoderPosition, 
+        topRingCurrent, 
+        bottomRingCurrent);
 
     double topRingVelocityRPS = topRingVelocity.getValueAsDouble();
     double bottomRingVelocityRPS = bottomRingVelocity.getValueAsDouble();
@@ -87,8 +86,8 @@ public class TurretIOTalonFX implements TurretIO {
     inputs.topRingMotorVelocity = topRingVelocity.getValueAsDouble();
     inputs.bottomRingMotorVelocity = bottomRingVelocity.getValueAsDouble();
 
-    inputs.turretPosition = Rotation2d.fromRotations(canCoderPosition.getValueAsDouble()
-        / Constants.OffsetAndRatio.Turret.TURRET_TO_CANCODER_RATIO);
+    inputs.turretPosition = Rotation2d.fromRotations((canCoderPosition.getValueAsDouble()
+        / Constants.OffsetAndRatio.Turret.TURRET_TO_CANCODER_RATIO) + 0.5);
 
     inputs.shooterVelocity = (((topRingVelocityRPS
         - bottomRingVelocityRPS) * Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO)

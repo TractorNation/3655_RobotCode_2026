@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rectangle2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -45,22 +46,17 @@ public class TurretSubsystem extends SubsystemBase {
 
     target = new TurretState(0, 0);
 
-    setTarget(0, 0);
+    setTarget(180, 0);
 
-    if (DriverStation.getAlliance().isPresent()) {
-      switch (DriverStation.getAlliance().get()) {
-        case Red:
-          hubPosition = Constants.Field.RED_HUB_POSITION;
-          scoringZone = Constants.Field.RED_SCORING_ZONE;
-          break;
-        case Blue:
-        default:
-          hubPosition = Constants.Field.BLUE_HUB_POSITION;
-          scoringZone = Constants.Field.BLUE_SCORING_ZONE;
-      }
-    } else {
-      hubPosition = Constants.Field.BLUE_HUB_POSITION;
-      scoringZone = Constants.Field.BLUE_SCORING_ZONE;
+    switch (DriverStation.getAlliance().get()) {
+      case Red:
+        hubPosition = Constants.Field.RED_HUB_POSITION;
+        scoringZone = Constants.Field.RED_SCORING_ZONE;
+        break;
+      case Blue:
+      default:
+        hubPosition = Constants.Field.BLUE_HUB_POSITION;
+        scoringZone = Constants.Field.BLUE_SCORING_ZONE;
     }
   }
 
@@ -87,8 +83,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
     Logger.recordOutput("Turret/targetPosition", target.getPosition());
-    Logger.recordOutput("Shooter/CurrentVelocity", inputs.shooterVelocity);
-    Logger.recordOutput("Shooter/TargetVelocity", target.getShooterSpeed());
+    Logger.recordOutput("Turret/Shooter/CurrentVelocity", inputs.shooterVelocity);
+    Logger.recordOutput("Turret/Shooter/TargetVelocity", target.getShooterSpeed());
     Logger.recordOutput("Turret/TopRingGear/Velocity", inputs.topRingMotorVelocity);
     Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
     Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
@@ -116,10 +112,12 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void targetHub() {
-
-    Pose2d currentPose = RobotState.getInstance().getFuturePose();
-    Translation2d translation = currentPose.getTranslation().plus(Constants.RobotConfig.ROBOT_TO_TURRET);
     double targetAngle;
+    Pose2d currentPose = RobotState.getInstance().getFuturePose();
+    Translation2d robotToTurret = new Translation2d(
+        Constants.RobotConfig.ROBOT_TO_TURRET,
+        Rotation2d.fromDegrees(currentPose.getRotation().getDegrees() + 135));
+    Translation2d translation = currentPose.getTranslation().plus(robotToTurret);
     Translation2d robotToHub = hubPosition.minus(translation);
 
     double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
