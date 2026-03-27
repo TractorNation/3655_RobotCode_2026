@@ -40,10 +40,4 @@ public class TurretIOSim implements TurretIO {
   public void setBottomRingMotorVelocity(double velocity) {
     bottomRingVelocity = velocity;
   }
-
-  @Override
-  public boolean toggleShooter(boolean shooterToggled){
-    shooterToggled = !shooterToggled;
-    return shooterToggled;
-  }
 }

@@ -33,6 +33,7 @@ public class TurretSubsystem extends SubsystemBase {
   // Temp variable for finding ideal speeds
   public static double shooterSpeedIncremented = 0;
   public static boolean shooterToggled = true;
+  private double frameCount = 0;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
@@ -63,36 +64,42 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
+    if (frameCount < 50) {
+      frameCount++;
+      Logger.recordOutput("Turret/FrameCount", frameCount);
+    } else {
 
-    goalState = new TrapezoidProfile.State(Units.degreesToRotations(target.getPosition()), 0);
+      io.updateInputs(inputs);
 
-    setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
+      goalState = new TrapezoidProfile.State(Units.degreesToRotations(target.getPosition()), 0);
 
-    double desiredTurretVelocity = setpoint
-        * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO;
+      setpoint = controller.calculate(inputs.turretPosition.getRotations(), goalState);
 
-    double desiredShooterVelocity = target.getShooterSpeed()
-        / Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO
-        / Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO;
+      double desiredTurretVelocity = setpoint
+          * Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_TURRET_RATIO;
 
-    double topMotorTargetVelocity = desiredTurretVelocity + desiredShooterVelocity;
-    double bottomMotorTargetVelocity = desiredTurretVelocity - desiredShooterVelocity;
+      double desiredShooterVelocity = target.getShooterSpeed()
+          / Constants.OffsetAndRatio.Turret.RING_GEAR_TO_PLANET_GEAR_RATIO
+          / Constants.OffsetAndRatio.Turret.PLANET_GEAR_TO_SHOOTER_RATIO;
 
-    io.setTopRingMotorVelocity(topMotorTargetVelocity);
-    io.setBottomRingMotorVelocity(bottomMotorTargetVelocity);
+      double topMotorTargetVelocity = desiredTurretVelocity + desiredShooterVelocity;
+      double bottomMotorTargetVelocity = desiredTurretVelocity - desiredShooterVelocity;
 
-    Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
-    Logger.recordOutput("Turret/targetPosition", target.getPosition());
-    Logger.recordOutput("Turret/Shooter/CurrentVelocity", inputs.shooterVelocity);
-    Logger.recordOutput("Turret/Shooter/TargetVelocity", target.getShooterSpeed());
-    Logger.recordOutput("Turret/TopRingGear/Velocity", inputs.topRingMotorVelocity);
-    Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
-    Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
-    Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
-    Logger.recordOutput("Turret/ShooterSpeedIncrement", shooterSpeedIncremented);
-    Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
-    Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
+      io.setTopRingMotorVelocity(topMotorTargetVelocity);
+      io.setBottomRingMotorVelocity(bottomMotorTargetVelocity);
+
+      Logger.recordOutput("Turret/CurrentPosition", inputs.turretPosition.getDegrees());
+      Logger.recordOutput("Turret/targetPosition", target.getPosition());
+      Logger.recordOutput("Turret/Shooter/CurrentVelocity", inputs.shooterVelocity);
+      Logger.recordOutput("Turret/Shooter/TargetVelocity", target.getShooterSpeed());
+      Logger.recordOutput("Turret/TopRingGear/Velocity", inputs.topRingMotorVelocity);
+      Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
+      Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
+      Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
+      Logger.recordOutput("Turret/ShooterSpeedIncrement", shooterSpeedIncremented);
+      Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
+      Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
+    }
   }
 
   public double wrapTarget(double targetPositionDegrees) {
@@ -114,17 +121,18 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void targetHub() {
     double targetAngle;
-    Pose2d currentPose = RobotState.getInstance().getFuturePose();
+    Pose2d futurePose = RobotState.getInstance().getFuturePose();
+    Pose2d currentPose = RobotState.getInstance().getPose();
     Translation2d robotToTurret = new Translation2d(
         Constants.RobotConfig.ROBOT_TO_TURRET,
         Rotation2d.fromDegrees(currentPose.getRotation().getDegrees() + 135));
-    Translation2d translation = currentPose.getTranslation().plus(robotToTurret);
+    Translation2d translation = futurePose.getTranslation().plus(robotToTurret);
     Translation2d robotToHub = hubPosition.minus(translation);
-    
+
     double shooterSpeed;
 
-    if(shooterToggled){
-    shooterSpeed = Math.min((9.9 * robotToHub.getNorm()) + 25.2, 85);
+    if (scoringZone.contains(currentPose.getTranslation()) && shooterToggled) {
+      shooterSpeed = Math.min((9.6 * robotToHub.getNorm()) + 25.2, 85);
     } else {
       shooterSpeed = 0;
     }
@@ -133,11 +141,10 @@ public class TurretSubsystem extends SubsystemBase {
     // ball's spin from the kicker
     targetAngle = (robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees())
         + ((robotToTurret.getAngle().getDegrees() -
-         180) / 83);
+            180) / 83);
 
     Logger.recordOutput("Turret/DistanceToHub", robotToHub.getNorm());
     Logger.recordOutput("Turret/ShooterSpeedYesReal", shooterSpeed);
-    Logger.recordOutput("Turret/Toggle", shooterToggled);
     setTarget(-targetAngle, shooterSpeed);
   }
 
@@ -161,7 +168,7 @@ public class TurretSubsystem extends SubsystemBase {
     setTarget(target.positionDegrees, shooterSpeedRotPerSec);
   }
 
-  public void toggleShooter(){
-    shooterToggled = io.toggleShooter(shooterToggled);
+  public void toggleShooter(boolean on) {
+    shooterToggled = on;
   }
 }
