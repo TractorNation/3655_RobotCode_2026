@@ -30,10 +30,9 @@ public final class Constants {
     public static final class Intake {
       public static final int CONVEYOR_ID = 21;
       public static final int KICKER_ID = 22;
-      public static final int FRONT_MOTOR_ID = 25;
+      public static final int FRONT_MOTOR_ID = 26;
       public static final int TOP_MOTOR_ID = 24;
       public static final int BACK_MOTOR_ID = 23;
-      public static final int SLIDER_ID = 26;
       public static final int ARM_ID = 27;
     }
 
@@ -220,12 +219,11 @@ public final class Constants {
     public static final Rectangle2d RED_BUMP_ZONE = new Rectangle2d(new Translation2d(0, 0),
         new Translation2d(0, 0));
     public static final Rectangle2d RED_SCORING_ZONE = new Rectangle2d(
-        new Translation2d(Units.inchesToMeters(469.11), Units.inchesToMeters(0)),
-        new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
+        new Translation2d(16.47, 8),
+        new Translation2d(12.55, 0));
     public static final Rectangle2d BLUE_SCORING_ZONE = new Rectangle2d(new Translation2d(0, 0),
         new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(317.69)));
     public static final double MAX_INTAKE_WALL_DISTANCE = 13;
-
   }
 
   public static enum Mode {

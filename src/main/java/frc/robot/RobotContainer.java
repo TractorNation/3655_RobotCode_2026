@@ -289,13 +289,13 @@ public class RobotContainer {
       // Programming uses Xbox controllers
       case PROGRAMMING:
         drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-        drive,
-        () -> programmingController.getLeftY(),
-        () -> programmingController.getLeftX(),
-        () -> -programmingController.getRightX(),
-        1,
-        programmingController.leftBumper()));
+            DriveCommands.joystickDrive(
+                drive,
+                () -> programmingController.getLeftY(),
+                () -> programmingController.getLeftX(),
+                () -> -programmingController.getRightX(),
+                1,
+                programmingController.leftBumper()));
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
         programmingController.a().onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
@@ -342,9 +342,13 @@ public class RobotContainer {
 
     tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
         .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(5).onTrue(IntakeCommands.runConveyorBackwards(intake))
+        .onFalse(IntakeCommands.stopIntake(intake));
 
     tractorController.button(7).onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
+
+    tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret));
 
     // tractorController.button(17).onTrue(IntakeCommands.setIntakePosition(intake,
     // IntakeState.TUCKED));

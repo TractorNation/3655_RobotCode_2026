@@ -80,7 +80,7 @@ import frc.robot.util.JoystickUtils;
  */
 public class DriveCommands {
 
-  private static final double DEADBAND = 0.1;
+  private static final double DEADBAND = 0.05;
   private static final double FF_START_DELAY = 2.0; // secs
   private static final double FF_RAMP_RATE = 0.1; // volts/vec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.15; // rads/sec^2

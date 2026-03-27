@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5514404761904768,
-        "y": 5.507905982905982
+        "x": 3.40027380952381,
+        "y": 5.6114523809523815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3059971509971513,
-        "y": 5.0298575498575495
+        "x": 2.5592592592592593,
+        "y": 6.606125356125357
       },
       "isLocked": false,
       "linkedName": "left bump close end"
@@ -17,31 +17,31 @@
     {
       "anchor": {
         "x": 0.65,
-        "y": 5.171980056980058
+        "y": 6.877450142450143
       },
       "prevControl": {
-        "x": 0.65,
-        "y": 4.810213675213677
+        "x": 0.6729059829059829,
+        "y": 7.652663817663818
       },
       "nextControl": {
-        "x": 0.65,
-        "y": 5.52082621082621
+        "x": 0.6396968044780683,
+        "y": 6.528756174599694
       },
       "isLocked": false,
-      "linkedName": "depot enter"
+      "linkedName": null
     },
     {
       "anchor": {
         "x": 0.65,
-        "y": 6.489843304843305
+        "y": 5.4691452991453
       },
       "prevControl": {
-        "x": 0.65,
-        "y": 5.817494704789132
+        "x": 0.6729059829059829,
+        "y": 6.14099715099715
       },
       "nextControl": {
-        "x": 0.65,
-        "y": 7.1487749287749285
+        "x": 0.6275475621888441,
+        "y": 4.810596308520078
       },
       "isLocked": false,
       "linkedName": null
@@ -62,12 +62,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5329550414666159,
-      "rotationDegrees": -63.979000000000006
+      "waypointRelativePos": 0.8059701492537317,
+      "rotationDegrees": -116.00000000000001
     },
     {
       "waypointRelativePos": 2.0624181580095837,
-      "rotationDegrees": -63.979000000000006
+      "rotationDegrees": -116.00000000000001
     }
   ],
   "constraintZones": [
@@ -137,7 +137,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
