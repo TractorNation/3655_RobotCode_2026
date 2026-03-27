@@ -32,4 +32,8 @@ public interface TurretIO {
 
   public default void stopShooter() {
   }
+
+  public default boolean toggleShooter(boolean shooterToggled) {
+    return false;
+  }
 }

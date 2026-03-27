@@ -32,6 +32,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   // Temp variable for finding ideal speeds
   public static double shooterSpeedIncremented = 0;
+  public static boolean shooterToggled = true;
 
   public TurretSubsystem(TurretIO io) {
     this.io = io;
@@ -119,13 +120,24 @@ public class TurretSubsystem extends SubsystemBase {
         Rotation2d.fromDegrees(currentPose.getRotation().getDegrees() + 135));
     Translation2d translation = currentPose.getTranslation().plus(robotToTurret);
     Translation2d robotToHub = hubPosition.minus(translation);
+    
+    double shooterSpeed;
 
-    double shooterSpeedRequest = Math.min(shooterSpeedIncremented, 85);
-    double shooterSpeed = shooterSpeedRequest;
+    if(shooterToggled){
+    shooterSpeed = Math.min((9.9 * robotToHub.getNorm()) + 25.2, 85);
+    } else {
+      shooterSpeed = 0;
+    }
 
-    targetAngle = robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees();
+    // Targets to the center of the hub, then adds an offset to account for the
+    // ball's spin from the kicker
+    targetAngle = (robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees())
+        + ((robotToTurret.getAngle().getDegrees() -
+         180) / 83);
 
     Logger.recordOutput("Turret/DistanceToHub", robotToHub.getNorm());
+    Logger.recordOutput("Turret/ShooterSpeedYesReal", shooterSpeed);
+    Logger.recordOutput("Turret/Toggle", shooterToggled);
     setTarget(-targetAngle, shooterSpeed);
   }
 
@@ -147,5 +159,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void runShooter(double shooterSpeedRotPerSec) {
     setTarget(target.positionDegrees, shooterSpeedRotPerSec);
+  }
+
+  public void toggleShooter(){
+    shooterToggled = io.toggleShooter(shooterToggled);
   }
 }

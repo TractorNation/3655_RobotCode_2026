@@ -8,6 +8,7 @@ public class TurretIOSim implements TurretIO {
   private double bottomRingVelocity = 0;
   private double topRingPosition = 0;
   private double bottomRingPosition = 0;
+  public boolean shooterToggled = false;
 
   @Override
   public void updateInputs(TurretIOInputs inputs) {
@@ -38,5 +39,11 @@ public class TurretIOSim implements TurretIO {
   @Override
   public void setBottomRingMotorVelocity(double velocity) {
     bottomRingVelocity = velocity;
+  }
+
+  @Override
+  public boolean toggleShooter(boolean shooterToggled){
+    shooterToggled = !shooterToggled;
+    return shooterToggled;
   }
 }
