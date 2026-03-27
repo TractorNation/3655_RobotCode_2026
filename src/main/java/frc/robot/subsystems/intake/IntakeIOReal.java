@@ -71,7 +71,7 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
+  public void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed) {
     frontMotor.set(frontMotorSpeed);
     topMotor.set(topMotorSpeed);
   }
@@ -86,8 +86,13 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void runIndexerMotors() {
-    runKicker(-0.85);
-    runConveyor(-0.4);
+    runKicker(-0.9);
+    runConveyor(-0.75);
+  }
+
+  @Override
+  public void runConveyorBackwards(){
+    runConveyor(0.5);
   }
 
   @Override

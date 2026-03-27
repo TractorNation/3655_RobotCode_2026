@@ -27,12 +27,16 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.recordOutput("Intake/KickerCurrent", inputs.kickerMotorCurrent);
   }
 
-  public void runMotors(double frontMotorSpeed, double topMotorSpeed, double backMotorSpeed) {
-    io.runIntakeMotors(frontMotorSpeed, topMotorSpeed, backMotorSpeed);
+  public void runMotors(double frontMotorSpeed, double topMotorSpeed) {
+    io.runIntakeMotors(frontMotorSpeed, topMotorSpeed);
   }
 
   public void runIndexerMotors() {
     io.runIndexerMotors();
+  }
+
+  public void runConveyorBackwards(){
+    io.runConveyorBackwards();
   }
 
   public void runConveyor(double speed) {
