@@ -199,13 +199,14 @@ public class RobotContainer {
     new EventTrigger("start-intake").onTrue(IntakeCommands.runIntakeMode(intake,
         IntakeMode.INTAKE))
         .onFalse(IntakeCommands.stopIntake(intake));
-
     new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake));
-    new EventTrigger("set-turret-speed-46").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(46), turret));
-    new EventTrigger("set-turret-speed-66").onTrue(Commands.runOnce(() -> turret.setShooterSpeed(66), turret));
+    new EventTrigger("drop-intake").onTrue(IntakeCommands.setPosition(intake, 0.08));
+    new EventTrigger("low-outtake").onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    new EventTrigger("climb").onTrue(Commands.none());
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices");
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -348,23 +349,10 @@ public class RobotContainer {
     tractorController.button(7).onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret));
-
-    // tractorController.button(17).onTrue(IntakeCommands.setIntakePosition(intake,
-    // IntakeState.TUCKED));
-
-    tractorController.axisMagnitudeGreaterThan(3, 0.1)
-        .onTrue(Commands.run(() -> turret.updateTarget(tractorController.getRawAxis(3)), turret));
-
-    tractorController.button(11).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(46), turret));
-    tractorController.button(13).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(66), turret));
-    tractorController.button(15).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(70), turret));
-    tractorController.button(12).onTrue(Commands.runOnce(() -> turret.setShooterSpeed(0), turret));
-    tractorController.button(19).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(1), turret));
-    tractorController.button(20).onTrue(Commands.runOnce(() -> turret.incrementShooterSpeed(-1), turret));
-
-    tractorController.button(14).onTrue(IntakeCommands.setPosition(intake, 0.1));
-    tractorController.button(16).onTrue(IntakeCommands.setPosition(intake, 0.2));
+    tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret, true));
+    tractorController.button(13).onTrue(TurretCommands.toggleShooter(turret, false));
+    tractorController.button(12).onTrue(IntakeCommands.setPosition(intake, 0.08));
+    tractorController.button(14).onTrue(IntakeCommands.setPosition(intake, 0.17));
   }
 
   /**

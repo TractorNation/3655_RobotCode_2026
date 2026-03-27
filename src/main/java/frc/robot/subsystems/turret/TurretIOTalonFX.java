@@ -112,10 +112,4 @@ public class TurretIOTalonFX implements TurretIO {
     topRingMotor.setControl(new VelocityVoltage(0.0));
     bottomRingMotor.setControl(new VelocityVoltage(0.0));
   }
-
-  @Override
-  public boolean toggleShooter(boolean shooterToggled){
-    shooterToggled = !shooterToggled;
-    return shooterToggled;
-  }
 }

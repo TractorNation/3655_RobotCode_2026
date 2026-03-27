@@ -14,7 +14,7 @@ public class TurretCommands {
     return Commands.run(()-> turret.targetHub(), turret);
   }
 
-  public static Command toggleShooter(TurretSubsystem turret){
-    return Commands.runOnce(() -> turret.toggleShooter(), turret);
+  public static Command toggleShooter(TurretSubsystem turret, boolean on){
+    return Commands.runOnce(() -> turret.toggleShooter(on), turret);
   }
 }

@@ -70,10 +70,10 @@ public final class Constants {
       public static final double SLIDER_KP = 14;
       public static final double SLIDER_KI = 0.0;
       public static final double SLIDER_KD = 0.0;
-      public static final double INTAKE_KP = 100;
+      public static final double INTAKE_KP = 102;
       public static final double INTAKE_KI = 0.0;
       public static final double INTAKE_KD = 0.0;
-      public static final double INTAKE_KG = 1.8;
+      public static final double INTAKE_KG = 1.4;
     }
 
     public static final class Drive {
@@ -181,7 +181,7 @@ public final class Constants {
         new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
-    public static final double TURRET_DT = 0.1;
+    public static final double TURRET_DT = 1;
     public static final double ROBOT_TO_TURRET = Units.inchesToMeters(7.25);
   }
 
