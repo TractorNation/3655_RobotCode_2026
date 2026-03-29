@@ -214,6 +214,8 @@ public final class Constants {
         new Translation2d(Units.inchesToMeters(651.22), Units.inchesToMeters(317.69)));
     public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.702, 3.987);
     public static final Translation2d RED_HUB_POSITION = new Translation2d(11.926, 3.987);
+    public static final Translation2d BLUE_RIGHT_PASS = new Translation2d(2, 7);
+    public static final Translation2d BLUE_LEFT_PASS = new Translation2d(2, 1.5);
     public static final Rectangle2d BLUE_BUMP_ZONE = new Rectangle2d(new Translation2d(0, 0),
         new Translation2d(0, 0));
     public static final Rectangle2d RED_BUMP_ZONE = new Rectangle2d(new Translation2d(0, 0),

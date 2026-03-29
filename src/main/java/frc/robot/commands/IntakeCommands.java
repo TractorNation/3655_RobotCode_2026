@@ -17,7 +17,7 @@ public class IntakeCommands {
       case OUTPUT:
         return Commands.runOnce(() -> {
           intake.runMotors(0.75, -0.4);
-          intake.runConveyor(-0.6);
+          intake.runConveyor(0.6);
         }, intake);
       case SNOWBLOWER:
         return runSnowblower(intake);
@@ -27,6 +27,10 @@ public class IntakeCommands {
   }
 
   public static Command runIndexer(IntakeSubsystem intake) {
+    return Commands.runOnce(() -> intake.runIndexerMotors());
+  }
+
+  public static Command runIndexerInAuto(IntakeSubsystem intake) {
     return Commands.runOnce(() -> intake.runIndexerMotors(), intake);
   }
 
@@ -52,7 +56,7 @@ public class IntakeCommands {
     return Commands.run(() -> {
       intake.runMotors((1 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance,
           (-0.75 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance); // + - -
-      intake.runConveyor(-0.6);
+      intake.runConveyor(0.6);
     }, intake);
   }
 

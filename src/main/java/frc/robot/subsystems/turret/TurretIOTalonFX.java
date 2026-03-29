@@ -76,8 +76,8 @@ public class TurretIOTalonFX implements TurretIO {
     BaseStatusSignal.refreshAll(
         topRingVelocity,
         bottomRingVelocity,
-        canCoderPosition, 
-        topRingCurrent, 
+        canCoderPosition,
+        topRingCurrent,
         bottomRingCurrent);
 
     double topRingVelocityRPS = topRingVelocity.getValueAsDouble();
@@ -105,11 +105,5 @@ public class TurretIOTalonFX implements TurretIO {
   @Override
   public void setBottomRingMotorVelocity(double velocity) {
     bottomRingMotor.setControl(new VelocityVoltage(velocity));
-  }
-
-  @Override
-  public void stopShooter() {
-    topRingMotor.setControl(new VelocityVoltage(0.0));
-    bottomRingMotor.setControl(new VelocityVoltage(0.0));
   }
 }

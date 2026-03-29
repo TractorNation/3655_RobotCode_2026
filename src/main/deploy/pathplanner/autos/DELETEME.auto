@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "left close"
+            "pathName": "delete"
           }
         },
         {
@@ -23,7 +23,32 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 15.0
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "delete pt2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
                 }
               }
             ]

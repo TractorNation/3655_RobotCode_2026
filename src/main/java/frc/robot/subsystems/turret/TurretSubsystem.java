@@ -28,10 +28,8 @@ public class TurretSubsystem extends SubsystemBase {
 
   @SuppressWarnings("unused")
   private Rectangle2d scoringZone;
-  private Translation2d hubPosition;
+  private Translation2d targetPosition;
 
-  // Temp variable for finding ideal speeds
-  public static double shooterSpeedIncremented = 0;
   public static boolean shooterToggled = true;
   private double frameCount = 0;
 
@@ -50,21 +48,12 @@ public class TurretSubsystem extends SubsystemBase {
 
     setTarget(180, 0);
 
-    switch (DriverStation.getAlliance().get()) {
-      case Red:
-        hubPosition = Constants.Field.RED_HUB_POSITION;
-        scoringZone = Constants.Field.RED_SCORING_ZONE;
-        break;
-      case Blue:
-      default:
-        hubPosition = Constants.Field.BLUE_HUB_POSITION;
-        scoringZone = Constants.Field.BLUE_SCORING_ZONE;
-    }
+    resetTarget();
   }
 
   @Override
   public void periodic() {
-    if (frameCount < 50) {
+    if (frameCount < 100) {
       frameCount++;
       Logger.recordOutput("Turret/FrameCount", frameCount);
     } else {
@@ -96,7 +85,6 @@ public class TurretSubsystem extends SubsystemBase {
       Logger.recordOutput("Turret/TopRingGear/Target", topMotorTargetVelocity);
       Logger.recordOutput("Turret/BottomRingGear/Velocity", inputs.bottomRingMotorVelocity);
       Logger.recordOutput("Turret/BottomRingGear/Target", bottomMotorTargetVelocity);
-      Logger.recordOutput("Turret/ShooterSpeedIncrement", shooterSpeedIncremented);
       Logger.recordOutput("Turret/TopRingCurrent", inputs.topRingMotorCurrent);
       Logger.recordOutput("Turret/BottomRingCurrent", inputs.bottomRingMotorCurrent);
     }
@@ -127,23 +115,23 @@ public class TurretSubsystem extends SubsystemBase {
         Constants.RobotConfig.ROBOT_TO_TURRET,
         Rotation2d.fromDegrees(currentPose.getRotation().getDegrees() + 135));
     Translation2d translation = futurePose.getTranslation().plus(robotToTurret);
-    Translation2d robotToHub = hubPosition.minus(translation);
+    Translation2d robotToTarget = targetPosition.minus(translation);
 
     double shooterSpeed;
 
-    if (scoringZone.contains(currentPose.getTranslation()) && shooterToggled) {
-      shooterSpeed = Math.min((9.6 * robotToHub.getNorm()) + 25.2, 85);
+    if (shooterToggled) {
+      shooterSpeed = Math.min((9.55 * robotToTarget.getNorm()) + 25.2, 85);
     } else {
       shooterSpeed = 0;
     }
 
     // Targets to the center of the hub, then adds an offset to account for the
     // ball's spin from the kicker
-    targetAngle = (robotToHub.getAngle().getDegrees() - currentPose.getRotation().getDegrees())
+    targetAngle = (robotToTarget.getAngle().getDegrees() - currentPose.getRotation().getDegrees())
         + ((robotToTurret.getAngle().getDegrees() -
-            180) / 83);
+            180) / 90);
 
-    Logger.recordOutput("Turret/DistanceToHub", robotToHub.getNorm());
+    Logger.recordOutput("Turret/DistanceToTarget", robotToTarget.getNorm());
     Logger.recordOutput("Turret/ShooterSpeedYesReal", shooterSpeed);
     setTarget(-targetAngle, shooterSpeed);
   }
@@ -153,11 +141,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void incrementShooterSpeed(double increment) {
-    shooterSpeedIncremented += increment;
-  }
-
-  public void setShooterSpeed(double speed) {
-    shooterSpeedIncremented = speed;
+    setTarget(target.positionDegrees, increment);
   }
 
   public void stopMotors() {
@@ -170,5 +154,37 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void toggleShooter(boolean on) {
     shooterToggled = on;
+  }
+
+  public void changeTarget(Translation2d newTarget) {
+    switch (DriverStation.getAlliance().get()) {
+      case Blue:
+        targetPosition = newTarget;
+        break;
+      case Red:
+        targetPosition = new Translation2d(newTarget.getX() + 12.5, newTarget.getY());
+        break;
+      default:
+        targetPosition = newTarget;
+        break;
+    }
+  }
+
+  public void resetTarget() {
+    switch (DriverStation.getAlliance().get()) {
+      case Red:
+        targetPosition = Constants.Field.RED_HUB_POSITION;
+        scoringZone = Constants.Field.RED_SCORING_ZONE;
+        break;
+      case Blue:
+      default:
+        targetPosition = Constants.Field.BLUE_HUB_POSITION;
+        scoringZone = Constants.Field.BLUE_SCORING_ZONE;
+    }
+  }
+
+  //Henry this method disappeared
+  public TurretState getTarget() {
+    return target;
   }
 }

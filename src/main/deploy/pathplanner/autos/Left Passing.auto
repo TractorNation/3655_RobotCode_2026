@@ -11,7 +11,7 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -36,9 +36,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shoot"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              }
+            ]
           }
         }
       ]

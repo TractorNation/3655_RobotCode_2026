@@ -3,15 +3,18 @@ package frc.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeMode;
+import frc.robot.Constants.DeviceID.Turret;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.TurretCommands;
@@ -199,12 +202,14 @@ public class RobotContainer {
     new EventTrigger("start-intake").onTrue(IntakeCommands.runIntakeMode(intake,
         IntakeMode.INTAKE))
         .onFalse(IntakeCommands.stopIntake(intake));
-    new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake));
-    new EventTrigger("drop-intake").onTrue(IntakeCommands.setPosition(intake, 0.08));
+    // new EventTrigger("shoot").onTrue(IntakeCommands.runIndexer(intake));
+    new EventTrigger("drop-intake").onTrue(IntakeCommands.setPosition(intake, 0.05));
     new EventTrigger("low-outtake").onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
     new EventTrigger("climb").onTrue(Commands.none());
 
+    NamedCommands.registerCommand("shoot", IntakeCommands.runIndexer(intake));
+    NamedCommands.registerCommand("start-turret", TurretCommands.toggleShooter(turret, true));
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -225,7 +230,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackHub(turret));
+    turret.setDefaultCommand(TurretCommands.trackTarget(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -341,18 +346,27 @@ public class RobotContainer {
         IntakeMode.SNOWBLOWER))
         .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(4).onTrue(IntakeCommands.runIndexer(intake))
-        .onFalse(IntakeCommands.stopIntake(intake));
-    tractorController.button(5).onTrue(IntakeCommands.runConveyorBackwards(intake))
-        .onFalse(IntakeCommands.stopIntake(intake));
+    tractorController.button(4)
+        .onTrue(Commands.sequence(IntakeCommands.runIndexer(intake), TurretCommands.toggleShooter(turret, true)))
+        .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
 
     tractorController.button(7).onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
 
-    tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret, true));
-    tractorController.button(13).onTrue(TurretCommands.toggleShooter(turret, false));
-    tractorController.button(12).onTrue(IntakeCommands.setPosition(intake, 0.08));
-    tractorController.button(14).onTrue(IntakeCommands.setPosition(intake, 0.17));
+    tractorController.button(9).onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_RIGHT_PASS))
+        .onFalse(TurretCommands.targetHub(turret));
+    tractorController.button(10).onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_LEFT_PASS))
+        .onFalse(TurretCommands.targetHub(turret));
+
+    // tractorController.button(13).onTrue(TurretCommands.toggleShooter(turret,
+    // true));
+    // tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret,
+    // false));
+    tractorController.button(11).onTrue(IntakeCommands.runConveyorBackwards(intake))
+        .onFalse(IntakeCommands.stopIntake(intake));
+
+    tractorController.button(17).onTrue(IntakeCommands.setPosition(intake, 0.05));
+    tractorController.button(18).onTrue(IntakeCommands.setPosition(intake, 0.17));
   }
 
   /**

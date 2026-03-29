@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "mid - depot + climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climb"
+            "pathName": "left close"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L + depot"
           }
         }
       ]
