@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.TargetObservation;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.FieldUtil;
@@ -109,6 +110,8 @@ public class RobotState {
 
   private static RobotState instance;
 
+  private TargetObservation lastTagPosition;
+
   /**
    * Gets the singleton instance of RobotState.
    * 
@@ -187,6 +190,14 @@ public class RobotState {
         measurement.timestamp,
         rawGyroRotation,
         measurement.wheelPositions);
+  }
+
+  public synchronized void updateTargetObservation(TargetObservation observation) {
+    lastTagPosition = observation;
+  }
+
+  public synchronized TargetObservation getLatestTag() {
+    return lastTagPosition;
   }
 
   /**

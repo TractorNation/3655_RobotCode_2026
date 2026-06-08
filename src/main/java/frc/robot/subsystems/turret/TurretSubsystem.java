@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.TargetObservation;
 import frc.robot.Constants.TurretState;
 import frc.robot.Constants;
 import frc.robot.RobotState;
@@ -134,6 +135,16 @@ public class TurretSubsystem extends SubsystemBase {
     Logger.recordOutput("Turret/DistanceToTarget", robotToTarget.getNorm());
     Logger.recordOutput("Turret/ShooterSpeedYesReal", shooterSpeed);
     setTarget(-targetAngle, shooterSpeed);
+  }
+
+  public void targetTag() {
+    TargetObservation tagPosition = RobotState.getInstance().getLatestTag();
+
+    //TODO: distanceToTag is wrong
+    double distanceToTag = tagPosition.ta();
+    double horizontalDistanceToTag = tagPosition.tx().getRadians();
+    double angle = Math.atan2(horizontalDistanceToTag, distanceToTag);
+    setTarget(angle, 0.0);
   }
 
   public void updateTarget(double value) {

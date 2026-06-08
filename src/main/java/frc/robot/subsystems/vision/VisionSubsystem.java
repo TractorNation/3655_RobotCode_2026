@@ -56,7 +56,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public TargetObservation getLatestTargetObservation(int cameraID) {
-    return new TargetObservation(inputs[cameraID].latestObservation.tx(), inputs[cameraID].latestObservation.ty());
+    return new TargetObservation(
+      inputs[cameraID].latestObservation.tx(), 
+      inputs[cameraID].latestObservation.ty(),
+      inputs[cameraID].latestObservation.ta());
   }
 
   public boolean isInsideField(PoseObservation observation) {
@@ -162,5 +165,7 @@ public class VisionSubsystem extends SubsystemBase {
           "Vision/Cameras/" + inputs[i].name + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose2d[robotPosesRejected.size()]));
     }
+    
+    RobotState.getInstance().updateTargetObservation(getLatestTargetObservation(0));
   }
 }

@@ -108,9 +108,10 @@ public class VisionIOSim implements VisionIO {
         // if desired.
         inputs.latestObservation = new TargetObservation(
             Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
-            Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
+            Rotation2d.fromDegrees(result.getBestTarget().getPitch()),
+            result.getBestTarget().getArea());
       } else {
-        inputs.latestObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
+        inputs.latestObservation = new TargetObservation(new Rotation2d(), new Rotation2d(), 0.0);
         continue;
       }
 

@@ -90,7 +90,8 @@ public class VisionIOLimelight implements VisionIO {
 
     inputs.latestObservation = new TargetObservation(
         Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
-        Rotation2d.fromDegrees(LimelightHelpers.getTY(name)));
+        Rotation2d.fromDegrees(LimelightHelpers.getTY(name)),
+        LimelightHelpers.getTA(name));
 
     // Save pose observations to inputs object
     inputs.poseObservations = new PoseObservation[poseObservations.size()];

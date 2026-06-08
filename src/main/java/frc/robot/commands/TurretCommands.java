@@ -16,6 +16,10 @@ public class TurretCommands {
     return Commands.run(() -> turret.targetHub(), turret);
   }
 
+  public static Command trackTag(TurretSubsystem turret) {
+    return Commands.run(() -> turret.targetTag(), turret);
+  }
+
   public static Command toggleShooter(TurretSubsystem turret, boolean on) {
     return Commands.runOnce(() -> turret.toggleShooter(on), turret);
   }

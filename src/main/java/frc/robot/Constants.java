@@ -251,7 +251,7 @@ public final class Constants {
    * @param tx The angle from the target on the x axis.
    * @param ty The angle from the target on the y axis.
    */
-  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
+  public static record TargetObservation(Rotation2d tx, Rotation2d ty, double ta) {
   }
 
   /**
@@ -311,14 +311,6 @@ public final class Constants {
     public void setShooterSpeed(double newSpeed) {
       shooterSpeedRotPerSec = newSpeed;
     }
-  }
-
-  // TODO: get real positions
-  public static class SliderPositions {
-    public static final double IN = 0.0;
-    public static final double TRANSITION = 1.25;
-    public static final double OUT = 1.735;
-    public static final double BUMP_SAFE = 1.5;
   }
 
   public static class IntakePositions {

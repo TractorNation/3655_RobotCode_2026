@@ -228,8 +228,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackTarget(turret));
-
+    turret.setDefaultCommand(TurretCommands.trackTag(turret));
     // Configure the button bindings
     configureButtonBindings();
   }
