@@ -133,7 +133,7 @@ public final class Constants {
   }
 
   public static final class RobotConfig {
-    public static final Driver currentDriver = Driver.MAIN;
+    public static final Driver currentDriver = Driver.PROGRAMMING;
     public static final RobotType currentRobot = RobotType.COMPBOT;
 
     public static final Mode simMode = Mode.SIM;
@@ -146,7 +146,7 @@ public final class Constants {
 
     public static final double ODOMETRY_FREQUENCY = 250.0;
 
-    public static final double MAX_LINEAR_SPEED = 5.768;
+    public static final double MAX_LINEAR_SPEED = 3.00; //5.768; Adjusted for demo control
     public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS);
 
     public static final double BATTERY_MASS_KG = Units.lbsToKilograms(14);

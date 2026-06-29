@@ -144,7 +144,8 @@ public class TurretSubsystem extends SubsystemBase {
     double distanceToTag = tagPosition.ta();
     double horizontalDistanceToTag = tagPosition.tx().getRadians();
     double angle = Math.atan2(horizontalDistanceToTag, distanceToTag);
-    setTarget(angle, 0.0);
+    Logger.recordOutput("Turret/DemoAngleOfTurret", angle);
+    setTarget(Math.toDegrees(angle), 0.0);
   }
 
   public void updateTarget(double value) {

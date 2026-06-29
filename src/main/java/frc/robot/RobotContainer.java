@@ -301,9 +301,6 @@ public class RobotContainer {
                 programmingController.leftBumper()));
 
         programmingController.button(7).onTrue(Commands.runOnce(robotState::zeroHeading));
-        programmingController.a().onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
-        programmingController.povUp().onTrue(IntakeCommands.setPosition(intake, 0.2));
-        programmingController.povDown().onTrue(IntakeCommands.setPosition(intake, 0.1));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox

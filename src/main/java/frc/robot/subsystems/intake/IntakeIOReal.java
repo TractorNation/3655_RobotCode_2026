@@ -52,7 +52,7 @@ public class IntakeIOReal implements IntakeIO {
 
     armMotor.getConfigurator().apply(armConfig);
 
-    armMotor.setPosition(0.25);
+    //armMotor.setPosition(0.25);
 
     position = armMotor.getPosition();
     kickerCurrent = kickerMotor.getSupplyCurrent();
