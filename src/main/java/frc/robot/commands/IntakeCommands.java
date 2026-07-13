@@ -63,4 +63,13 @@ public class IntakeCommands {
   public static Command setPosition(IntakeSubsystem intake, double position) {
     return Commands.runOnce(() -> intake.setPosition(position), intake);
   }
+
+  public static Command runKicker(IntakeSubsystem intake, double speed) {
+    return Commands.runOnce(() -> intake.runKicker(speed), intake);
+  }
+
+  public static Command runConveyor(IntakeSubsystem intake, double speed) {
+    return Commands.runOnce(() -> intake.runConveyor(speed), intake);
+  }
+
 }

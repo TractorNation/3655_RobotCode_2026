@@ -69,7 +69,7 @@ public class IntakeIOReal implements IntakeIO {
     inputs.intakePosition = position.getValueAsDouble();
     inputs.kickerMotorCurrent = kickerCurrent.getValueAsDouble();
 
-    armMotor.setControl(new PositionVoltage(positionRotations));
+    //armMotor.setControl(new PositionVoltage(positionRotations));
   }
 
   @Override
