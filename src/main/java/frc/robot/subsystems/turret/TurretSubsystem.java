@@ -111,9 +111,7 @@ public class TurretSubsystem extends SubsystemBase {
     double targetAngle;
     Pose2d futurePose = RobotState.getInstance().getFuturePose();
     Pose2d currentPose = RobotState.getInstance().getPose();
-    Translation2d robotToTurret = new Translation2d(
-        Constants.RobotConfig.ROBOT_TO_TURRET,
-        Rotation2d.fromDegrees(currentPose.getRotation().getDegrees() + 135));
+    Translation2d robotToTurret = RobotState.getInstance().getRobotToHub();
     Translation2d translation = futurePose.getTranslation().plus(robotToTurret);
     Translation2d robotToTarget = targetPosition.minus(translation);
 

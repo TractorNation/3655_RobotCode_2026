@@ -13,9 +13,11 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import frc.robot.Constants;
+import frc.robot.RobotState;
 
 public class IntakeIOReal implements IntakeIO {
   private final SparkFlex frontMotor = new SparkFlex(Constants.DeviceID.Intake.FRONT_MOTOR_ID, MotorType.kBrushless);
@@ -108,6 +110,14 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setPosition(double position) {
     positionRotations = position;
+  }
+
+  @Override
+  public void automateKickerSpeed(){
+    Translation2d robotToHub = RobotState.getInstance().getRobotToHub();
+
+    // Max turret speed at 120rps
+    // TODO: Write equation to change kicker speed based on distance to hub (shooter speed)
   }
 
 }
