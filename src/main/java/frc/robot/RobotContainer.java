@@ -98,6 +98,7 @@ public class RobotContainer {
 
   // Programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
+  private final CommandGenericHID tractorProgrammingController = new CommandGenericHID(2);
 
   // Driver controller
   private final CommandNXT mainTranslation = new CommandNXT(0);
@@ -230,7 +231,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackTarget(turret));
+    //turret.setDefaultCommand(TurretCommands.trackTarget(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -307,6 +308,47 @@ public class RobotContainer {
         programmingController.a().onTrue(IntakeCommands.runIndexer(intake)).onFalse(IntakeCommands.stopIntake(intake));
         programmingController.povUp().onTrue(IntakeCommands.setPosition(intake, 0.2));
         programmingController.povDown().onTrue(IntakeCommands.setPosition(intake, 0.1));
+
+        // programmingController.rightBumper().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.INTAKE))
+        //     .onFalse(IntakeCommands.stopIntake(intake));
+
+        // programmingController.leftBumper()
+        //     .onTrue(Commands.sequence(IntakeCommands.runIndexer(intake), TurretCommands.toggleShooter(turret, true)))
+        //     .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
+
+        //Turn off the shooter
+        tractorProgrammingController.button(4)
+            .onTrue(TurretCommands.setTarget(turret, 0));
+        
+        //Shooter low speed
+        tractorProgrammingController.button(1)
+            .onTrue(TurretCommands.setTarget(turret, 30));
+        //Shooter medium speed
+        tractorProgrammingController.button(2)
+            .onTrue(TurretCommands.setTarget(turret, 60));
+        //Shooter high speed
+        tractorProgrammingController.button(3)
+            .onTrue(TurretCommands.setTarget(turret, 85));
+
+        //Turn off kicker
+        tractorProgrammingController.button(9)
+            .onTrue(IntakeCommands.runKicker(intake, 0));
+        //Kicker low speed
+        tractorProgrammingController.button(6)
+            .onTrue(IntakeCommands.runKicker(intake, -0.30));
+        //Kicker medium speed
+        tractorProgrammingController.button(7)
+            .onTrue(IntakeCommands.runKicker(intake, -0.60));
+        //Kicker high speed
+        tractorProgrammingController.button(8)
+            .onTrue(IntakeCommands.runKicker(intake, -0.90));
+
+        //Turn on conveyor
+        tractorProgrammingController.button(11)
+            .onTrue(IntakeCommands.runConveyor(intake, -0.5));
+        //Turn off conveyor
+        tractorProgrammingController.button(13)
+            .onTrue(IntakeCommands.runConveyor(intake, 0.0));
         break;
 
       // When running sim on a Macbook, the controls are different than an Xbox

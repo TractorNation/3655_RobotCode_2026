@@ -133,7 +133,7 @@ public final class Constants {
   }
 
   public static final class RobotConfig {
-    public static final Driver currentDriver = Driver.MAIN;
+    public static final Driver currentDriver = Driver.PROGRAMMING;
     public static final RobotType currentRobot = RobotType.COMPBOT;
 
     public static final Mode simMode = Mode.SIM;
