@@ -27,4 +27,12 @@ public class TurretCommands {
   public static Command targetHub(TurretSubsystem turret) {
     return Commands.runOnce(() -> turret.resetTarget(), turret);
   }
+
+  public static Command setShooterSpeed(TurretSubsystem turret, double speed){
+    return Commands.runOnce(() -> turret.setTarget(180, speed));
+  }
+
+  public static Command bumpShooterSpeed(TurretSubsystem turret, double increment){
+    return Commands.runOnce(() -> turret.incrementShooterSpeed(increment));
+  }
 }

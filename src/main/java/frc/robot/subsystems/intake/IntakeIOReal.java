@@ -31,7 +31,7 @@ public class IntakeIOReal implements IntakeIO {
   StatusSignal<Current> kickerCurrent;
   StatusSignal<Angle> position;
 
-  double positionRotations = 0.2;
+  double positionRotations = 0.4;
 
   public IntakeIOReal() {
     frontConfig = new SparkMaxConfig();
@@ -52,7 +52,7 @@ public class IntakeIOReal implements IntakeIO {
 
     armMotor.getConfigurator().apply(armConfig);
 
-    armMotor.setPosition(0.25);
+    armMotor.setPosition(0.4);
 
     position = armMotor.getPosition();
     kickerCurrent = kickerMotor.getSupplyCurrent();
@@ -67,7 +67,7 @@ public class IntakeIOReal implements IntakeIO {
     inputs.intakePosition = position.getValueAsDouble();
     inputs.kickerMotorCurrent = kickerCurrent.getValueAsDouble();
 
-    armMotor.setControl(new PositionVoltage(positionRotations));
+    //armMotor.setControl(new PositionVoltage(positionRotations));
   }
 
   @Override
@@ -86,8 +86,8 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void runIndexerMotors() {
-    runKicker(-0.9);
-    runConveyor(-0.75);
+    runKicker(-1.0);
+    runConveyor(-0.2);
   }
 
   @Override

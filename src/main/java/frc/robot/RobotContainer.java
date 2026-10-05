@@ -230,7 +230,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    turret.setDefaultCommand(TurretCommands.trackTarget(turret));
+    // region Default Commands
+    // turret.setDefaultCommand(TurretCommands.fixedShooter(turret));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -274,10 +275,10 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> mainTranslation.StickYAxis() * -.9,
-                () -> mainTranslation.StickXAxis() * -.9,
+                () -> mainTranslation.StickYAxis() * -1,
+                () -> mainTranslation.StickXAxis() * -1,
                 () -> mainRotation.StickXAxis() * -.85,
-                0.75,
+                1,
                 mainTranslation.fireStage1()));
 
         mainTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
@@ -286,9 +287,9 @@ public class RobotContainer {
 
         mainRotation.firePaddleDown().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.INTAKE))
             .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.SNOWBLOWER))
+        mainRotation.A2().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.SNOWBLOWER))
             .onFalse(IntakeCommands.stopIntake(intake));
-        mainRotation.A2().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
+        mainRotation.firePaddleUp().onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
             .onFalse(IntakeCommands.stopIntake(intake));
         break;
 
@@ -350,6 +351,11 @@ public class RobotContainer {
         .onTrue(Commands.sequence(IntakeCommands.runIndexer(intake), TurretCommands.toggleShooter(turret, true)))
         .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
 
+    // tractorController.button(5)
+    //     .onTrue(Commands.sequence(TurretCommands.toggleShooter(turret, true), Commands.waitSeconds(0.75),
+    //         IntakeCommands.runIndexer(intake)))
+    //     .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
+
     tractorController.button(7).onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
 
@@ -357,16 +363,20 @@ public class RobotContainer {
         .onFalse(TurretCommands.targetHub(turret));
     tractorController.button(10).onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_LEFT_PASS))
         .onFalse(TurretCommands.targetHub(turret));
+    
+    tractorController.button(5).onTrue(TurretCommands.setShooterSpeed(turret, 0));
+    tractorController.button(12).onTrue(TurretCommands.setShooterSpeed(turret, 28));
+    tractorController.button(14).onTrue(TurretCommands.setShooterSpeed(turret, 35));
+    tractorController.button(16).onTrue(TurretCommands.setShooterSpeed(turret, 40));
 
-    // tractorController.button(13).onTrue(TurretCommands.toggleShooter(turret,
-    // true));
-    // tractorController.button(11).onTrue(TurretCommands.toggleShooter(turret,
-    // false));
     tractorController.button(11).onTrue(IntakeCommands.runConveyorBackwards(intake))
-        .onFalse(IntakeCommands.stopIntake(intake));
+        .onFalse(IntakeCommands.stopIntake(intake))
+        ;
 
-    tractorController.button(17).onTrue(IntakeCommands.setPosition(intake, 0.05));
-    tractorController.button(18).onTrue(IntakeCommands.setPosition(intake, 0.17));
+    tractorController.button(17).onTrue(IntakeCommands.setPosition(intake, 0.19));
+
+    tractorController.button(19).onTrue(TurretCommands.bumpShooterSpeed(turret, -3));
+    tractorController.button(20).onTrue(TurretCommands.bumpShooterSpeed(turret, 3));
   }
 
   /**

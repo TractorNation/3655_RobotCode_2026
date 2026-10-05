@@ -16,8 +16,8 @@ public class IntakeCommands {
         return Commands.runOnce(() -> intake.runMotors(0.4, 0.4), intake); // + + +
       case OUTPUT:
         return Commands.runOnce(() -> {
-          intake.runMotors(0.75, -0.4);
-          intake.runConveyor(0.6);
+          intake.runMotors(-0.40, -0.2);
+          intake.runConveyor(0.25);
         }, intake);
       case SNOWBLOWER:
         return runSnowblower(intake);
@@ -47,15 +47,15 @@ public class IntakeCommands {
   public static Command runSnowblower(IntakeSubsystem intake) {
     final double distance = RobotState.getInstance().getDistanceToWall();
 
-    return Commands.run(() -> intake.runMotors((0.5 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance,
-        (-1 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance), intake);
+    return Commands.run(() -> intake.runMotors((-0.5 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance,
+        (1 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance), intake);
   }
 
   public static Command runOutput(IntakeSubsystem intake) {
     final double distance = RobotState.getInstance().getDistanceToWall();
     return Commands.run(() -> {
-      intake.runMotors((1 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance,
-          (-0.75 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance); // + - -
+      intake.runMotors((-0.25 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance,
+          (-0.25 / Constants.Field.MAX_INTAKE_WALL_DISTANCE) * distance); // + - -
       intake.runConveyor(0.6);
     }, intake);
   }

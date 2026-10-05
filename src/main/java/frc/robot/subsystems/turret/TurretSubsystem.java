@@ -33,6 +33,8 @@ public class TurretSubsystem extends SubsystemBase {
   public static boolean shooterToggled = true;
   private double frameCount = 0;
 
+  private double shooterSpeed = 0;
+
   public TurretSubsystem(TurretIO io) {
     this.io = io;
     this.inputs = new TurretIOInputsAutoLogged();
@@ -103,9 +105,11 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTarget(double targetPositionDegrees, double shooterVelocityRotPerSec) {
+    shooterSpeed = shooterVelocityRotPerSec;
     target.setPosition(wrapTarget(targetPositionDegrees));
     target.setShooterSpeed(shooterVelocityRotPerSec);
   }
+
 
   public void targetHub() {
     double targetAngle;
@@ -141,7 +145,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void incrementShooterSpeed(double increment) {
-    setTarget(target.positionDegrees, increment);
+    setTarget(target.positionDegrees, shooterSpeed + increment);
   }
 
   public void stopMotors() {
@@ -181,10 +185,5 @@ public class TurretSubsystem extends SubsystemBase {
         targetPosition = Constants.Field.BLUE_HUB_POSITION;
         scoringZone = Constants.Field.BLUE_SCORING_ZONE;
     }
-  }
-
-  //Henry this method disappeared
-  public TurretState getTarget() {
-    return target;
   }
 }
