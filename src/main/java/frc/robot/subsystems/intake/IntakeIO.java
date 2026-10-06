@@ -19,6 +19,7 @@ public interface IntakeIO {
   public default void runIntakeMotors(double frontMotorSpeed, double topMotorSpeed) {}
   public default void stopMotors() {}
   public default void runIndexerMotors() {}
+  public default void runIndexerBackwards() {}
   public default void runConveyorBackwards() {}
   public default void runConveyor(double speed) {}
   public default void runKicker(double speed) {}

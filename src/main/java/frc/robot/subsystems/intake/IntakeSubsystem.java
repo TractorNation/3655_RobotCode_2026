@@ -43,6 +43,10 @@ public class IntakeSubsystem extends SubsystemBase {
     io.runConveyor(speed);
   }
 
+  public void runIndexerBackwards() {
+    io.runIndexerBackwards();
+  }
+
   public void stopMotors() {
     io.stopMotors();
   }

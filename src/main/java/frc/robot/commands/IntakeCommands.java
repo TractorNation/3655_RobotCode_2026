@@ -30,6 +30,10 @@ public class IntakeCommands {
     return Commands.runOnce(() -> intake.runIndexerMotors());
   }
 
+  public static Command runIndexerBackwards(IntakeSubsystem intake) {
+    return Commands.runOnce(() -> intake.runIndexerBackwards());
+  }
+
   public static Command runIndexerInAuto(IntakeSubsystem intake) {
     return Commands.runOnce(() -> intake.runIndexerMotors(), intake);
   }

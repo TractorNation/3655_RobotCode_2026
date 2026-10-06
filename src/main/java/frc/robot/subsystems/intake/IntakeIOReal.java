@@ -91,6 +91,11 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
+  public void runIndexerBackwards() {
+    runKicker(0.5);
+  }
+
+  @Override
   public void runConveyorBackwards(){
     runConveyor(0.5);
   }
