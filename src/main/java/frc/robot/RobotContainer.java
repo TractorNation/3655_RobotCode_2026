@@ -336,47 +336,48 @@ public class RobotContainer {
 
     // region Operator controls
 
+    //Intake
     tractorController.button(1).onTrue(IntakeCommands.runIntakeMode(intake,
         IntakeMode.INTAKE))
         .onFalse(IntakeCommands.stopIntake(intake));
+    //Output
     tractorController.button(2).onTrue(IntakeCommands.runOutput(intake))
         .onFalse(IntakeCommands.stopIntake(intake));
+    //Snowblower
     tractorController.button(3).onTrue(IntakeCommands.runIntakeMode(intake,
         IntakeMode.SNOWBLOWER))
         .onFalse(IntakeCommands.stopIntake(intake));
-
+    //Shoot
     tractorController.button(4)
         .onTrue(Commands.sequence(IntakeCommands.runIndexer(intake), TurretCommands.toggleShooter(turret, true)))
         .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
-
-    // tractorController.button(5)
-    //     .onTrue(Commands.sequence(TurretCommands.toggleShooter(turret, true), Commands.waitSeconds(0.75),
-    //         IntakeCommands.runIndexer(intake)))
-    //     .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
-
-    tractorController.button(6)
-        .onTrue(Commands.sequence(IntakeCommands.runIndexerBackwards(intake), TurretCommands.toggleShooter(turret, true)))
-        .onFalse(Commands.sequence(IntakeCommands.stopIntake(intake), TurretCommands.toggleShooter(turret, false)));
-
-    tractorController.button(7).onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
+    //Lowput
+    tractorController.button(7)
+        .onTrue(IntakeCommands.runIntakeMode(intake, IntakeMode.OUTPUT))
         .onFalse(IntakeCommands.stopIntake(intake));
-
-    tractorController.button(9).onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_RIGHT_PASS))
-        .onFalse(TurretCommands.targetHub(turret));
-    tractorController.button(10).onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_LEFT_PASS))
-        .onFalse(TurretCommands.targetHub(turret));
-    
-    tractorController.button(5).onTrue(TurretCommands.setShooterSpeed(turret, 0));
-    tractorController.button(12).onTrue(TurretCommands.setShooterSpeed(turret, 28));
-    tractorController.button(14).onTrue(TurretCommands.setShooterSpeed(turret, 35));
-    tractorController.button(16).onTrue(TurretCommands.setShooterSpeed(turret, 40));
-
-    tractorController.button(11).onTrue(IntakeCommands.runConveyorBackwards(intake))
-        .onFalse(IntakeCommands.stopIntake(intake))
-        ;
-
+    // tractorController.button(9)
+    //     .onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_RIGHT_PASS))
+    //     .onFalse(TurretCommands.targetHub(turret));
+    // tractorController.button(10)
+    //     .onTrue(TurretCommands.changeTarget(turret, Constants.Field.BLUE_LEFT_PASS))
+    //     .onFalse(TurretCommands.targetHub(turret));
+    //Shooter speeds
+    tractorController.button(5)
+        .onTrue(TurretCommands.setShooterSpeed(turret, 0));
+    tractorController.button(12)
+        .onTrue(TurretCommands.setShooterSpeed(turret, 28));
+    tractorController.button(14)
+        .onTrue(TurretCommands.setShooterSpeed(turret, 35));
+    tractorController.button(16)
+        .onTrue(TurretCommands.setShooterSpeed(turret, 40));
+    //Agitate
+    tractorController.button(11)
+        .onTrue(Commands.sequence(IntakeCommands.runConveyorBackwards(intake), IntakeCommands.runIndexerBackwards(intake)))
+        .onFalse(IntakeCommands.stopIntake(intake));
+    //Intake down
     tractorController.button(17).onTrue(IntakeCommands.setPosition(intake, 0.19));
 
+    //Shooter increment
     tractorController.button(19).onTrue(TurretCommands.bumpShooterSpeed(turret, -3));
     tractorController.button(20).onTrue(TurretCommands.bumpShooterSpeed(turret, 3));
   }
